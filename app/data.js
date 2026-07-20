@@ -5,8 +5,8 @@
 const DB = { sources: [] };
 
 // helpers
-function q(text, answerIdx, opts, tags = []) {
-  return { text, opts, answerIdx, tags };
+function q(text, answerIdx, opts, tags = [], explanation = "") {
+  return { text, opts, answerIdx, tags, explanation };
 }
 function fc(front, back, tags = []) {
   return { front, back, tags };
@@ -167,14 +167,14 @@ DB.sources.push({
       questions: [
         q("Tulang manakah yang termasuk Neurocranium?", 0, ["Os occipitale, parietale, temporale, frontale, sphenoidale, ethmoidale","Os maxillae, mandibula, zygomaticum","Os frontale, parietale, nasale","Os occipitale, temporale, mandibula"]),
         q("Os manakah yang termasuk neurocranium?", 0, ["Os sphenoidale","Os maxillaris","Os zygomaticum","Os patella"]),
-        q("Pada basis cranii foramen rotundum. Nervus yang keluar?", 0, ["N. maxillaris (V2)","N. mandibularis (V3)","N. ophthalmicus (V1)","N. facialis (VII)"]),
-        q("Meatus acusticus internus tempat keluar nervus?", 0, ["N. VII & VIII","N. V & VI","N. IX & X","N. III & IV"]),
-        q("Lubang tempat keluar nervus IX, X, XI?", 0, ["Foramen jugulare","Foramen magnum","Foramen ovale","Foramen spinosum"]),
-        q("Arteri meningea media masuk melalui?", 0, ["Foramen spinosum","Foramen ovale","Foramen rotundum","Foramen magnum"]),
-        q("Tempat medula oblongata jadi medula spinalis?", 0, ["Foramen magnum","Foramen jugulare","Foramen ovale","Canalis opticus"]),
-        q("Glandula hipofisis terletak di?", 0, ["Sella turcica","Fossa cranii anterior","Fossa condylaris","Fossa jugularis"]),
-        q("Sendi antara os parietalis dan os frontalis?", 0, ["Sutura coronalis","Sutura sagittalis","Sutura lambdoidea","Sutura squamosa"]),
-        q("Sendi antara Os parietale dan Os occipitale?", 0, ["Sutura lambdoidea","Sutura coronalis","Atlantooccipitalis","Sutura sagitalis"]),
+        q("Pada basis cranii foramen rotundum. Nervus yang keluar?", 0, ["N. maxillaris (V2)","N. mandibularis (V3)","N. ophthalmicus (V1)","N. facialis (VII)"], [], "Foramen rotundum: terletak di os sphenoidale, dilalui oleh V2 (N. maxillaris). Foramen ovale = V3, fissura orbitalis superior = V1."),
+        q("Meatus acusticus internus tempat keluar nervus?", 0, ["N. VII & VIII","N. V & VI","N. IX & X","N. III & IV"], [], "Meatus acusticus internus di os temporale pars petrosa → N. facialis (VII) dan N. vestibulocochlearis (VIII)."),
+        q("Lubang tempat keluar nervus IX, X, XI?", 0, ["Foramen jugulare","Foramen magnum","Foramen ovale","Foramen spinosum"], [], "Foramen jugulare di fossa cranii posterior: dilewati N. IX (glossopharyngeus), X (vagus), XI (accessorius)."),
+        q("Arteri meningea media masuk melalui?", 0, ["Foramen spinosum","Foramen ovale","Foramen rotundum","Foramen magnum"], [], "Foramen spinosum: cabang A. maxillaris → A. meningea media. Satu-satunya foramen yang dilalui arteri (bukan saraf)."),
+        q("Tempat medula oblongata jadi medula spinalis?", 0, ["Foramen magnum","Foramen jugulare","Foramen ovale","Canalis opticus"], [], "Foramen magnum di os occipitale: tempat peralihan medula oblongata (dari cranium) menjadi medula spinalis (ke canalis vertebralis)."),
+        q("Glandula hipofisis terletak di?", 0, ["Sella turcica","Fossa cranii anterior","Fossa condylaris","Fossa jugularis"], [], "Sella turcica (fossa hipofisialis) di os sphenoidale — tempat glandula pituitaria/hipofisis."),
+        q("Sendi antara os parietalis dan os frontalis?", 0, ["Sutura coronalis","Sutura sagittalis","Sutura lambdoidea","Sutura squamosa"], [], "Sutura coronalis: antara os frontale dan os parietale. Sutura sagittalis = antar 2 parietal. Sutura lambdoidea = parietal + occipital."),
+        q("Sendi antara Os parietale dan Os occipitale?", 0, ["Sutura lambdoidea","Sutura coronalis","Atlantooccipitalis","Sutura sagitalis"], [], "Sutura lambdoidea menghubungkan os parietale dan os occipitale — bentuknya seperti huruf lambda (Λ)."),
         q("Tulang yang membangun palatum durum?", 0, ["Os palatina","Os nasal","Os mandibula","Os lacrimale"]),
         q("Sendi antara os mandibula dan cranium?", 0, ["TMJ","Atlantooccipitalis","Atlantoaxialis","Symphysis mandibulae"]),
         q("Hubungan antar corpus vertebra?", 0, ["Discus intervertebralis","Zygapophysialis","Lig. flavum","Symphysis pubis"]),
@@ -239,17 +239,17 @@ DB.sources.push({
         "N. ischiadicus keluar via for. ischiadicum majus pars infrapiriformis"
       ],
       questions: [
-        q("Winged scapula, saraf yang jejas?", 0, ["N. thoracicus longus","N. axillaris","N. suprascapularis","N. dorsalis scapulae"]),
-        q("Abduksi lengan 15° pertama?", 0, ["M. supraspinatus","M. deltoideus","M. infraspinatus","M. teres minor"]),
-        q("Erb-Duchenne palsy (C5-C6)?", 0, ["Waiter's tip","Claw hand","Wrist drop","Carpal tunnel"]),
-        q("Klumpke palsy (C8-Th1)?", 0, ["Claw hand","Waiter's tip","Wrist drop","Saturday night"]),
-        q("Wrist drop lesi?", 0, ["N. radialis","N. medianus","N. ulnaris","N. musculocutaneus"]),
-        q("Claw hand lesi kronis?", 0, ["N. ulnaris","N. medianus","N. radialis","N. axillaris"]),
-        q("Parestesia jari ke-5?", 0, ["N. ulnaris","N. medianus","N. radialis","N. cutaneus antebrachii"]),
+        q("Winged scapula, saraf yang jejas?", 0, ["N. thoracicus longus","N. axillaris","N. suprascapularis","N. dorsalis scapulae"], [], "N. thoracicus longus (C5-C7) menginervasi M. serratus anterior. Jika rusak → scapula menonjol (winged scapula)."),
+        q("Abduksi lengan 15° pertama?", 0, ["M. supraspinatus","M. deltoideus","M. infraspinatus","M. teres minor"], [], "M. supraspinatus menginisiasi abduksi 0-15°. M. deltoideus mengambil alih 15-90°. Rotator cuff: supraspinatus, infraspinatus, teres minor, subscapularis."),
+        q("Erb-Duchenne palsy (C5-C6)?", 0, ["Waiter's tip","Claw hand","Wrist drop","Carpal tunnel"], [], "Erb-Duchenne: lesi C5-C6 → lengan tergantung rotasi medial (waiter's tip). N. axillaris + n. suprascapularis + n. musculocutaneus terganggu."),
+        q("Klumpke palsy (C8-Th1)?", 0, ["Claw hand","Waiter's tip","Wrist drop","Saturday night"], [], "Klumpke: lesi C8-Th1 → N. ulnaris + N. medianus pars medial → claw hand. Sering akibat trauma abduksi lengan (lahir, jatuh)."),
+        q("Wrist drop lesi?", 0, ["N. radialis","N. medianus","N. ulnaris","N. musculocutaneus"], [], "N. radialis (C5-C8) menginervasi ekstensor lengan bawah. Lesi → wrist drop. Saturday night palsy: tidur dengan lengan tergantung."),
+        q("Claw hand lesi kronis?", 0, ["N. ulnaris","N. medianus","N. radialis","N. axillaris"], [], "N. ulnaris (C8-Th1) → otot intrinsik tangan. Lesi → hyperextension MCP + fleksi IP (claw hand). Jari 4-5 paling parah."),
+        q("Parestesia jari ke-5?", 0, ["N. ulnaris","N. medianus","N. radialis","N. cutaneus antebrachii"], [], "N. ulnaris: area sensorik di sisi medial tangan (jari 5 + setengah jari 4). Juga berjalan di epicondylus medialis (fungky bone)."),
         q("Nervus di epicondylus medialis?", 0, ["N. ulnaris","N. radialis","N. musculocutaneus","N. axillaris"]),
-        q("Pembagi arteri axillaris?", 0, ["M. pectoralis minor","M. pectoralis major","M. teres major","Clavicula"]),
-        q("Vena di fossa cubiti hubungkan cephalica & basilica?", 0, ["V. mediana cubiti","V. axillaris","V. brachialis","V. saphena magna"]),
-        q("Fraktur collum chirurgicum humeri risiko?", 0, ["N. axillaris & A. circumflexa humeri post.","N. radialis & A. profunda brachii","N. ulnaris","N. medianus"]),
+        q("Pembagi arteri axillaris?", 0, ["M. pectoralis minor","M. pectoralis major","M. teres major","Clavicula"], [], "M. pectoralis minor membagi a. axillaris jadi 3 bagian: pars proximalis (sebelum), retropectoralis (di belakang), distalis (setelah otot)."),
+        q("Vena di fossa cubiti hubungkan cephalica & basilica?", 0, ["V. mediana cubiti","V. axillaris","V. brachialis","V. saphena magna"], [], "V. mediana cubiti di fossa cubiti — vena yang menghubungkan v. cephalica (lateral) dan v. basilica (medial). Tempat favorit pungsi vena."),
+        q("Fraktur collum chirurgicum humeri risiko?", 0, ["N. axillaris & A. circumflexa humeri post.","N. radialis & A. profunda brachii","N. ulnaris","N. medianus"], [], "N. axillaris dan A. circumflexa humeri posterior melingkari collum chirurgicum humeri. Fraktur di sini berisiko merusak keduanya → paralysis deltoid."),
         q("A. radialis di lateral tendon?", 0, ["M. flexor carpi radialis","M. flexor carpi ulnaris","M. palmaris longus","M. brachioradialis"]),
         q("Nervus kulit lateral bahu?", 0, ["N. cutaneus superior lateral","N. axillaris","N. radialis","N. suprascapularis"]),
         q("Pemeriksaan refleks biceps (segmen)?", 0, ["C5-C6","C4-C5","C6-C7","C8-T1"]),
@@ -709,6 +709,7 @@ DB.sources.forEach(src => {
   src.concepts.forEach(con => {
     (con.questions || []).flat().forEach(q => {
       q.sourceId = src.id; q.sourceName = src.name; q.conceptId = con.id; q.conceptName = con.name;
+      if(!q.explanation) q.explanation = '';
       DB.allQuestions.push(q);
     });
     (con.flashcards || []).forEach(f => {

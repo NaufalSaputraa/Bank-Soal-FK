@@ -288,7 +288,9 @@ function qCard(q,showAns){
   return `<div class="q-card"><div class="q-text">${q.text}</div>
     <div class="q-opts">${sq.opts.map((o,i)=>`<div class="q-opt${showAns?(i===sq.answerIdx?' correct':' locked'):''}" data-i="${i}" data-ans="${sq.answerIdx}" tabindex="0" role="button">${ltr(i)} ${o}</div>`).join('')}</div>
     <div class="q-tags">${(q.tags||[]).map(t=>`<span class="q-tag">#${t}</span>`).join('')}</div>
-    ${showAns?`<div style="font-size:12px;color:var(--ink-3);margin-top:6px">📍 ${q.sourceName} › ${q.conceptName}</div>`:''}</div>`;
+    ${showAns?`<div style="margin-top:8px;padding:8px 10px;border-radius:var(--radius-sm);font-size:12.5px;background:var(--green-light);color:var(--green)"><strong>✓ ${ltr(sq.answerIdx)}. ${sq.opts[sq.answerIdx]}</strong>
+      ${q.explanation?`<div style="margin-top:4px;padding-top:4px;border-top:1px solid rgba(0,0,0,0.08);font-weight:400;color:var(--ink-2)">${q.explanation}</div>`:''}</div>
+      <div style="font-size:12px;color:var(--ink-3);margin-top:6px">📍 ${q.sourceName} › ${q.conceptName}</div>`:''}</div>`;
 }
 
 function fcMini(f){
@@ -336,6 +338,7 @@ function kuis(c){
     <div class="q-card" data-mode="quiz"><div class="q-text">${q.text}</div>
     <div class="q-opts">${sq.opts.map((o,i)=>`<div class="q-opt${locked?(i===sq.answerIdx?' correct':i===ans?' wrong':' locked'):''}" data-i="${i}" data-ans="${sq.answerIdx}" tabindex="0">${ltr(i)} ${o}</div>`).join('')}</div>
     ${locked?`<div style="margin-top:10px;padding:10px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;${ans===sq.answerIdx?'background:var(--green-light);color:var(--green)':'background:var(--red-light);color:var(--red)'}">${ans===sq.answerIdx?'✓ Benar!':'✕ '+ltr(sq.answerIdx)+'. '+sq.opts[sq.answerIdx]}
+      ${q.explanation?`<div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(0,0,0,0.1);font-weight:400;font-size:12.5px;color:var(--ink-2)"><strong>Pembahasan:</strong> ${q.explanation}</div>`:''}
       <div style="margin-top:6px;font-weight:400;font-size:12px;color:var(--ink-3)">📍 ${q.sourceName} › ${q.conceptName}</div>
     </div>`:''}</div>
     ${locked?`<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px"><button class="btn btn-sm" data-buka="${q.conceptId}" data-source="${q.sourceId}">📖 Buka Materi</button><button class="btn btn-primary btn-sm" data-next="quiz">${idx+1>=qs.length?'Lihat Nilai':'→'}</button></div>`:''}`;
@@ -362,7 +365,8 @@ function tryout(c){
   c.innerHTML=`<div class="quiz-bar"><span class="qb-stat"><strong>${idx+1}</strong>/${qs.length}</span><div class="quiz-progress"><div class="qp-fill" style="width:${(idx+1)/qs.length*100}%"></div></div><span class="timer" id="timerDisplay">${fmt(to.timeLeft)}</span></div>
     <div class="q-card" data-mode="tryout"><div class="q-text">${q.text}</div>
     <div class="q-opts">${sq.opts.map((o,i)=>`<div class="q-opt${locked?(i===sq.answerIdx?' correct':i===ans?' wrong':' locked'):''}" data-i="${i}" data-ans="${sq.answerIdx}" tabindex="0">${ltr(i)} ${o}</div>`).join('')}</div></div>
-    ${locked?`<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px"><span style="font-size:12px;color:var(--ink-3);margin-right:auto">📍 ${q.sourceName} › ${q.conceptName}</span><button class="btn btn-sm" data-buka="${q.conceptId}" data-source="${q.sourceId}">📖 Buka Materi</button><button class="btn btn-primary btn-sm" data-next="tryout">${idx+1>=qs.length?'Selesai':'→'}</button></div>`:''}
+    ${locked?`<div style="padding:10px;margin-top:8px;border-radius:var(--radius-sm);font-size:13px;${ans===sq.answerIdx?'background:var(--green-light);color:var(--green)':'background:var(--red-light);color:var(--red)'}"><strong>${ans===sq.answerIdx?'✓ Benar':'✕ Jawaban: '+ltr(sq.answerIdx)}</strong>${q.explanation?`<div style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(0,0,0,0.1);font-weight:400;font-size:12px;color:var(--ink-2)">${q.explanation}</div>`:''}</div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px"><span style="font-size:12px;color:var(--ink-3);margin-right:auto">📍 ${q.sourceName} › ${q.conceptName}</span><button class="btn btn-sm" data-buka="${q.conceptId}" data-source="${q.sourceId}">📖 Buka Materi</button><button class="btn btn-primary btn-sm" data-next="tryout">${idx+1>=qs.length?'Selesai':'→'}</button></div>`:''}
     <div class="qnav">${qs.map((_,i)=>`<button data-goto="${i}" class="${to.answers[i]!==undefined?'done':''}${i===idx?' cur':''}" tabindex="0">${i+1}</button>`).join('')}</div>`;
 }
 function nextTryout(){S.tryout.idx++;if(S.tryout.idx>=S.tryout.questions.length){S.tryout.done=true}render()}
