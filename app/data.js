@@ -605,8 +605,8 @@ DB.topics.push({
             q("Pada penyembuhan fraktur, osteoblas menghasilkan matriks organik sebelum mineralisasi?", 0, [
               "Osteoid", "Osteon", "Lakuna", "Kanalikuli", "Lamela"
             ], ["histologi", "osteoid"]),
-            q("Pada osifikasi intramembranosa, sel mesenkim → osteoblas → mensekresikan matriks organik?",
-              0, [["Osteoid", "Lamella", "Trabekula", "Cartilago hyalina", "Endosteum"]],
+             q("Pada osifikasi intramembranosa, sel mesenkim → osteoblas → mensekresikan matriks organik?",
+              0, ["Osteoid", "Lamella", "Trabekula", "Cartilago hyalina", "Endosteum"],
               ["histologi", "osteoid"])
           ],
           flashcards: [
