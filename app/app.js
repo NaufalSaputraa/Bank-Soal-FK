@@ -217,7 +217,8 @@ function qCard(q,showAns){
   const sq = showAns ? {opts:q.opts, answerIdx:q.answerIdx} : shuffleOpts(q);
   return `<div class="q-card"><div class="q-text">${q.text}</div>
     <div class="q-opts">${sq.opts.map((o,i)=>`<div class="q-opt${showAns?(i===sq.answerIdx?' correct':' locked'):''}" data-i="${i}" data-ans="${sq.answerIdx}" tabindex="0" role="button">${ltr(i)} ${o}</div>`).join('')}</div>
-    <div class="q-tags">${(q.tags||[]).map(t=>`<span class="q-tag">#${t}</span>`).join('')}</div></div>`;
+    <div class="q-tags">${(q.tags||[]).map(t=>`<span class="q-tag">#${t}</span>`).join('')}</div>
+    ${showAns?`<div style="font-size:12px;color:var(--ink-3);margin-top:6px">📍 ${q.sourceName} › ${q.conceptName}</div>`:''}</div>`;
 }
 
 function fcMini(f){
@@ -264,8 +265,10 @@ function kuis(c){
   c.innerHTML=`<div class="quiz-bar"><span class="qb-stat"><strong>${idx+1}</strong>/${qs.length}</span><div class="quiz-progress"><div class="qp-fill" style="width:${(idx+1)/qs.length*100}%"></div></div><span class="qb-stat">✓ <strong>${S.quiz.score}</strong></span></div>
     <div class="q-card" data-mode="quiz"><div class="q-text">${q.text}</div>
     <div class="q-opts">${sq.opts.map((o,i)=>`<div class="q-opt${locked?(i===sq.answerIdx?' correct':i===ans?' wrong':' locked'):''}" data-i="${i}" data-ans="${sq.answerIdx}" tabindex="0">${ltr(i)} ${o}</div>`).join('')}</div>
-    ${locked?`<div style="margin-top:10px;padding:10px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;${ans===sq.answerIdx?'background:var(--green-light);color:var(--green)':'background:var(--red-light);color:var(--red)'}">${ans===sq.answerIdx?'✓ Benar!':'✕ '+ltr(sq.answerIdx)+'. '+sq.opts[sq.answerIdx]}</div>`:''}</div>
-    ${locked?`<div style="display:flex;justify-content:flex-end"><button class="btn btn-primary btn-sm" data-next="quiz">${idx+1>=qs.length?'Lihat Nilai':'→'}</button></div>`:''}`;
+    ${locked?`<div style="margin-top:10px;padding:10px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;${ans===sq.answerIdx?'background:var(--green-light);color:var(--green)':'background:var(--red-light);color:var(--red)'}">${ans===sq.answerIdx?'✓ Benar!':'✕ '+ltr(sq.answerIdx)+'. '+sq.opts[sq.answerIdx]}
+      <div style="margin-top:6px;font-weight:400;font-size:12px;color:var(--ink-3)">📍 ${q.sourceName} › ${q.conceptName}</div>
+    </div>`:''}</div>
+    ${locked?`<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px"><button class="btn btn-sm" onclick="nav('materi',{selectedConcept:'${q.conceptId}'})">📖 Buka Materi</button><button class="btn btn-primary btn-sm" data-next="quiz">${idx+1>=qs.length?'Lihat Nilai':'→'}</button></div>`:''}`;
 }
 function nextQuiz(){S.quiz.idx++;if(S.quiz.idx>=S.quiz.questions.length)S.quiz.done=true;render()}
 function startQuiz(c=10){S.qShuffle={};let pool=shf([...DB.allQuestions]);if(c>0) pool=pool.slice(0,Math.min(c,pool.length));S.quiz={active:true,done:false,questions:pool,idx:0,score:0,answers:new Array(pool.length).fill(undefined)};nav('kuis')}
@@ -289,7 +292,7 @@ function tryout(c){
   c.innerHTML=`<div class="quiz-bar"><span class="qb-stat"><strong>${idx+1}</strong>/${qs.length}</span><div class="quiz-progress"><div class="qp-fill" style="width:${(idx+1)/qs.length*100}%"></div></div><span class="timer" id="timerDisplay">${fmt(to.timeLeft)}</span></div>
     <div class="q-card" data-mode="tryout"><div class="q-text">${q.text}</div>
     <div class="q-opts">${sq.opts.map((o,i)=>`<div class="q-opt${locked?(i===sq.answerIdx?' correct':i===ans?' wrong':' locked'):''}" data-i="${i}" data-ans="${sq.answerIdx}" tabindex="0">${ltr(i)} ${o}</div>`).join('')}</div></div>
-    ${locked?`<div style="display:flex;justify-content:flex-end"><button class="btn btn-primary btn-sm" data-next="tryout">${idx+1>=qs.length?'Selesai':'→'}</button></div>`:''}
+    ${locked?`<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px"><span style="font-size:12px;color:var(--ink-3);margin-right:auto">📍 ${q.sourceName} › ${q.conceptName}</span><button class="btn btn-sm" onclick="nav('materi',{selectedConcept:'${q.conceptId}'})">📖 Buka Materi</button><button class="btn btn-primary btn-sm" data-next="tryout">${idx+1>=qs.length?'Selesai':'→'}</button></div>`:''}
     <div class="qnav">${qs.map((_,i)=>`<button data-goto="${i}" class="${to.answers[i]!==undefined?'done':''}${i===idx?' cur':''}" tabindex="0">${i+1}</button>`).join('')}</div>`;
 }
 function nextTryout(){S.tryout.idx++;if(S.tryout.idx>=S.tryout.questions.length)S.tryout.done=true;render()}
