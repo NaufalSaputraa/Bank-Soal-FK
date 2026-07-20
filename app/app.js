@@ -39,11 +39,69 @@ function sideProg(){
   $('#sidebarFooter').textContent=`${done}/${total} konsep dipelajari`;
 }
 
-// EVENT DELEGATION
+// EVENT DELEGATION — single listener for everything
 document.addEventListener('click', e => {
-  const navEl = e.target.closest('[data-nav], [data-view]');
-  if(navEl) { S.selectedSource=null; S.selectedConcept=null; nav(navEl.dataset.view || navEl.dataset.nav); return; }
+  // ── Sidebar toggle (mobile) ──
+  if(window.innerWidth<=768 && !e.target.closest('.sidebar') && e.target.id!=='menuBtn') {
+    $('#sidebar')?.classList.remove('open');
+  }
 
+  // ── Quiz/Tryout answer ── (must be FIRST: highest priority, stops propagation)
+  const opt = e.target.closest('.q-opt:not(.locked)');
+  if(opt) {
+    const i=parseInt(opt.dataset.i), ans=parseInt(opt.dataset.ans);
+    const mode = opt.closest('[data-mode]');
+    if(mode) {
+      // Inside quiz or tryout mode
+      if(mode.dataset.mode==='tryout') {
+        S.tryout.answers[S.tryout.idx]=i;
+        if(i===ans) S.tryout.score++;
+        tryout($('#pageContent'));
+      } else {
+        S.quiz.answers[S.quiz.idx]=i;
+        if(i===ans) S.quiz.score++;
+        kuis($('#pageContent'));
+      }
+    } else {
+      // Standalone question (bank soal / concept detail) — visually mark only
+      const parent = opt.closest('.q-card');
+      parent.querySelectorAll('.q-opt').forEach(o => {
+        o.classList.add('locked');
+        if(parseInt(o.dataset.i)===ans) o.classList.add('correct');
+      });
+      if(i!==ans) opt.classList.add('wrong');
+    }
+    return;
+  }
+
+  // ── Source card (home / source detail) ──
+  const srcCard = e.target.closest('.source-card');
+  if(srcCard) {
+    const concept = srcCard.dataset.concept;
+    const source = srcCard.dataset.source;
+    if(concept) nav('materi',{selectedConcept:concept,selectedSource:source});
+    else nav('materi',{selectedSource:source});
+    return;
+  }
+
+  // ── Tree leaf (concept in materi tree) ──
+  const leaf = e.target.closest('.tree-leaf');
+  if(leaf) {
+    nav('materi',{selectedConcept:leaf.dataset.concept,selectedSource:leaf.dataset.source});
+    return;
+  }
+
+  // ── Navigation (sidebar, links, search results) ──
+  const navEl = e.target.closest('[data-nav], [data-view]');
+  if(navEl) {
+    const view = navEl.dataset.view || navEl.dataset.nav;
+    const concept = navEl.dataset.concept;
+    if(concept) nav(view,{selectedConcept:concept,selectedSource:navEl.dataset.source||null});
+    else { S.selectedSource=null; S.selectedConcept=null; nav(view); }
+    return;
+  }
+
+  // ── Start actions (quiz, tryout, flashcard) ──
   const start = e.target.closest('[data-start]');
   if(start) {
     const [type, param] = start.dataset.start.split(',');
@@ -53,48 +111,62 @@ document.addEventListener('click', e => {
     return;
   }
 
-  const opt = e.target.closest('.q-opt:not(.locked)');
-  if(opt) {
-    const i=parseInt(opt.dataset.i), ans=parseInt(opt.dataset.ans);
-    if(opt.closest('[data-mode="tryout"]')) {
-      S.tryout.answers[S.tryout.idx]=i;
-      if(i===ans) S.tryout.score++;
-      tryout($('#pageContent'));
-    } else {
-      S.quiz.answers[S.quiz.idx]=i;
-      if(i===ans) S.quiz.score++;
-      kuis($('#pageContent'));
-    }
+  // ── Next question (quiz/tryout) ──
+  const next = e.target.closest('[data-next]');
+  if(next) {
+    if(next.dataset.next==='quiz') nextQuiz();
+    else nextTryout();
     return;
   }
 
-  const next = e.target.closest('[data-next]');
-  if(next) { if(next.dataset.next==='quiz') nextQuiz(); else nextTryout(); return; }
+  // ── Buka materi button ──
+  const buka = e.target.closest('[data-buka]');
+  if(buka) {
+    nav('materi',{selectedConcept:buka.dataset.buka,selectedSource:buka.dataset.source||null});
+    return;
+  }
 
+  // ── Flashcard flip ──
   const fcCard = e.target.closest('.fc-card');
-  if(fcCard && !fcCard.closest('[data-mode]')) fcCard.classList.toggle('flipped');
+  if(fcCard && !fcCard.closest('[data-mode]') && !e.target.closest('[data-fc],[data-start]')) {
+    fcCard.classList.toggle('flipped');
+    return;
+  }
 
+  // ── Flashcard navigation ──
   const fcNav = e.target.closest('[data-fc]');
-  if(fcNav) { if(fcNav.dataset.fc==='next') nextFc(); else prevFc(); return; }
+  if(fcNav) {
+    if(fcNav.dataset.fc==='next') nextFc();
+    else prevFc();
+    return;
+  }
 
+  // ── Tryout question nav ──
   const qnavBtn = e.target.closest('.qnav button');
   if(qnavBtn) { goTryout(parseInt(qnavBtn.dataset.goto)); return; }
 
-  const srcCard = e.target.closest('.source-card');
-  if(srcCard) { nav('materi',{selectedSource:srcCard.dataset.source}); return; }
-
-  const leaf = e.target.closest('.tree-leaf');
-  if(leaf) { nav('materi',{selectedConcept:leaf.dataset.concept,selectedSource:leaf.dataset.source}); return; }
-
+  // ── Filter select ──
   const filter = e.target.closest('[data-filter]');
   if(filter) { nav('soal',{selectedSource:filter.value}); return; }
 
-  const fcNavBtn = e.target.closest('[data-fc-nav]');
-  if(fcNavBtn) {
-    const srcId = fcNavBtn.dataset.fcNav;
-    startFlashcards(srcId||'all');
+  // ── Search result item ──
+  const sr = e.target.closest('.sr-item');
+  if(sr) {
+    const concept = sr.dataset.concept;
+    if(concept) nav('materi',{selectedConcept:concept});
+    $('#searchResults').style.display='none';
     return;
   }
+
+  // ── Flashcard start from meta button ──
+  const fcNavBtn = e.target.closest('[data-fc-nav]');
+  if(fcNavBtn) { startFlashcards(fcNavBtn.dataset.fcNav||'all'); return; }
+});
+
+// ── Menu button ──
+$('#menuBtn')?.addEventListener('click', e => {
+  e.stopPropagation();
+  $('#sidebar').classList.toggle('open');
 });
 
 function nav(view, params={}){
@@ -108,8 +180,8 @@ function render(){
   const t={home:'Beranda',materi:'Materi',soal:'Bank Soal',kuis:'Quiz Cepat',tryout:'Try Out CBT',flashcard:'Flashcard',cari:'Cari'}[S.view]||'';
   $('#pageTitle').textContent=t;
   const bc=$('#breadcrumb');
-  if(S.selectedConcept){const c=findConcept(S.selectedConcept);bc.textContent=`${c?'Materi > '+c.sourceName+' > '+c.name:''}`}
-  else if(S.selectedSource){const s=DB.sources.find(x=>x.id===S.selectedSource);bc.textContent=s?`Materi > ${s.name}`:'Materi'}
+  if(S.selectedConcept){const c=findConcept(S.selectedConcept);bc.textContent=c?`Materi › ${c.sourceName} › ${c.name}`:''}
+  else if(S.selectedSource){const s=DB.sources.find(x=>x.id===S.selectedSource);bc.textContent=s?`Materi › ${s.name}`:'Materi'}
   else bc.textContent=S.view==='materi'?'Jelajahi File':'Blok Muskuloskeletal';
   $('#headerMeta').textContent=DB.allQuestions.length+' soal · '+DB.allFlashcards.length+' flashcard';
   $('#soalCount').textContent=DB.allQuestions.length;
@@ -134,7 +206,7 @@ function home(c){
     </div>
     <div class="section-title" role="heading">File Sumber</div>
     <div class="topics">${DB.sources.map(s=>`
-      <div class="topic source-card" data-source="${s.id}" style="--color:${s.color}" tabindex="0" role="button">
+      <div class="topic source-card" data-source="${s.id}" tabindex="0" role="button">
         <div class="icon">${s.icon}</div>
         <h3>${s.name}</h3>
         <div class="meta">${s.concepts.length} konsep · ${countQ(s.id)} soal · ${DB.allFlashcards.filter(f=>f.sourceId===s.id).length} flashcard</div>
@@ -152,9 +224,7 @@ function home(c){
 // ── MATERI ──
 function materi(c){
   if(S.selectedConcept){detail(c,S.selectedConcept);return}
-  if(S.selectedSource){
-    sourceDetail(c,S.selectedSource);return;
-  }
+  if(S.selectedSource){sourceDetail(c,S.selectedSource);return}
   c.innerHTML=`<div style="display:grid;grid-template-columns:260px 1fr;gap:20px;align-items:start">
       <div class="tree-card">${DB.sources.map(s=>`
         <div class="tree-item">
@@ -168,7 +238,7 @@ function materi(c){
       `).join('')}</div>
       <div class="card" style="text-align:center;padding:48px 20px;color:var(--ink-3)">
         <div style="font-size:40px;margin-bottom:12px">📖</div>
-        <div>Pilih file sumber, lalu pilih konsep untuk melihat detail materi dan soal.</div>
+        <div>Pilih file sumber, lalu pilih konsep untuk melihat detail.</div>
       </div>
     </div>`;
 }
@@ -184,7 +254,7 @@ function sourceDetail(c,srcId){
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:14px">
       ${src.concepts.map(c=>`
-        <div class="topic source-card" data-source="${srcId}" style="--color:${src.color};padding:12px 16px;cursor:pointer" onclick="nav('materi',{selectedConcept:'${c.id}',selectedSource:'${srcId}'})">
+        <div class="topic source-card" data-source="${srcId}" data-concept="${c.id}" tabindex="0">
           <h3 style="font-size:14px">${c.name}</h3>
           <div class="meta">${(c.questions||[]).flat().length} soal</div>
         </div>
@@ -234,7 +304,7 @@ function soal(c){
   qs.forEach(q=>{if(!byConcept[q.conceptName])byConcept[q.conceptName]=[];byConcept[q.conceptName].push(q)});
   c.innerHTML=`<div class="card" style="padding:14px 20px;margin-bottom:16px">
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-        <select data-filter="topic" style="padding:7px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;background:var(--surface)">
+        <select data-filter aria-label="Filter file" style="padding:7px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;background:var(--surface)">
           <option value="all">Semua File</option>
           ${DB.sources.map(s=>`<option value="${s.id}"${s.id===filter?' selected':''}>${s.icon} ${s.name}</option>`).join('')}
         </select>
@@ -268,9 +338,9 @@ function kuis(c){
     ${locked?`<div style="margin-top:10px;padding:10px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;${ans===sq.answerIdx?'background:var(--green-light);color:var(--green)':'background:var(--red-light);color:var(--red)'}">${ans===sq.answerIdx?'✓ Benar!':'✕ '+ltr(sq.answerIdx)+'. '+sq.opts[sq.answerIdx]}
       <div style="margin-top:6px;font-weight:400;font-size:12px;color:var(--ink-3)">📍 ${q.sourceName} › ${q.conceptName}</div>
     </div>`:''}</div>
-    ${locked?`<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px"><button class="btn btn-sm" onclick="nav('materi',{selectedConcept:'${q.conceptId}'})">📖 Buka Materi</button><button class="btn btn-primary btn-sm" data-next="quiz">${idx+1>=qs.length?'Lihat Nilai':'→'}</button></div>`:''}`;
+    ${locked?`<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px"><button class="btn btn-sm" data-buka="${q.conceptId}" data-source="${q.sourceId}">📖 Buka Materi</button><button class="btn btn-primary btn-sm" data-next="quiz">${idx+1>=qs.length?'Lihat Nilai':'→'}</button></div>`:''}`;
 }
-function nextQuiz(){S.quiz.idx++;if(S.quiz.idx>=S.quiz.questions.length)S.quiz.done=true;render()}
+function nextQuiz(){S.quiz.idx++;if(S.quiz.idx>=S.quiz.questions.length){S.quiz.done=true}render()}
 function startQuiz(c=10){S.qShuffle={};let pool=shf([...DB.allQuestions]);if(c>0) pool=pool.slice(0,Math.min(c,pool.length));S.quiz={active:true,done:false,questions:pool,idx:0,score:0,answers:new Array(pool.length).fill(undefined)};nav('kuis')}
 
 // ── TRYOUT ──
@@ -292,10 +362,10 @@ function tryout(c){
   c.innerHTML=`<div class="quiz-bar"><span class="qb-stat"><strong>${idx+1}</strong>/${qs.length}</span><div class="quiz-progress"><div class="qp-fill" style="width:${(idx+1)/qs.length*100}%"></div></div><span class="timer" id="timerDisplay">${fmt(to.timeLeft)}</span></div>
     <div class="q-card" data-mode="tryout"><div class="q-text">${q.text}</div>
     <div class="q-opts">${sq.opts.map((o,i)=>`<div class="q-opt${locked?(i===sq.answerIdx?' correct':i===ans?' wrong':' locked'):''}" data-i="${i}" data-ans="${sq.answerIdx}" tabindex="0">${ltr(i)} ${o}</div>`).join('')}</div></div>
-    ${locked?`<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px"><span style="font-size:12px;color:var(--ink-3);margin-right:auto">📍 ${q.sourceName} › ${q.conceptName}</span><button class="btn btn-sm" onclick="nav('materi',{selectedConcept:'${q.conceptId}'})">📖 Buka Materi</button><button class="btn btn-primary btn-sm" data-next="tryout">${idx+1>=qs.length?'Selesai':'→'}</button></div>`:''}
+    ${locked?`<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px"><span style="font-size:12px;color:var(--ink-3);margin-right:auto">📍 ${q.sourceName} › ${q.conceptName}</span><button class="btn btn-sm" data-buka="${q.conceptId}" data-source="${q.sourceId}">📖 Buka Materi</button><button class="btn btn-primary btn-sm" data-next="tryout">${idx+1>=qs.length?'Selesai':'→'}</button></div>`:''}
     <div class="qnav">${qs.map((_,i)=>`<button data-goto="${i}" class="${to.answers[i]!==undefined?'done':''}${i===idx?' cur':''}" tabindex="0">${i+1}</button>`).join('')}</div>`;
 }
-function nextTryout(){S.tryout.idx++;if(S.tryout.idx>=S.tryout.questions.length)S.tryout.done=true;render()}
+function nextTryout(){S.tryout.idx++;if(S.tryout.idx>=S.tryout.questions.length){S.tryout.done=true}render()}
 function goTryout(i){S.tryout.idx=i;render()}
 function startTryout(t='all'){
   S.qShuffle={};let pool=t==='all'?[...DB.allQuestions]:DB.allQuestions.filter(q=>q.sourceId===t);
@@ -347,7 +417,7 @@ function cari(c){
     </div></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
       <div class="card"><div class="card-header">💡 Tips</div><div style="font-size:13px">Cari: <strong>osteoblas</strong>, <strong>foramen</strong>, <strong>carpal tunnel</strong>, <strong>klumpke</strong></div></div>
-      <div class="card"><div class="card-header">📁 File</div><div style="font-size:13px">${DB.sources.map(s=>`<a href="#" data-view="materi" onclick="nav('materi',{selectedSource:'${s.id}'});return false">${s.icon} ${s.short||s.name}</a><br>`).join('')}</div></div>
+      <div class="card"><div class="card-header">📁 File</div><div style="font-size:13px">${DB.sources.map(s=>`<a href="#" data-nav="materi" data-concept="" onclick="return false">${s.icon} ${s.short||s.name}</a><br>`).join('')}</div></div>
     </div>`;
   const inp=$('#searchInput'),res=$('#searchResults');let tm;
   inp.addEventListener('input',function(){clearTimeout(tm);tm=setTimeout(()=>search(this.value,res),150)});
@@ -362,7 +432,7 @@ function search(q,cont){
     (c.flashcards||[]).forEach(f=>{if(f.front.toLowerCase().includes(query)||f.back.toLowerCase().includes(query)) flashcards.push({front:f.front,concept:c.name})});
   })});
   let html='';
-  if(concepts.length) html+=`<div style="padding:6px 14px;font-size:10px;font-weight:600;color:var(--gold)">KONSEP</div>${concepts.slice(0,5).map(c=>`<div class="sr-item" data-nav="materi" data-concept="${c.id}" tabindex="0"><span class="sr-type">${c.source}</span><br>${c.name}</div>`).join('')}`;
+  if(concepts.length) html+=`<div style="padding:6px 14px;font-size:10px;font-weight:600;color:var(--gold)">KONSEP</div>${concepts.slice(0,5).map(c=>`<div class="sr-item" data-concept="${c.id}" tabindex="0"><span class="sr-type">${c.source}</span><br>${c.name}</div>`).join('')}`;
   if(questions.length) html+=`<div style="padding:6px 14px;font-size:10px;font-weight:600;color:var(--gold)">SOAL</div>${questions.slice(0,5).map(q=>`<div class="sr-item" tabindex="0"><span class="sr-type">${q.concept}</span><br>${q.text}</div>`).join('')}`;
   if(flashcards.length) html+=`<div style="padding:6px 14px;font-size:10px;font-weight:600;color:var(--gold)">FLASHCARD</div>${flashcards.slice(0,5).map(f=>`<div class="sr-item" tabindex="0"><span class="sr-type">${f.concept}</span><br>${f.front}</div>`).join('')}`;
   if(!html) html='<div class="sr-item" style="color:var(--ink-3)" role="status">Tidak ditemukan</div>';
@@ -370,8 +440,4 @@ function search(q,cont){
 }
 
 // ── INIT ──
-document.addEventListener('click', e => {
-  if(window.innerWidth<=768&&!e.target.closest('.sidebar')&&!e.target.closest('#menuBtn'))$('#sidebar')?.classList.remove('open');
-});
-$('#menuBtn')?.addEventListener('click',()=>$('#sidebar').classList.toggle('open'));
 render();
