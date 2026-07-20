@@ -1,1288 +1,661 @@
 // ============================================================
 // KNOWLEDGE BASE — Blok Muskuloskeletal
-// Sumber: 5 file PDF (mikrobio, anatomi, histologi, fisiologi,
-//          embriologi, biomekanika, soal ujian)
+// SUSUNAN: per file sumber → per topik → per konsep
 // ============================================================
-const DB = {
-  version: "1.0.0",
-  blok: "Muskuloskeletal",
-  topics: []
-};
+const DB = { sources: [] };
 
-// ───────────────────── helper ─────────────────────
-function q(text, answerIdx, opts, tags = [], explanation = "") {
-  return { text, opts, answerIdx, tags, explanation };
+// helpers
+function q(text, answerIdx, opts, tags = []) {
+  return { text, opts, answerIdx, tags };
 }
 function fc(front, back, tags = []) {
   return { front, back, tags };
 }
 
-// ============================================================
-// TOPIK 1: ANATOMI
-// ============================================================
-DB.topics.push({
-  id: "anatomi",
-  name: "Anatomi",
-  icon: "🦴",
-  color: "#1f4b48",
-  description: "Struktur tubuh manusia: cranium, vertebra, thorax, ekstremitas, arthrologi, myologi, neurovaskular.",
-  subtopics: [
-    // ── Cranium ──
+// ──────────────────── FILE 1 ────────────────────
+// 2026 PR + MikrobFN.pdf — Mikrobiologi
+DB.sources.push({
+  id: "file-1-mikro",
+  name: "PR + Mikrobiologi",
+  short: "File 1",
+  fileName: "2026 PR+MikrobFN.pdf",
+  icon: "🦠", color: "#b08a3e",
+  desc: "Flora normal, bakteri patogen, pewarnaan, desinfeksi, sterilisasi, infeksi nosokomial.",
+  concepts: [
     {
-      id: "anatomi-cranium",
-      name: "Cranium",
-      concepts: [
-        {
-          id: "neurocranium",
-          name: "Neurocranium",
-          definition: "Bagian tengkorak yang melindungi otak. Terdiri dari 8 tulang: os frontale, 2 os parietale, 2 os temporale, os occipitale, os sphenoidale, os ethmoidale.",
-          keyPoints: [
-            "Neurocranium = pelindung otak",
-            "Viscerocranium = tulang wajah",
-            "Os sphenoidale termasuk neurocranium"
-          ],
-          related: ["foramen-cranii", "sutura-cranii"],
-          questions: [
-            q("Tulang manakah yang termasuk kelompok Neurocranium?", 0, [
-              "Os occipitale, parietale, temporale, frontale, sphenoidale, ethmoidale",
-              "Os maxillae, mandibula, zygomaticum, nasale, lacrimale, vomer",
-              "Os frontale, parietale, nasale, maxillae, zygomaticum",
-              "Os occipitale, temporale, mandibula, maxillae"
-            ], ["anatomi", "neurocranium"]),
-            q("Os manakah yang termasuk neurocranium?", 0, [
-              "Os sphenoidale",
-              "Os maxillaris", "Os zygomaticum", "Os patella", "Os nasale"
-            ], ["anatomi", "neurocranium"])
-          ],
-          flashcards: [
-            fc("Sebutkan tulang-tulang neurocranium", "Frontale, 2 parietale, 2 temporale, occipitale, sphenoidale, ethmoidale (total 8)"),
-            fc("Apa fungsi neurocranium?", "Melindungi otak"),
-            fc("Os sphenoidale termasuk neurocranium atau viscerocranium?", "Neurocranium")
-          ]
-        },
-        {
-          id: "foramen-cranii",
-          name: "Foramen & Lubang Tengkorak",
-          definition: "Lubang-lubang pada basis cranii yang dilalui oleh saraf dan pembuluh darah.",
-          keyPoints: [
-            "Foramen rotundum → N. maxillaris (V2)",
-            "Foramen ovale → N. mandibularis (V3)",
-            "Foramen spinosum → A. meningea media",
-            "Foramen jugulare → N. IX, X, XI",
-            "Foramen magnum → medulla oblongata → medulla spinalis",
-            "Meatus acusticus internus → N. VII & VIII"
-          ],
-          related: ["neurocranium", "basis-cranii"],
-          questions: [
-            q("Pada basis cranii terdapat foramen rotundum. Nervus apa yang keluar?", 0, [
-              "N. maxillaris (V2)", "N. mandibularis (V3)",
-              "N. ophthalmicus (V1)", "N. facialis (VII)"
-            ], ["anatomi", "foramen"]),
-            q("Meatus acusticus internus adalah tempat keluarnya nervus...", 0, [
-              "N. VII (facialis) dan N. VIII (vestibulocochlearis)",
-              "N. V dan N. VI", "N. IX dan N. X", "N. III dan N. IV"
-            ], ["anatomi", "foramen"]),
-            q("Apa nama lubang tempat keluarnya nervus IX, X, XI?", 0, [
-              "Foramen jugulare", "Foramen magnum", "Foramen ovale", "Foramen spinosum"
-            ], ["anatomi", "foramen"]),
-            q("Arteri meningea media masuk tengkorak melalui?", 0, [
-              "Foramen spinosum", "Foramen ovale", "Foramen rotundum", "Foramen magnum"
-            ], ["anatomi", "foramen"]),
-            q("Apa nama lubang tempat medulla oblongata menjadi medulla spinalis?", 0, [
-              "Foramen magnum", "Foramen jugulare", "Foramen ovale", "Canalis opticus"
-            ], ["anatomi", "foramen"]),
-            q("Glandula hipofisis terletak pada cekungan?", 0, [
-              "Fossa hipofisialis / sella turcica",
-              "Fossa cranii anterior", "Fossa condylaris", "Fossa jugularis"
-            ], ["anatomi", "foramen"])
-          ],
-          flashcards: [
-            fc("Foramen rotundum dilewati?", "N. maxillaris (V2)"),
-            fc("Foramen ovale dilewati?", "N. mandibularis (V3)"),
-            fc("Foramen spinosum dilewati?", "A. meningea media"),
-            fc("Foramen jugulare dilewati?", "N. IX, X, XI"),
-            fc("Foramen magnum?", "Medulla oblongata menjadi medulla spinalis"),
-            fc("Sella turcica berisi?", "Glandula hipofisis")
-          ]
-        },
-        {
-          id: "sutura-cranii",
-          name: "Sutura Tengkorak & Palatum",
-          definition: "Sendi fibrosa pada tengkorak yang menghubungkan tulang-tulang cranial.",
-          keyPoints: [
-            "Sutura coronalis → os frontale + os parietale",
-            "Sutura sagittalis → antar 2 os parietale",
-            "Sutura lambdoidea → os parietale + os occipitale",
-            "Palatum durum → processus palatinus maxillae + lamina horizontalis ossis palatini",
-            "Os palatina membentuk palatum durum",
-            "TMJ → sendi antara mandibula dengan cranium",
-            "Discus intervertebralis → hubungan antar corpus vertebra"
-          ],
-          related: [],
-          questions: [
-            q("Sendi antara os parietalis dan os frontalis disebut?", 0, [
-              "Sutura coronalis", "Sutura sagittalis", "Sutura lambdoidea", "Sutura squamosa"
-            ], ["anatomi", "sutura"]),
-            q("Apakah sendi yang terbentuk antara Os parietale dan Os occipitale?", 0, [
-              "Sutura lambdoidea", "Sutura coronalis",
-              "Articulatio atlantooccipitalis", "Sutura sagitalis",
-              "Articulatio temporomandibularis"
-            ], ["anatomi", "sutura"]),
-            q("Tulang apa yang turut membangun palatum durum?", 0, [
-              "Os palatina",
-              "Os nasal", "Os mandibula", "Os lacrimale", "Os parientale"
-            ], ["anatomi", "sutura"]),
-            q("Sendi antara os mandibula dengan cranium disebut?", 0, [
-              "Articulatio temporomandibularis (TMJ)",
-              "Articulatio atlantooccipitalis", "Articulatio atlantoaxialis",
-              "Symphysis mandibulae"
-            ], ["anatomi", "sutura"]),
-            q("Sendi yang terbentuk akibat hubungan antar corpus vertebra?", 0, [
-              "Discus intervertebralis",
-              "Articulatio zygapophysialis", "Ligamentum flavum", "Symphysis pubis"
-            ], ["anatomi", "sutura"])
-          ],
-          flashcards: [
-            fc("Sutura coronalis?", "Os frontale + os parietale"),
-            fc("Sutura lambdoidea?", "Os parietale + os occipitale"),
-            fc("Penyusun palatum durum?", "Processus palatinus maxillae + lamina horizontalis ossis palatini")
-          ]
-        },
-        {
-          id: "vertebra-thorax",
-          name: "Vertebra & Thorax",
-          definition: "Tulang belakang (vertebra) dan rangka dada (costa, sternum).",
-          keyPoints: [
-            "Nervi cervicales: 8 pasang",
-            "Foramen transversarium → A. vertebralis",
-            "Foramen intervertebrale → tempat keluar n. spinalis",
-            "Angulus sternalis (Ludovici) → patokan costa II",
-            "Costa spuria fluctuantes → costa XI",
-            "Otot mastikasi: temporalis, masseter, pterygoideus lateralis & medialis"
-          ],
-          related: ["foramen-cranii"],
-          questions: [
-            q("Berapa jumlah nervi cervicales?", 0, [
-              "8 pasang", "5 pasang", "7 pasang", "12 pasang", "3 pasang"
-            ], ["anatomi", "vertebra"]),
-            q("Foramen transversarium pada vertebra cervicalis dilewati?", 0, [
-              "Arteria vertebralis", "Arteria carotis interna",
-              "Nervus spinalis", "Arteria basilaris"
-            ], ["anatomi", "vertebra"]),
-            q("Nervus spinalis keluar melalui lubang?", 0, [
-              "Foramen intervertebrale", "Foramen transversarium",
-              "Foramen vertebrale", "Canalis centralis"
-            ], ["anatomi", "vertebra"]),
-            q("Angulus sternalis (Ludovici) menentukan costa ke?", 0, [
-              "Costa II", "Costa I", "Costa III", "Costa VII"
-            ], ["anatomi", "thorax"]),
-            q("Manakah yang termasuk costa spuria fluctuantes?", 0, [
-              "Costa XI", "Costa I", "Costa II", "Costa VII", "Costa X"
-            ], ["anatomi", "thorax"]),
-            q("Otot apa saja yang termasuk kelompok otot mastikasi?", 0, [
-              "M. temporalis, masseter, pterygoideus lateralis & medialis",
-              "M. buccinator, orbicularis oris, zygomaticus",
-              "M. sternocleidomastoideus, trapezius",
-              "M. digastricus, mylohyoideus"
-            ], ["anatomi", "myologi"])
-          ],
-          flashcards: [
-            fc("Jumlah nervi cervicales?", "8 pasang"),
-            fc("Foramen transversarium berisi?", "A. vertebralis"),
-            fc("Foramen intervertebrale berfungsi?", "Tempat keluar n. spinalis"),
-            fc("Angulus sternalis patokan untuk?", "Costa II")
-          ]
-        }
-      ]
-    },
-    // ── ANATOMI EKSTREMITAS ──
-    {
-      id: "anatomi-ekstremitas",
-      name: "Ekstremitas",
-      concepts: [
-        {
-          id: "plexus-brachialis",
-          name: "Plexus Brachialis & Saraf Ekstremitas Atas",
-          definition: "Anyaran saraf dari C5-Th1 yang menginervasi ekstremitas atas.",
-          keyPoints: [
-            "Plexus brachialis: C5, C6, C7, C8, Th1",
-            "Fasciculus posterior → N. radialis",
-            "Fasciculus medialis → N. ulnaris (C8-Th1)",
-            "Fasciculus lateralis → N. musculocutaneus",
-            "N. axillaris → M. deltoideus, kulit lateral bahu",
-            "N. radialis → wrist drop (Saturday night palsy)",
-            "N. medianus → carpal tunnel, hand of benediction",
-            "N. ulnaris → claw hand, parestesia jari 5"
-          ],
-          related: [],
-          questions: [
-            q("Mahasiswa cedera, scapula menonjol (winged scapula). Saraf yang jejas?", 0, [
-              "N. thoracicus longus", "N. axillaris", "N. suprascapularis",
-              "N. dorsalis scapulae", "N. femoralis"
-            ], ["anatomi", "plexus"]),
-            q("Otot yang menginisiasi abduksi lengan 15° pertama?", 0, [
-              "M. supraspinatus", "M. deltoideus", "M. infraspinatus",
-              "M. teres minor", "M. teres major"
-            ], ["anatomi", "plexus"]),
-            q("Lesi plexus brachialis pars superior (C5-C6) → waiter's tip?", 0, [
-              "Erb-Duchenne palsy", "Klumpke paralysis",
-              "Saturday night palsy", "Carpal tunnel syndrome"
-            ], ["anatomi", "plexus"]),
-            q("Lesi plexus brachialis pars inferior (C8-Th1) → claw hand?", 0, [
-              "Klumpke paralysis", "Erb-Duchenne palsy",
-              "Saturday night palsy", "Carpal tunnel syndrome"
-            ], ["anatomi", "plexus"]),
-            q("Wrist drop disebabkan lesi?", 0, [
-              "N. radialis", "N. medianus", "N. ulnaris", "N. musculocutaneus"
-            ], ["anatomi", "plexus"]),
-            q("Claw hand (main en griffe) lesi kronis saraf?", 0, [
-              "N. ulnaris", "N. medianus", "N. radialis", "N. axillaris"
-            ], ["anatomi", "plexus"]),
-            q("Parestesia sisi medial telapak tangan & jari ke-5?", 0, [
-              "N. ulnaris", "N. medianus", "N. radialis", "N. cutaneus antebrachii lat."
-            ], ["anatomi", "plexus"]),
-            q("Nervus yang berjalan di epicondylus medialis?", 0, [
-              "N. ulnaris", "N. radialis", "N. musculocutaneus", "N. axillaris", "N. ischiadicus"
-            ], ["anatomi", "plexus"]),
-            q("Struktur yang membagi arteri axillaris menjadi 3 bagian?", 0, [
-              "M. pectoralis minor", "M. pectoralis major",
-              "M. teres major", "Clavicula", "M. teres minor"
-            ], ["anatomi", "plexus"]),
-            q("Vena untuk pungsi di fossa cubiti hubungkan v. cephalica & v. basilica?", 0, [
-              "V. mediana cubiti", "V. axillaris", "V. brachialis", "V. saphena magna"
-            ], ["anatomi", "plexus"]),
-            q("Fraktur collum chirurgicum humeri berisiko merusak?", 0, [
-              "N. axillaris & A. circumflexa humeri posterior",
-              "N. radialis & A. profunda brachii",
-              "N. ulnaris & A. collateralis ulnaris",
-              "N. medianus & A. brachialis"
-            ], ["anatomi", "plexus"]),
-            q("Arteri radialis di pergelangan tangan terletak di lateral tendon?", 0, [
-              "M. flexor carpi radialis", "M. flexor carpi ulnaris",
-              "M. palmaris longus", "M. brachioradialis"
-            ], ["anatomi", "plexus"]),
-            q("Nervus yang menginervasi kulit bagian lateral bahu?", 0, [
-              "N. cutaneus superior lateral", "N. axillaris",
-              "N. radialis", "N. suprascapularis"
-            ], ["anatomi", "plexus"]),
-            q("Pemeriksaan refleks tendon biceps brachii menilai segmen?", 0, [
-              "C5-C6", "C4-C5", "C6-C7", "C8-T1", "L2-L4"
-            ], ["anatomi", "plexus"])
-          ],
-          flashcards: [
-            fc("Erb-Duchenne palsy lesi?", "Plexus brachialis pars superior C5-C6 → waiter's tip"),
-            fc("Klumpke palsy lesi?", "Plexus brachialis pars inferior C8-Th1 → claw hand"),
-            fc("Winged scapula lesi?", "N. thoracicus longus"),
-            fc("Wrist drop lesi?", "N. radialis (Saturday night palsy)"),
-            fc("Claw hand lesi?", "N. ulnaris"),
-            fc("Carpal tunnel melibatkan?", "N. medianus"),
-            fc("Refleks biceps segmen?", "C5-C6"),
-            fc("Pembagi arteri axillaris?", "M. pectoralis minor"),
-            fc("V. mediana cubiti?", "Menghubungkan v. cephalica & v. basilica di fossa cubiti")
-          ]
-        },
-        {
-          id: "anatomi-ekstremitas-bawah",
-          name: "Ekstremitas Bawah",
-          definition: "Anatomi panggul, tungkai, dan kaki termasuk persarafan dan pembuluh darah.",
-          keyPoints: [
-            "Trigonum femorale: batas superior = lig. inguinale, lateral = m. sartorius, medial = m. adductor longus",
-            "Isi trigonum femorale (lateral→medial): nervus, arteri, vena",
-            "N. ischiadicus keluar pelvis via for. ischiadicum majus pars infrapiriformis",
-            "N. ischiadicus bercabang jadi n. tibialis & n. peroneus communis",
-            "N. peroneus communis melingkari collum fibulae (foot drop)",
-            "N. peroneus profundus → first web space",
-            "N. tibialis → kompartemen posterior tungkai bawah",
-            "V. saphena magna → v. femoralis",
-            "V. saphena parva → v. poplitea",
-            "Tendon Achilles → m. gastrocnemius + m. soleus",
-            "Hunter's canal dilewati a. femoralis, v. femoralis, n. saphenus (bukan n. femoralis)"
-          ],
-          related: [],
-          questions: [
-            q("Batas lateral trigonum femorale?", 0, [
-              "M. sartorius", "M. adductor longus", "Ligamentum inguinale", "M. pectineus"
-            ], ["anatomi", "ekstremitas-bawah"]),
-            q("Batas superior trigonum femorale?", 0, [
-              "Ligamentum inguinale", "M. sartorius",
-              "M. adductor longus", "M. pectineus", "M. iliopsoas"
-            ], ["anatomi", "ekstremitas-bawah"]),
-            q("Batas medial trigonum femorale?", 0, [
-              "M. adductor longus", "M. sartorius",
-              "Ligamentum inguinale", "M. rectus femoralis"
-            ], ["anatomi", "ekstremitas-bawah"]),
-            q("Isi trigonum femorale dari lateral ke medial?", 0, [
-              "Nervus – arteri – vena",
-              "Arteri – vena – nervus", "Vena – arteri – nervus", "Arteri – nervus – vena"
-            ], ["anatomi", "ekstremitas-bawah"]),
-            q("Otot yang membentuk Tendon Achilles?", 0, [
-              "M. gastrocnemius & M. soleus",
-              "M. tibialis posterior & M. soleus",
-              "M. peroneus longus & brevis", "M. flexor hallucis longus"
-            ], ["anatomi", "ekstremitas-bawah"]),
-            q("Percabangan nervus ischiadicus?", 0, [
-              "N. tibialis & N. peroneus communis",
-              "N. peroneus superficialis & profunda",
-              "N. tibialis & N. femoralis", "N. femoralis & N. pudendus"
-            ], ["anatomi", "ekstremitas-bawah"]),
-            q("N. tibialis menginervasi kompartemen?", 0, [
-              "Posterior tungkai bawah", "Anterior tungkai bawah", "Lateral tungkai bawah"
-            ], ["anatomi", "ekstremitas-bawah"]),
-            q("Foot drop akibat cedera saraf melingkari collum fibulae?", 0, [
-              "N. peroneus (fibularis) communis",
-              "N. tibialis", "N. saphenus", "N. suralis"
-            ], ["anatomi", "ekstremitas-bawah"]),
-            q("Inervasi kulit first web space?", 0, [
-              "N. peroneus profundus", "N. peroneus superficialis",
-              "N. tibialis", "N. saphenus"
-            ], ["anatomi", "ekstremitas-bawah"]),
-            q("Organ yang tidak melewati Hunter's Canal?", 0, [
-              "N. femoralis", "A. femoralis", "V. femoralis", "N. saphena"
-            ], ["anatomi", "ekstremitas-bawah"]),
-            q("Fraktur collum femoris sebabkan nekrosis caput femoris karena rusak?", 0, [
-              "A. circumflexa femoris medialis", "A. obturatoria",
-              "A. circumflexa femoris lateralis", "A. profunda femoris"
-            ], ["anatomi", "ekstremitas-bawah"]),
-            q("N. ischiadicus keluar pelvis via?", 0, [
-              "For. ischiadicum majus pars infrapiriformis",
-              "For. ischiadicum majus pars suprapiriformis",
-              "Foramen ischiadicum minus", "Canalis obturatorius"
-            ], ["anatomi", "ekstremitas-bawah"]),
-            q("Flexor utama sendi panggul?", 0, [
-              "M. iliopsoas", "M. rectus femoris", "M. sartorius", "M. gracilis"
-            ], ["anatomi", "ekstremitas-bawah"]),
-            q("Otot adductor tungkai paling posterior?", 0, [
-              "M. adductor magnus", "M. adductor brevis",
-              "M. adductor longus", "M. pectineus"
-            ], ["anatomi", "ekstremitas-bawah"]),
-            q("Otot 'unlocking' lutut saat fleksi dari ekstensi?", 0, [
-              "M. popliteus", "M. plantaris", "M. gastrocnemius", "M. soleus"
-            ], ["anatomi", "ekstremitas-bawah"]),
-            q("V. saphena magna bermuara ke?", 0, [
-              "V. femoralis", "V. poplitea", "V. iliaca externa", "V. tibialis posterior"
-            ], ["anatomi", "ekstremitas-bawah"]),
-            q("V. saphena parva bermuara ke?", 0, [
-              "V. poplitea", "V. femoralis", "V. iliaca externa", "V. tibialis posterior"
-            ], ["anatomi", "ekstremitas-bawah"]),
-            q("Trendelenburg sign positif → kelumpuhan?", 0, [
-              "M. gluteus medius; N. gluteus superior",
-              "M. gluteus maximus; N. gluteus inferior",
-              "M. piriformis; N. ischiadicus",
-              "M. quadriceps femoris; N. femoralis"
-            ], ["anatomi", "ekstremitas-bawah"]),
-            q("Arteri poplitea adalah kelanjutan a. femoralis setelah?", 0, [
-              "Hiatus adductorius", "Trigonum femorale",
-              "Canalis inguinalis", "Lacuna musculorum"
-            ], ["anatomi", "ekstremitas-bawah"]),
-            q("Otot kelompok Hamstring?", 0, [
-              "M. biceps femoris, semitendinosus, semimembranosus",
-              "M. rectus femoris, vastus lateralis, vastus medialis",
-              "M. sartorius, gracilis, pectineus",
-              "M. adductor magnus, longus, brevis"
-            ], ["anatomi", "ekstremitas-bawah"]),
-            q("Otot 'tailor' (fleksi panggul, abduksi, eksorotasi, fleksi lutut)?", 0, [
-              "M. sartorius", "M. gracilis", "M. rectus femoris", "M. tensor fasciae latae"
-            ], ["anatomi", "ekstremitas-bawah"]),
-            q("Otot rotator cuff yang melakukan rotasi internal (medial)?", 0, [
-              "M. subscapularis", "M. supraspinatus", "M. infraspinatus", "M. teres minor"
-            ], ["anatomi", "ekstremitas-bawah"])
-          ],
-          flashcards: [
-            fc("Batas trigonum femorale?", "Superior: lig. inguinale, Lateral: m. sartorius, Medial: m. adductor longus"),
-            fc("Isi trigonum femorale (lat→med)?", "Nervus, Arteri, Vena (NAV)"),
-            fc("N. ischiadicus bercabang jadi?", "N. tibialis & N. peroneus communis"),
-            fc("Foot drop lesi?", "N. peroneus communis di collum fibulae"),
-            fc("First web space diinervasi?", "N. peroneus profundus"),
-            fc("Tendon Achilles?", "M. gastrocnemius + M. soleus"),
-            fc("V. saphena magna →?", "V. femoralis"),
-            fc("V. saphena parva →?", "V. poplitea"),
-            fc("Hunter's canal tidak dilewati?", "N. femoralis"),
-            fc("Hamstring?", "M. biceps femoris, semitendinosus, semimembranosus")
-          ]
-        },
-        {
-          id: "myologi-umum",
-          name: "Myologi Umum",
-          definition: "Ilmu tentang otot, termasuk struktur, jenis, dan fungsi.",
-          keyPoints: [
-            "Bagian otot: caput (kepala), venter (perut), insertio (ujung), origo (pangkal)",
-            "Jaringan ikat otot: epimysium (luar), perimysium (sekitar fasciculus), endomysium (dalam)",
-            "Otot dengan 2 caput: m. biceps brachii",
-            "Unit kontraktil terkecil: sarkomer (batas: garis Z)"
-          ],
-          related: [],
-          questions: [
-            q("Disebut apakah bagian perut dari otot seran lintang?", 0, [
-              "Venter", "Caput", "Origo", "Insertio", "Cauda"
-            ], ["anatomi", "myologi"]),
-            q("Apa nama jaringan ikat yang mengelilingi 1 fasciculus?", 0, [
-              "Perimysium", "Endomysium", "Epimysium", "Sarcoplasma", "Sarcolema"
-            ], ["anatomi", "myologi"]),
-            q("Kumpulan badan sel saraf di luar SSP disebut?", 0, [
-              "Ganglion", "Efektor", "Nervus", "Soma cell", "Reseptor"
-            ], ["anatomi", "myologi"]),
-            q("Otot yang memiliki dua caput?", 0, [
-              "M. biceps brachii", "M. quadriceps femoris",
-              "M. pronator quadratus", "M. triceps brachii", "M. semimembranosus"
-            ], ["anatomi", "myologi"])
-          ],
-          flashcards: [
-            fc("Bagian otot?", "Caput, venter, origo, insertio"),
-            fc("Perimysium?", "Jaringan ikat sekitar 1 fasciculus"),
-            fc("Epimysium?", "Jaringan ikat paling luar otot"),
-            fc("Endomysium?", "Jaringan ikat dalam (sekitar serabut otot)")
-          ]
-        },
-        {
-          id: "arthrologi",
-          name: "Arthrologi (Sendi)",
-          definition: "Ilmu tentang sendi, klasifikasi, dan strukturnya.",
-          keyPoints: [
-            "Diarthrosis: sendi gerak, punya cavum articularis, discus articularis, cairan synovial",
-            "Sendi peluru (enarthrosis): gerak ke segala arah, contoh: articulatio coxae",
-            "Symphysis pubica dihubungkan fibrocartilago",
-            "Discus articularis membagi rongga sendi diarthrosis menjadi 2"
-          ],
-          related: [],
-          questions: [
-            q("Apa yang membagi rongga sendi diarthrosis menjadi 2 rongga?", 0, [
-              "Discus articularis", "Cavitas articularis", "Cartilago hyalina",
-              "Membran synovalis", "Discus intervertebralis"
-            ], ["anatomi", "arthrologi"]),
-            q("Struktur yang menghubungkan articulatio symphysis pubica?", 0, [
-              "Fibrocartilago", "Discus articularis",
-              "Meniscus articularis", "Membrana interossei", "Discus epiphysealis"
-            ], ["anatomi", "arthrologi"]),
-            q("Karakteristik articulatio diarthrosis?", 0, [
-              "Cairan synovial", "Tuberosis", "Tuberculum", "Periosteum", "Otot"
-            ], ["anatomi", "arthrologi"]),
-            q("Sendi yang mirip sendi peluru?", 0, [
-              "Sendi enarthrosis", "Sendi ginglymus",
-              "Sendi elipsoidea", "Sendi sellaris", "Sendi trochlearis"
-            ], ["anatomi", "arthrologi"]),
-            q("Struktur tulang yang membentuk articulatio atlantooccipital?", 0, [
-              "Facies articularis superior atlantis",
-              "Proc. condylaris", "Os maxilaris", "Os mandibularis", "Os vomer"
-            ], ["anatomi", "arthrologi"])
-          ],
-          flashcards: [
-            fc("Diarthrosis?", "Sendi gerak dengan cairan synovial"),
-            fc("Enarthrosis?", "Sendi peluru, gerak ke segala arah"),
-            fc("Symphysis pubica dihubungkan?", "Fibrocartilago"),
-            fc("Discus articularis?", "Membagi rongga sendi diarthrosis")
-          ]
-        }
-      ]
-    }
-  ]
-});
-
-// ============================================================
-// TOPIK 2: HISTOLOGI
-// ============================================================
-DB.topics.push({
-  id: "histologi",
-  name: "Histologi",
-  icon: "🔬",
-  color: "#2f6d4f",
-  description: "Jaringan tubuh: tulang, kartilago, otot, dan proses osifikasi.",
-  subtopics: [
-    {
-      id: "histologi-tulang",
-      name: "Textus Osseus (Jaringan Tulang)",
-      concepts: [
-        {
-          id: "osteon",
-          name: "Osteon & Tulang Kompak",
-          definition: "Unit struktural tulang kompak (osteon/sistem Havers): lamella konsentris mengelilingi canalis centralis (Havers) yang berisi pembuluh darah & saraf.",
-          keyPoints: [
-            "Osteon = sistem Havers = unit dasar tulang kompak",
-            "Lamella osteoni → konsentris mengelilingi kanal",
-            "Lamella interstitialis → di antara osteon, TIDAK termasuk osteon",
-            "Lamella circumferentia externa → di dekat periosteum",
-            "Canaliculi ossei → menghubungkan antar lacuna",
-            "Kanal Volkmann → menghubungkan antar kanal Havers (tegak lurus)",
-            "Struktur osteon: osteosit, lamella osteoni, canalis centralis, canaliculi ossei"
-          ],
-          related: ["sel-tulang"],
-          questions: [
-            q("Bangunan penyusun osteon. Struktur yang TIDAK ikut menyusun?", 0, [
-              "Lamella interstitialis", "Osteosit", "Lamella osteoni",
-              "Canalis centralis", "Canaliculi ossei"
-            ], ["histologi", "osteon"]),
-            q("Struktur yang tidak termasuk osteonum?", 0, [
-              "Lamella interstitial", "Canalis havers",
-              "Lamella osteoni", "Canaliculus ossei", "Osteocytus"
-            ], ["histologi", "osteon"]),
-            q("Preparat tulang kompak: lingkaran konsentris + saluran tengah berisi pembuluh darah?", 0, [
-              "Osteon (sistem Havers)", "Lakuna", "Kanalikuli", "Trabekula", "Endosteum"
-            ], ["histologi", "osteon"]),
-            q("Apakah nama lamella yang berada di dekat periosteum?", 0, [
-              "Lamella circumferentia externa", "Lamella osteoni",
-              "Lamella interstitialis", "Lamella circumferentia interna"
-            ], ["histologi", "osteon"]),
-            q("Preparat tulang kompak: saluran menghubungkan antar kanal Havers, tegak lurus?", 0, [
-              "Kanal Volkmann", "Kanalikuli", "Lakuna",
-              "Lamela sirkumferensial", "Osteoid"
-            ], ["histologi", "osteon"]),
-            q("Apakah nama juluran sitoplasma osteosit yang menghubungkan antar lacuna?", 0, [
-              "Canaliculi ossei", "Serat Sharpey", "Lamella osteoni",
-              "Lamella circumferentia eksterna", "Lamella circumferentia interna"
-            ], ["histologi", "osteon"]),
-            q("Struktur yang menghubungkan antar lacuna?", 0, [
-              "Canaliculi", "Lamella interstitial", "Osteoklas", "Osteoid"
-            ], ["histologi", "osteon"])
-          ],
-          flashcards: [
-            fc("Osteon?", "Unit struktural tulang kompak (sistem Havers)"),
-            fc("Lamella interstitialis?", "Di antara osteon, bukan bagian osteon"),
-            fc("Lamella circumferentia externa?", "Di dekat periosteum"),
-            fc("Kanal Volkmann?", "Menghubungkan kanal Havers, tegak lurus"),
-            fc("Canaliculi ossei?", "Menghubungkan antar lacuna")
-          ]
-        },
-        {
-          id: "sel-tulang",
-          name: "Sel-Sel Tulang",
-          definition: "Terdiri dari osteoblas (pembentuk tulang), osteosit (sel matang), osteoklas (peresorpsi), dan osteoprogenitor (sel induk).",
-          keyPoints: [
-            "Osteoblas: sel kuboid basofilik, aktif mensekresi osteoid",
-            "Osteosit: sel matang dalam lakuna, punya tonjolan di kanalikuli",
-            "Osteoklas: sel raksasa multinukleus di Lakuna Howship, resorpsi tulang",
-            "Osteoprogenitor: sel induk → osteoblas"
-          ],
-          related: ["osteon", "osteoid", "remodelling"],
-          questions: [
-            q("Tampak sel besar dalam lekukan Lakuna Howship. Sel dimaksud?", 0, [
-              "Osteoklas", "Osteosit", "Osteoprogenitor", "Osteoblas", "Mesenkim"
-            ], ["histologi", "sel-tulang"]),
-            q("Wanita 68 th, osteoporosis. Sel raksasa multinukleus di Lakuna Howship. Fungsinya?", 0, [
-              "Resorpsi jaringan tulang", "Sintesis kolagen tipe II",
-              "Produksi osteoid", "Mineralisasi osteoid", "Pembentukan lakuna"
-            ], ["histologi", "sel-tulang"]),
-            q("Anak 10 th, fraktur humerus. Sel kuboid aktif mensekresikan osteoid?", 0, [
-              "Osteoblas", "Osteosit", "Osteoklas", "Kondrosit", "Fibroblas"
-            ], ["histologi", "sel-tulang"]),
-            q("Sel di garis kuning (osteoblas di tepi trabekula). Cirinya?", 0, [
-              "Sitoplasma bersifat basofilik",
-              "Tersusun menyebar di matriks osteoid",
-              "Tidak punya tonjolan sitoplasma",
-              "Nukleus kecil", "Menyusun stratum fibrogenicum periosteum"
-            ], ["histologi", "sel-tulang"]),
-            q("Cedera tulang panjang. Sel di lakuna dengan tonjolan sitoplasma di kanalikuli?", 0, [
-              "Osteosit", "Osteoblas", "Osteoklas", "Fibroblas", "Sel osteoprogenitor"
-            ], ["histologi", "sel-tulang"]),
-            q("Sel tulang matang adalah?", 0, [
-              "Osteosit", "Osteoklas", "Osteoblas", "Osteoprogenitor", "Kondrosit"
-            ], ["histologi", "sel-tulang"])
-          ],
-          flashcards: [
-            fc("Osteoblas?", "Pembentuk tulang, sekresi osteoid, sitoplasma basofilik"),
-            fc("Osteosit?", "Sel tulang matang di lakuna, punya tonjolan"),
-            fc("Osteoklas?", "Sel raksasa multinukleus, resorpsi tulang di Lakuna Howship"),
-            fc("Lakuna Howship?", "Lekukan tempat osteoklas berada saat resorpsi")
-          ]
-        },
-        {
-          id: "osteoid",
-          name: "Osteoid & Matriks Tulang",
-          definition: "Matriks organik tulang yang belum termineralisasi, diproduksi oleh osteoblas. Mengandung kolagen tipe I dan proteoglikan.",
-          keyPoints: [
-            "Osteoid = matriks tulang belum termineralisasi",
-            "Diproduksi oleh osteoblas",
-            "Akan mengalami mineralisasi menjadi tulang keras",
-            "Osteoid terdapat di zona osteoid pada lempeng epifisis"
-          ],
-          related: ["sel-tulang", "ossifikasi"],
-          questions: [
-            q("Karakteristik osteoid?", 0, [
-              "Diproduksi oleh osteoblas",
-              "Berisi kolagen tipe 2 & garam anorganik",
-              "Merupakan komponen cellular tulang",
-              "Berada di lakuna howship",
-              "Merupakan sel tulang matur"
-            ], ["histologi", "osteoid"]),
-            q("Pada penyembuhan fraktur, osteoblas menghasilkan matriks organik sebelum mineralisasi?", 0, [
-              "Osteoid", "Osteon", "Lakuna", "Kanalikuli", "Lamela"
-            ], ["histologi", "osteoid"]),
-             q("Pada osifikasi intramembranosa, sel mesenkim → osteoblas → mensekresikan matriks organik?",
-              0, ["Osteoid", "Lamella", "Trabekula", "Cartilago hyalina", "Endosteum"],
-              ["histologi", "osteoid"])
-          ],
-          flashcards: [
-            fc("Osteoid?", "Matriks organik tulang belum termineralisasi, diproduksi osteoblas"),
-            fc("Osteoid mengandung?", "Kolagen tipe I dan proteoglikan")
-          ]
-        },
-        {
-          id: "ossifikasi",
-          name: "Ossifikasi & Lempeng Epifisis",
-          definition: "Proses pembentukan tulang: intramembranosa (langsung dari mesenkim) dan endokondral (dari kartilago).",
-          keyPoints: [
-            "Ossifikasi intramembranosa: langsung dari mesenkim → tulang (tulang tengkorak)",
-            "Ossifikasi endokondral: kartilago hialin → tulang (tulang panjang)",
-            "Lempeng epifisis (dari epifisis ke diafisis): zona reservata/istirahat, zona proliferasi, zona hipertrofi, zona kalsifikasi, zona osifikasi",
-            "Zona proliferasi: kondrosit tersusun seperti tumpukan koin (collumella chondrocytica), aktif mitosis",
-            "Zona kalsifikasi: matriks kartilago mengapur, kondrosit degenerasi"
-          ],
-          related: ["osteoid", "sel-tulang"],
-          questions: [
-            q("Bayi: pembentukan tulang tengkorak langsung dari mesenkim tanpa kartilago?", 0, [
-              "Intramembranosa", "Endokondral", "Intrakartilaginea",
-              "Perikondral", "Apposisional"
-            ], ["histologi", "ossifikasi"]),
-            q("Anak gangguan pertumbuhan. Kondrosit seperti tumpukan koin, aktif membelah?", 0, [
-              "Zona proliferasi", "Zona istirahat", "Zona hipertrofi",
-              "Zona kalsifikasi", "Zona osifikasi"
-            ], ["histologi", "ossifikasi"]),
-            q("Anak 6 th, lempeng epifisis: sel seperti tumpukan koin sejajar?", 0, [
-              "Zona proliferasi", "Zona reservata", "Zona hipertrofi",
-              "Zona klasifikasi", "Zona osifikasi"
-            ], ["histologi", "ossifikasi"]),
-            q("Anak gangguan mineralisasi: matriks kartilago mengapur, kondrosit degenerasi?", 0, [
-              "Zona kalsifikasi", "Zona istirahat", "Zona proliferasi",
-              "Zona hipertrofi", "Zona osifikasi"
-            ], ["histologi", "ossifikasi"]),
-            q("Gambar ossifikasi lempeng epifisis. Pernyataan yang benar?", 0, [
-              "Tampak collumella chondrocytica pada zona proliferata",
-              "Sel cartilago cadangan di zona resorben",
-              "Jenis cartilago cadangan adalah elastis",
-              "Sel cartilago membesar di zona reservata",
-              "Proses ini terjadi di atap tengkorak"
-            ], ["histologi", "ossifikasi"]),
-            q("Gambar ossifikasi (penggantian kartilago hialin). Pernyataan benar?", 0, [
-              "Penggantian kartilago hialin dengan tulang",
-              "Disebut osteogenesis intramembranacea",
-              "Pola pertumbuhan interstisial",
-              "Sel mesenkimal hipertrofi lalu pecah",
-              "Bone shaft digantikan tulang kompakta"
-            ], ["histologi", "ossifikasi"])
-          ],
-          flashcards: [
-            fc("Osifikasi intramembranosa?", "Langsung dari mesenkim → tulang (tengkorak)"),
-            fc("Osifikasi endokondral?", "Kartilago hialin → tulang (tulang panjang)"),
-            fc("Zona proliferasi?", "Kondrosit seperti tumpukan koin, aktif mitosis"),
-            fc("Zona kalsifikasi?", "Matriks kartilago mengapur, kondrosit degenerasi"),
-            fc("Urutan lempeng epifisis?", "Reservata → Proliferasi → Hipertrofi → Kalsifikasi → Osifikasi")
-          ]
-        },
-        {
-          id: "woven-bone",
-          name: "Woven Bone & Remodelling",
-          definition: "Woven bone: tulang imatur dengan serabut kolagen tidak teratur, banyak sel. Ditemukan pada cementum akar gigi dan tulang embrio.",
-          keyPoints: [
-            "Woven bone: kolagen tidak teratur, banyak sel osteosit",
-            "Ditemukan pada cement akar gigi dan tulang embrio",
-            "Remodelling: keseimbangan osteoblas (formasi) & osteoklas (resorpsi)",
-            "Dipengaruhi hormon (PTH, kalsitonin) dan gravitasi",
-            "Serabut Sharpey: melekatkan periosteum ke tulang"
-          ],
-          related: ["sel-tulang", "osteon"],
-          questions: [
-            q("Karakteristik woven bone?", 0, [
-              "Ditemukan pada cement akar gigi",
-              "Tidak banyak sel & serabut kolagen teratur",
-              "Membentuk sistem Havers",
-              "Terdiri dari os compacta & spongiosa",
-              "Osteoklas berderet seperti epithelial"
-            ], ["histologi", "woven-bone"]),
-            q("Tulang embrio: serabut kolagen tidak teratur, banyak sel?", 0, [
-              "Woven bone", "Tulang kompak", "Tulang spongiosa",
-              "Lamellar bone", "Osteon"
-            ], ["histologi", "woven-bone"]),
-            q("Pernyataan benar tentang remodelling tulang?", 0, [
-              "Dipengaruhi respon umpan balik negatif hormon & gravitasi",
-              "Terjadi jika aktivitas osteoklas > osteoblas",
-              "Osteoklas menyusun matriks tulang",
-              "Osteoblas meresorpsi tulang",
-              "Pada fraktur hard callus jadi soft callus"
-            ], ["histologi", "woven-bone"]),
-            q("Atlet cedera. Serabut Sharpey menembus tulang. Fungsinya?", 0, [
-              "Melekatkan periosteum pada tulang",
-              "Tempat hematopoiesis", "Menghubungkan osteon",
-              "Membentuk osteoid", "Menghubungkan lakuna"
-            ], ["histologi", "woven-bone"]),
-            q("Biopsi tulang femur: jaringan ikat padat menutupi permukaan luar, lapisan osteogenik?", 0, [
-              "Periosteum", "Endosteum", "Perikondrium",
-              "Osteoid", "Lamela interstisial"
-            ], ["histologi", "woven-bone"])
-          ],
-          flashcards: [
-            fc("Woven bone?", "Tulang imatur, kolagen tidak teratur, banyak sel"),
-            fc("Serabut Sharpey?", "Melekatkan periosteum ke tulang"),
-            fc("Remodelling?", "Keseimbangan formasi (osteoblas) & resorpsi (osteoklas)"),
-            fc("Periosteum?", "Jaringan ikat padat luar tulang, lapisan osteogenik")
-          ]
-        },
-        {
-          id: "kartilago",
-          name: "Kartilago (Tulang Rawan)",
-          definition: "Jaringan ikat khusus dengan matriks padat. Tiga jenis: hyalin, elastis, fibrosa.",
-          keyPoints: [
-            "Kartilago hyalin: trakea, bronkus, ventral costae, sendi",
-            "Kartilago elastis: epiglotis, telinga luar",
-            "Kartilago fibrosa: symphysis pubis, discus intervertebralis",
-            "Chondrosit di dalam lacuna",
-            "Perichondrium: lapisan fibrosa luar + lapisan kondrogenik dalam"
-          ],
-          related: ["ossifikasi"],
-          questions: [
-            q("Jaringan kartilago dengan kondrosit di lakuna, matriks serat elastica. Di organ mana?", 0, [
-              "Epiglotis", "Trakea", "Ventral costae",
-              "Bronchi primerius", "Bronchi sekundrius"
-            ], ["histologi", "kartilago"]),
-            q("Jaringan di simfisis pubis pada gambar histologi?", 0, [
-              "Cartilago fibrosa", "Cartilago elastica",
-              "Cartilago hyalina", "Textus osseus"
-            ], ["histologi", "kartilago"]),
-            q("Sel utama dalam lacuna pada textus cartilagineus elastica?", 0, [
-              "Chondrocyte", "Fibroblast", "Osteocyte",
-              "Sel mesenkim", "Chondroblast"
-            ], ["histologi", "kartilago"]),
-            q("Asal sel mesenkim pembentuk kartilago?", 0, [
-              "Stratum chondrogenicum perichondrium",
-              "Stratum fibrosum perichondrium",
-              "Matriks teritorialis",
-              "Matriks interteritorialis",
-              "Perimysium"
-            ], ["histologi", "kartilago"])
-          ],
-          flashcards: [
-            fc("Kartilago hyalin?", "Trakea, bronkus, ventral costae"),
-            fc("Kartilago elastis?", "Epiglotis, telinga luar"),
-            fc("Kartilago fibrosa?", "Symphysis pubis, discus intervertebralis")
-          ]
-        }
-      ]
-    }
-  ]
-});
-
-// ============================================================
-// TOPIK 3: FISIOLOGI OTOT
-// ============================================================
-DB.topics.push({
-  id: "fisiologi",
-  name: "Fisiologi Otot",
-  icon: "⚡",
-  color: "#a8442f",
-  description: "Mekanisme kontraksi otot, metabolisme energi, neuromuscular junction, dan potensial aksi.",
-  subtopics: [
-    {
-      id: "fisiologi-kontraksi",
-      name: "Kontraksi Otot",
-      concepts: [
-        {
-          id: "nmj",
-          name: "Neuromuscular Junction (NMJ)",
-          definition: "Pertemuan saraf-otot tempat sinyal dari saraf diteruskan ke otot.",
-          keyPoints: [
-            "Urutan NMJ: potensial aksi saraf → buka Ca channel → Ca masuk terminal → pelepasan asetilkolin → depolarisasi end plate otot",
-            "Asetilkolin (ACh) adalah neurotransmitter di NMJ",
-            "Relaksasi: Ca²⁺ dikembalikan ke retikulum sarkoplasma"
-          ],
-          related: [],
-          questions: [
-            q("Proses di neuromuscular junction (NMJ)?", 0, [
-              "Ca²⁺ masuk terminal saraf → ACh dilepas → depolarisasi end plate",
-              "Depolarisasi end plate → potensial aksi saraf → Ca²⁺ masuk",
-              "ACh dilepas → potensial aksi saraf → potensial aksi otot",
-              "Ca²⁺ masuk end plate → potensial aksi otot"
-            ], ["fisiologi", "nmj"]),
-            q("Proses akhir kontraksi tunggal otot rangka?", 0, [
-              "Pengembalian Ca²⁺ ke retikulum sarkoplasma",
-              "Pelepasan asetilkolin",
-              "Pengembalian reseptor dihidropirin",
-              "Pelepasan Ca²⁺",
-              "Penutupan reseptor nikotinik"
-            ], ["fisiologi", "nmj"])
-          ],
-          flashcards: [
-            fc("Urutan NMJ?", "Aksi saraf → Ca²⁺ masuk → ACh lepas → depolarisasi end plate"),
-            fc("Relaksasi otot?", "Ca²⁺ dikembalikan ke retikulum sarkoplasma")
-          ]
-        },
-        {
-          id: "sarkomer",
-          name: "Sarkomer & Kontraksi",
-          definition: "Unit fungsional kontraktil terkecil otot rangka, terdiri dari pita A, pita I, garis Z, zona H, garis M.",
-          keyPoints: [
-            "Sarkomer = dari garis Z ke garis Z",
-            "Pita A = daerah miosin (tebal)",
-            "Pita I = daerah aktin (tipis)",
-            "Zona H = tengah pita A, hanya miosin",
-            "Garis M = di tengah sarkomer",
-            "Saat kontraksi: pita I dan zona H memendek, pita A tetap",
-            "Diameter filamen tipis (aktin) = 6 nm",
-            "Diameter filamen tebal (miosin) = 16 nm"
-          ],
-          related: [],
-          questions: [
-            q("Struktur yang menjadi batas sarkomer?", 0, [
-              "Garis Z", "Pita A", "Pita I", "Garis M", "Zona H"
-            ], ["fisiologi", "sarkomer"]),
-            q("Saat kontraksi, bagian mana yang memendek?", 0, [
-              "Zona H", "Pita A", "Aktin", "Miosin"
-            ], ["fisiologi", "sarkomer"]),
-            q("Berapa diameter filamen tipis?", 0, [
-              "6 nanometer", "0,6 nanometer", "16 nanometer",
-              "60 nanometer", "6 mikrometer"
-            ], ["fisiologi", "sarkomer"]),
-            q("Berapa diameter filamen tebal?", 0, [
-              "16 nanometer", "6 nanometer", "0,6 nanometer",
-              "60 nanometer", "6 mikrometer"
-            ], ["fisiologi", "sarkomer"])
-          ],
-          flashcards: [
-            fc("Batas sarkomer?", "Garis Z ke garis Z"),
-            fc("Saat kontraksi memendek?", "Pita I dan zona H"),
-            fc("Diameter aktin?", "6 nm"),
-            fc("Diameter miosin?", "16 nm")
-          ]
-        },
-        {
-          id: "energi-otot",
-          name: "Metabolisme Energi Otot",
-          definition: "Sumber energi otot: fosfokreatin, glikolisis anaerob, fosforilasi oksidatif.",
-          keyPoints: [
-            "10 detik pertama: fosfokreatin",
-            "Glikolisis anaerob: glukosa → 2 piruvat → 2 laktat (+2 ATP)",
-            "Siklus Krebs: di mitokondria, menghasilkan banyak ATP",
-            "Succinate-CoA ligase → +1 ATP",
-            "Oxoglutarate dehydrogenase → +3 ATP",
-            "1 mol glukosa → 32 ATP (aerob)",
-            "Glikolisis anaerob → 2 ATP, tidak efisien",
-            "Fosforilasi oksidatif: O₂ sebagai akseptor elektron terakhir"
-          ],
-          related: [],
-          questions: [
-            q("Sumber energi utama 10 detik pertama aktivitas maksimal?", 0, [
-              "Fosfokreatin", "Siklus Cori",
-              "Glukoneogenesis", "Glikolisis anaerob"
-            ], ["fisiologi", "energi"]),
-            q("ATP dari 1 mol glukosa secara aerob?", 0, [
-              "32 ATP", "2 ATP", "8 ATP", "16 ATP", "38 ATP"
-            ], ["fisiologi", "energi"]),
-            q("Hasil glikolisis pada otot?", 0, [
-              "Piruvat dan laktat", "Glikogen",
-              "Oksalasetat", "Asetil-KoA"
-            ], ["fisiologi", "energi"]),
-            q("Fungsi oksigen dalam fosforilasi oksidatif?", 0, [
-              "Akseptor elektron terakhir", "Donor elektron terakhir",
-              "Mengikat ATP jadi ADP", "Menghambat rantai transpor elektron"
-            ], ["fisiologi", "energi"])
-          ],
-          flashcards: [
-            fc("Energi 10 detik pertama?", "Fosfokreatin"),
-            fc("Hasil glikolisis?", "2 piruvat + 2 ATP (anaerob)"),
-            fc("ATP per glukosa (aerob)?", "32 ATP"),
-            fc("Fungsi O₂?", "Akseptor elektron terakhir di fosforilasi oksidatif")
-          ]
-        },
-        {
-          id: "otot-jantung",
-          name: "Otot Jantung & Otot Polos",
-          definition: "Ciri khas otot jantung (cardiac): discus intercalatus, sel bercabang, inti 1-2 di tengah. Otot polos: inti tunggal tengah, fusiform, tidak berstriasi.",
-          keyPoints: [
-            "Otot jantung: discus intercalatus, bercabang, striasi, inti 1-2 tengah",
-            "Otot rangka: silindris, inti banyak di tepi, striasi",
-            "Otot polos: fusiform, inti 1 di tengah, tidak striasi",
-            "Otot polos unitary: gap junction, kontraksi bersama",
-            "Otot polos multi-unit: kontraksi independen",
-            "Fase 0 potensial aksi jantung: pembukaan saluran Na⁺ cepat",
-            "Kalmodulin: mengaktifkan MLCK pada otot polos"
-          ],
-          related: [],
-          questions: [
-            q("Ciri myocytus cardiacus yang membedakan dari striatus & non-striatus?", 0, [
-              "Memiliki discus intercalatus",
-              "Inti tunggal di tengah",
-              "Nukleus lonjong (oval)",
-              "Sel bercabang & berhubungan",
-              "Miofibril tersusun teratur"
-            ], ["fisiologi", "otot-jantung"]),
-            q("Struktur yang menghubungkan sel otot jantung?", 0, [
-              "Discus intercalatus", "Stria", "Nukleus", "Anastomosis"
-            ], ["fisiologi", "otot-jantung"]),
-            q("Ciri otot halus (intestinum tenue) untuk gerak peristaltik?", 0, [
-              "Sel fusiform, inti 1 di tengah, tidak striasi",
-              "Silindris, inti banyak di perifer, striasi",
-              "Bercabang, inti 1-2 di tengah, discus intercalatus",
-              "Kuboid, inti bulat di tengah",
-              "Pipih, inti di perifer"
-            ], ["fisiologi", "otot-jantung"]),
-            q("Apa yang membedakan unitary vs multi-unit smooth muscle?", 0, [
-              "Multi-unit bekerja independen",
-              "Unitary bekerja independen",
-              "Multi-unit tidak berkontraksi",
-              "Tidak ada perbedaan"
-            ], ["fisiologi", "otot-jantung"]),
-            q("Penyebab fase 0 potensial aksi otot jantung?", 0, [
-              "Pembukaan saluran natrium cepat",
-              "Penutupan saluran natrium lambat",
-              "Pembukaan saluran kalium cepat",
-              "Masuknya kalsium"
-            ], ["fisiologi", "otot-jantung"]),
-            q("Fungsi kalmodulin?", 0, [
-              "Mengaktifkan enzim Myosin Light Chain Kinase",
-              "Meninggikan kalsium",
-              "Sinyal mulai kontraksi",
-              "Memulai kontraksi"
-            ], ["fisiologi", "otot-jantung"]),
-            q("Apa itu 'syncytium' pada otot jantung?", 0, [
-              "Semua sel otot jantung berhubungan & berfungsi sebagai satu kesatuan",
-              "Semua sel otot jantung bekerja independen",
-              "Sel otot jantung tidak saling berhubungan",
-              "Sel jantung tidak punya discus intercalatus"
-            ], ["fisiologi", "otot-jantung"])
-          ],
-          flashcards: [
-            fc("Ciri otot jantung?", "Discus intercalatus, bercabang, inti 1-2 tengah"),
-            fc("Ciri otot rangka?", "Silindris, inti banyak tepi, striasi"),
-            fc("Ciri otot polos?", "Fusiform, inti 1 tengah, tidak striasi"),
-            fc("Fase 0 jantung?", "Pembukaan saluran Na⁺ cepat"),
-            fc("Kalmodulin?", "Mengaktifkan MLCK pada otot polos")
-          ]
-        }
-      ]
-    }
-  ]
-});
-
-// ============================================================
-// TOPIK 4: MIKROBIOLOGI
-// ============================================================
-DB.topics.push({
-  id: "mikrobiologi",
-  name: "Mikrobiologi",
-  icon: "🦠",
-  color: "#b08a3e",
-  description: "Flora normal, bakteri patogen, pewarnaan, desinfeksi/sterilisasi, infeksi nosokomial.",
-  subtopics: [
-    {
-      id: "mikro-flora-normal",
-      name: "Flora Normal",
-      concepts: [
-        {
-          id: "flora-normal",
-          name: "Flora Normal Tubuh",
-          definition: "Mikroorganisme yang menetap di permukaan tubuh tanpa menimbulkan penyakit pada keadaan normal.",
-          keyPoints: [
-            "Flora normal melindungi dari patogen dengan: modifikasi pH, hambat tempat pengikatan, produksi bakteriosin",
-            "Faktor jadi oportunistik: invasi, komponen permukaan, kolonisasi, predisposisi host",
-            "Kulit: Staphylococcus epidermidis (lisozim menghambat)",
-            "Kolon: 96% anaerob, Clostridium sp. (infeksi gelembung gas)",
-            "Vagina: Candida albicans (oportunistik, pH rendah)",
-            "Saluran napas: Strep. viridans → endokarditis subakut",
-            "Traktus urinarius: >10⁵ sel/ml → ISK"
-          ],
-          related: [],
-          questions: [
-            q("Flora normal mengurangi kolonisasi patogen dengan cara?", 0, [
-              "Modifikasi pH, hambat tempat ikat, produksi bakteriosin",
-              "Invasi dan toksigenitas",
-              "Produksi endotoksin",
-              "Pembentukan spora"
-            ], ["mikrobiologi", "flora-normal"]),
-            q("Faktor flora normal jadi oportunistik?", 0, [
-              "Invasi, komponen permukaan, kolonisasi, predisposisi host",
-              "Nutrisi", "Kebersihan", "Kondisi geografis"
-            ], ["mikrobiologi", "flora-normal"]),
-            q("Flora kulit yang dihambat lisozim?", 0, [
-              "Staphylococcus epidermidis",
-              "Escherichia coli", "Salmonella typhi",
-              "Shigella dysentriae", "Vibrio cholera"
-            ], ["mikrobiologi", "flora-normal"]),
-            q("Bakteri anaerob kolon penyebab infeksi gelembung gas?", 0, [
-              "Clostridium sp.", "Escherichia coli",
-              "Staphylococcus sp", "Streptococcus sp", "Salmonella sp"
-            ], ["mikrobiologi", "flora-normal"]),
-            q("Flora vagina oportunistik penyebab kandidiasis?", 0, [
-              "Candida albicans", "Enterococcus faecalis",
-              "Aspergillus sp.", "Penicillium sp.", "Herpes simplex"
-            ], ["mikrobiologi", "flora-normal"]),
-            q("Flora saluran napas Strep. viridans pada katup jantung abnormal?", 0, [
-              "Endokarditis subakut", "Pneumonia",
-              "Meningitis", "Septikemia", "Gastroenteritis"
-            ], ["mikrobiologi", "flora-normal"]),
-            q("Jumlah bakteri urine menandakan ISK?", 0, [
-              ">10⁵ sel/ml", ">1000 sel/ml", ">100 sel/ml", ">10 sel/ml", ">1 sel/ml"
-            ], ["mikrobiologi", "flora-normal"]),
-            q("Faktor yang mempengaruhi kolonisasi flora vagina?", 0, [
-              "Umur, hormonal, kebiasaan seksual, antiseptik genitalia",
-              "pH vagina", "Jumlah flora normal",
-              "Jenis flora normal", "Mikroba pembentuk biofilm"
-            ], ["mikrobiologi", "flora-normal"]),
-            q("Area traktus respiratorius yang steril?", 0, [
-              "Alveoli, nasofaring",
-              "Laring, sinus nasalis, bronkioli",
-              "Orofaring, nasofaring, tonsil",
-              "Mulut, tenggorokan",
-              "Orofaring, bronki"
-            ], ["mikrobiologi", "flora-normal"])
-          ],
-          flashcards: [
-            fc("Cara flora normal lindungi tubuh?", "Modifikasi pH, hambat tempat ikat, produksi bakteriosin"),
-            fc("Strep. viridans pada katup jantung?", "Endokarditis subakut"),
-            fc("Candida albicans di vagina?", "Kandidiasis oportunistik"),
-            fc("ISK ditandai?", ">10⁵ bakteri/ml urin")
-          ]
-        }
+      id: "flora-normal",
+      name: "Flora Normal Tubuh",
+      definition: "Mikroorganisme menetap di permukaan tubuh tanpa menimbulkan penyakit pada keadaan normal.",
+      keyPoints: [
+        "Melindungi dari patogen: modifikasi pH, hambat tempat ikat, produksi bakteriosin",
+        "Faktor oportunistik: invasi, komponen permukaan, kolonisasi, predisposisi host",
+        "Kulit: S. epidermidis (dihambat lisozim)",
+        "Kolon: 96% anaerob, Clostridium sp. (gelembung gas)",
+        "Vagina: Candida albicans (kandidiasis oportunistik)",
+        "Saluran napas: Strep. viridans → endokarditis subakut",
+        "Traktus urinarius: >10⁵ sel/ml → ISK",
+        "Area steril traktus respiratorius: alveoli, nasofaring"
+      ],
+      questions: [
+        q("Flora normal mengurangi kolonisasi patogen dengan cara?", 0, ["Modifikasi pH, hambat tempat ikat, produksi bakteriosin","Invasi dan toksigenitas","Produksi endotoksin","Pembentukan spora"]),
+        q("Faktor flora normal jadi oportunistik?", 0, ["Invasi, komponen permukaan, kolonisasi, predisposisi host","Nutrisi","Kebersihan","Kondisi geografis"]),
+        q("Flora kulit yang dihambat lisozim?", 0, ["Staphylococcus epidermidis","Escherichia coli","Salmonella typhi","Shigella dysentriae"]),
+        q("Bakteri anaerob kolon penyebab infeksi gelembung gas?", 0, ["Clostridium sp.","Escherichia coli","Staphylococcus sp","Streptococcus sp"]),
+        q("Flora vagina oportunistik penyebab kandidiasis?", 0, ["Candida albicans","Enterococcus faecalis","Aspergillus sp.","Penicillium sp."]),
+        q("Strep. viridans pada katup jantung abnormal menyebabkan?", 0, ["Endokarditis subakut","Pneumonia","Meningitis","Septikemia"]),
+        q("Jumlah bakteri urine menandakan ISK?", 0, [">10⁵ sel/ml",">1000 sel/ml",">100 sel/ml",">10 sel/ml"]),
+        q("Faktor kolonisasi flora vagina?", 0, ["Umur, hormonal, kebiasaan seksual, antiseptik genitalia","pH vagina","Jumlah flora normal","Mikroba pembentuk biofilm"]),
+        q("Area traktus respiratorius yang steril?", 0, ["Alveoli, nasofaring","Laring, sinus nasalis","Orofaring, tonsil","Mulut, tenggorokan"]),
+        q("Flora komensal saluran napas yang jadi oportunistik?", 0, ["Strep. viridans → endokarditis","Candida → bakteriemi","Rotavirus → ISK","C. diphteriae → tetanus"]),
+        q("Bakteri flora usus yang invasif dan resisten fagosit?", 0, ["Leukosidin, hemolisin, fibrinolisin","Flagel, spora, kapsul","Peptidoglikan, asam mikolat","Endotoksin, LPS"]),
+        q("Faktor penentu mikroflora traktus gastrointestinal?", 0, ["Sanitasi, higiene, habitasi","Invasi dan toksigenitas","Komponen permukaan dan enzim","Sistem imun host"]),
+        q("Clostridia resisten akibat antibiotik oral?", 0, ["Clostridium defecile","Clostridium perfringens","Clostridium septikum","Clostridium tetani"]),
+        q("Flora di liang telinga yang tahan asam?", 0, ["Mycobacterium saprofit","Propionibacterium sp.","S. aureus","P. aeruginosa"]),
+        q("Bakteri tahan asam diidentifikasi dengan pewarnaan?", 0, ["Ziehl-Neelsen","Gram","Fuelgen","Burri-Gins"]),
+        q("Media isolasi bakteri tahan asam?", 0, ["Lowenstein-Jensen","Brain Heart Infusion","BGLB","Muller Hinton"]),
+        q("Bakteri penyebab pneumonia?", 0, ["Streptococcus pneumonia","P. aeruginosa","S. aureus","Mycobacterium saprofit"]),
+        q("Mycobacterium tuberculosis penyebab?", 0, ["TBC (kronis batuk berdarah)","Pneumonia","Meningitis","Septikemia"]),
+        q("Endotoksin dihasilkan bakteri?", 0, ["Escherichia coli","Strep. pneumonia","S. aureus","Mycobacterium atipik"]),
+        q("Eksotoksin dapat dinonaktifkan dengan?", 0, ["Fenol, formaldehida","Alkohol 60%","Aseton","Etanol 40%"]),
+        q("Toksoid dari eksotoksin bakteri?", 0, ["Corynebacterium diphteriae","Salmonella typhi","Clostridium tetani","Bordetella pertusis"]),
+        q("Bakteri penyebab infeksi koliform (MacConkey merah)?", 0, ["Escherichia coli","C. diphteriae","M. leprae","N. meningitides"]),
+        q("Bakteri tahan asam penyebab infeksi kronis?", 0, ["Mycobacterium tuberculosis","Propionibacterium","S. aureus","P. aeruginosa"]),
+      ],
+      flashcards: [
+        fc("Cara flora normal lindungi tubuh?","Modifikasi pH, hambat tempat ikat, bakteriosin"),
+        fc("Strep. viridans di katup jantung?","Endokarditis subakut"),
+        fc("Candida albicans di vagina?","Kandidiasis oportunistik"),
+        fc("Bakteri tahan asam?","Mycobacterium (Ziehl-Neelsen, Lowenstein-Jensen)"),
+        fc("Endotoksin?","Lipopolisakarida dari Gram negatif (E. coli)"),
+        fc("Toksoid?","Eksotoksin dinonaktifkan → vaksin (difteri, tetanus)"),
+        fc("MacConkey koloni merah?","E. coli (coliform, gram negatif, enterik)")
       ]
     },
     {
-      id: "mikro-desinfeksi",
+      id: "desinfeksi-sterilisasi",
       name: "Desinfeksi & Sterilisasi",
-      concepts: [
-        {
-          id: "desinfeksi-sterilisasi",
-          name: "Desinfeksi & Sterilisasi",
-          definition: "Metode membunuh mikroorganisme: fisika (panas, radiasi) dan kimia (desinfektan, antiseptik).",
-          keyPoints: [
-            "Pemanasan kering: flaming, incineration",
-            "Pemanasan basah: autoclave (>100°C), boiling, pasteurisasi",
-            "Autoclave: sterilisasi >100°C dengan uap bertekanan",
-            "Antiseptik: untuk jaringan hidup; Desinfektan: untuk benda mati",
-            "Karbol/lisol: meningkatkan permeabilitas membran plasma",
-            "Savlon: tidak membunuh HIV & Hepatitis B",
-            "Bycline: merusak membran sel bakteri",
-            "Alkohol 70-80%: efektif tapi kurang efektif terhadap spora",
-            "Uji koefisien fenol: menggunakan Staphylococcus aureus"
-          ],
-          related: [],
-          questions: [
-            q("Contoh pemanasan kering?", 0, [
-              "Flaming", "Autoclave", "Pasteurisasi", "Radiasi", "Boiling"
-            ], ["mikrobiologi", "desinfeksi"]),
-            q("Contoh sterilisasi pemanasan basah?", 0, [
-              "Autoclave", "Flaming", "Radiasi", "Boiling", "Incineration"
-            ], ["mikrobiologi", "desinfeksi"]),
-            q("Desinfektan tingkatkan permeabilitas membran plasma?", 0, [
-              "Karbol/Lisol", "Etanol", "Klorin", "Formalin", "Savlon"
-            ], ["mikrobiologi", "desinfeksi"]),
-            q("Desinfektan tidak membunuh HIV & Hepatitis B?", 0, [
-              "Savlon", "Betadin", "Klorin", "Etanol", "Formalin"
-            ], ["mikrobiologi", "desinfeksi"]),
-            q("Bakteri untuk uji koefisien fenol?", 0, [
-              "Staphylococcus aureus", "Salmonella typhi",
-              "Bacillus subtilis", "Escherichia coli"
-            ], ["mikrobiologi", "desinfeksi"]),
-            q("Mekanisme bycline membunuh bakteri?", 0, [
-              "Merusak membran sel", "Denaturasi protein",
-              "Oksidasi protein", "Menginaktivasi enzim"
-            ], ["mikrobiologi", "desinfeksi"]),
-            q("Waktu efektif dekontaminasi HIV & Hepatitis B?", 0, [
-              "10 menit", "5 menit", "15 menit", "30 menit", "45 menit"
-            ], ["mikrobiologi", "desinfeksi"]),
-            q("Kandungan antiseptik tangan kurang efektif terhadap?", 0, [
-              "Spora", "Pili", "Flagel", "Membran sel", "Dinding sel"
-            ], ["mikrobiologi", "desinfeksi"])
-          ],
-          flashcards: [
-            fc("Pemanasan kering?", "Flaming, incineration"),
-            fc("Pemanasan basah?", "Autoclave, boiling, pasteurisasi"),
-            fc("Autoclave?", "Sterilisasi >100°C uap bertekanan"),
-            fc("Savlon?", "Tidak membunuh HIV & Hepatitis B"),
-            fc("Karbol?", "Meningkatkan permeabilitas membran plasma"),
-            fc("Bycline?", "Merusak membran sel bakteri"),
-            fc("Uji koefisien fenol?", "Gunakan Staphylococcus aureus")
-          ]
-        }
+      definition: "Metode membunuh mikroorganisme: fisika (panas, radiasi) dan kimia (desinfektan, antiseptik).",
+      keyPoints: [
+        "Pemanasan kering: flaming, incineration",
+        "Pemanasan basah: autoclave (>100°C), boiling, pasteurisasi",
+        "Autoclave: sterilisasi >100°C uap bertekanan",
+        "Karbol/lisol: meningkatkan permeabilitas membran plasma",
+        "Savlon: tidak membunuh HIV & Hepatitis B",
+        "Bycline: merusak membran sel bakteri",
+        "Alkohol 70-80% efektif, tapi kurang terhadap spora",
+        "Uji koefisien fenol: pakai Staphylococcus aureus",
+        "Desinfektan vs antiseptik: antiseptik untuk jaringan hidup"
+      ],
+      questions: [
+        q("Contoh pemanasan kering?", 0, ["Flaming","Autoclave","Pasteurisasi","Radiasi"]),
+        q("Contoh sterilisasi pemanasan basah?", 0, ["Autoclave","Flaming","Radiasi","Boiling"]),
+        q("Desinfektan tingkatkan permeabilitas membran plasma?", 0, ["Karbol/Lisol","Etanol","Klorin","Formalin"]),
+        q("Desinfektan tidak membunuh HIV & Hepatitis B?", 0, ["Savlon","Betadin","Klorin","Etanol"]),
+        q("Bakteri untuk uji koefisien fenol?", 0, ["Staphylococcus aureus","Salmonella typhi","Bacillus subtilis","E. coli"]),
+        q("Mekanisme bycline membunuh bakteri?", 0, ["Merusak membran sel","Denaturasi protein","Oksidasi protein","Inaktivasi enzim"]),
+        q("Waktu efektif dekontaminasi HIV & Hepatitis B?", 0, ["10 menit","5 menit","15 menit","30 menit"]),
+        q("Kandungan antiseptik tangan kurang efektif terhadap?", 0, ["Spora","Pili","Flagel","Membran sel"]),
+        q("Enzim air mata yang melisis bakteri?", 0, ["Lisozim","Protease","Lipase","Hialuronidase"]),
+        q("Faktor internal hilangkan flora transien kulit?", 0, ["pH rendah, asam lemak, kelenjar sebasea, lisozim","Teknik cuci tangan","Antiseptik","Sabun"]),
+        q("Peran SALT (skin-associated lymphoid tissue)?", 0, ["Memaparkan antigen & merangsang sel imun (sitokin)","Produksi lisozim","Fagositosis","Pembentukan biofilm"]),
+        q("Tahap paling penting biofilm untuk melekat?", 0, ["Adhesi","Maturasi","Dispersi","Propagasi"]),
+        q("Infeksi nosokomial patogen kondisional?", 0, ["Staphylococcus aureus","Salmonella typhi","Mycobacterium atipik","Proteus"]),
+        q("Antiseptik cara kerja merusak protein & asam nukleat?", 0, ["Hidrogen peroksida","Hibiscrub","Povidon碘in","Hibitane"]),
+        q("Disinfektan yang bisa jadi antiseptik dosis tertentu?", 0, ["Betadine","Handscrub","Byclin","H2O2"]),
+        q("Cara penyucihamaan yang benar?", 0, ["Luar → dalam → luar","Dalam → luar","Luar → dalam","Bebas"]),
+        q("Langkah pertama aseptik sebelum operasi?", 0, ["Dekontaminasi","Disinfeksi","Cuci tangan","Sterilisasi"]),
+      ],
+      flashcards: [
+        fc("Pemanasan kering?","Flaming, incineration"),
+        fc("Pemanasan basah?","Autoclave, boiling, pasteurisasi"),
+        fc("Autoclave?","Sterilisasi >100°C uap bertekanan"),
+        fc("Savlon?","Tidak membunuh HIV & Hepatitis B"),
+        fc("Karbol?","Meningkatkan permeabilitas membran plasma"),
+        fc("Bycline?","Merusak membran sel bakteri"),
+        fc("Uji koefisien fenol?","Gunakan Staphylococcus aureus"),
+        fc("Lisozim?","Enzim air mata, lisis bakteri"),
       ]
     }
   ]
 });
 
-// ============================================================
-// TOPIK 5: EMBRIOLOGI
-// ============================================================
-DB.topics.push({
-  id: "embriologi",
-  name: "Embriologi",
-  icon: "🧬",
-  color: "#6b5b8a",
-  description: "Perkembangan embrio: gastrulasi, osteogenesis, perkembangan vertebra dan ekstremitas.",
-  subtopics: [
+// ──────────────────── FILE 2 ────────────────────
+// MTB UB PAT FN MUSKULOSKELETAL 1.pdf — Anatomi & Histologi
+DB.sources.push({
+  id: "file-2-mtb1",
+  name: "MTB UB PAT FN MUSKULOSKELETAL 1",
+  short: "File 2",
+  fileName: "MTB UB PAT FN MUSKULOSKELETAL 1.pdf",
+  icon: "📘", color: "#1f4b48",
+  desc: "Anatomi (Cranium, Ekstremitas, Myologi, Arthrologi) & Histologi (Tulang, Ossifikasi, Kartilago).",
+  concepts: [
     {
-      id: "embrio-umum",
-      name: "Embriogenesis Umum",
-      concepts: [
-        {
-          id: "gastrulasi",
-          name: "Gastrulasi & 3 Lapisan Germinal",
-          definition: "Pembentukan 3 lapisan germinal (ektoderm, mesoderm, endoderm) pada minggu ke-3 ditandai primitive streak.",
-          keyPoints: [
-            "Gastrulasi: pembentukan 3 lapisan germinal",
-            "Tahap: morula → blastula → gastrula",
-            "Primitive streak = penanda gastrulasi",
-            "Mesoderm → miotom (otot rangka), sklerotom (tulang), dermatom (kulit)",
-            "Otot berasal dari mesoderm (kecuali otot siliaris & sfingter pupil dari ektoderm neural crest)"
-          ],
-          related: [],
-          questions: [
-            q("Diferensiasi organ dimulai pembentukan 3 lapisan germinal pada tahap?", 0, [
-              "Gastrulasi", "Blastulasi", "Morulasi", "Evaginasi", "Invaginasi"
-            ], ["embriologi", "gastrulasi"]),
-            q("Penanda tahap gastrulasi?", 0, [
-              "Primitive streak", "Primitive yolk",
-              "Primitive node", "Primitive groove"
-            ], ["embriologi", "gastrulasi"]),
-            q("Lapisan mesoderm pada somit yang membentuk otot rangka?", 0, [
-              "Miotom", "Sklerotom", "Dermatom", "Mioblas", "Miosit"
-            ], ["embriologi", "gastrulasi"]),
-            q("Pada implantasi hasil pembuahan di uterus, zigot di tahap?", 0, [
-              "Blastula", "Mesoderm", "Endoderm", "Gastrula", "Morula"
-            ], ["embriologi", "gastrulasi"])
-          ],
-          flashcards: [
-            fc("Gastrulasi?", "Pembentukan 3 lapisan germinal (minggu ke-3)"),
-            fc("Penanda gastrulasi?", "Primitive streak"),
-            fc("Miotom?", "Mesoderm → otot rangka"),
-            fc("Sklerotom?", "Mesoderm → tulang")
-          ]
-        },
-        {
-          id: "osteogenesis-embrio",
-          name: "Osteogenesis Embrio",
-          definition: "Pembentukan tulang pada embrio: osifikasi primer di diafisis, sekunder di epifisis.",
-          keyPoints: [
-            "Osifikasi primer: dimulai di diafisis tulang panjang",
-            "Osifikasi vertebra: selesai sekitar usia 25 tahun",
-            "Tunas ekstremitas: minggu 8-9 mulai bentuk jari",
-            "Pusat osifikasi primer femur: di diafisis",
-            "Pertumbuhan tulang kepala (desmal) = intramembranosa"
-          ],
-          related: ["ossifikasi"],
-          questions: [
-            q("Lokasi pusat osifikasi primer pada tulang panjang?", 0, [
-              "Diafisis", "Epifisis", "Metafisis",
-              "Lempeng epifisis", "Kartilago artikular"
-            ], ["embriologi", "osteogenesis"]),
-            q("Osifikasi vertebra selesai pada usia?", 0, [
-              "25 tahun", "10 tahun", "15 tahun", "18 tahun", "21 tahun"
-            ], ["embriologi", "osteogenesis"]),
-            q("Tunas ekstremitas mulai bentuk jari pada minggu?", 0, [
-              "8-9", "3-4", "10-11", "12-13", "14-15"
-            ], ["embriologi", "osteogenesis"]),
-            q("Tulang yang mengalami pengulangan primer pada ekstremitas bawah?", 0, [
-              "Femur", "Radius", "Klavikula", "Humerus", "Tibia"
-            ], ["embriologi", "osteogenesis"])
-          ],
-          flashcards: [
-            fc("Osifikasi primer?", "Dimulai di diafisis tulang panjang"),
-            fc("Osifikasi vertebra selesai?", "~25 tahun"),
-            fc("Tunas ekstremitas bentuk jari?", "Minggu 8-9")
-          ]
-        }
+      id: "f2-cranium",
+      name: "Cranium & Foramen",
+      definition: "Tengkorak (neurocranium), lubang-lubang basis cranii, dan sutura.",
+      keyPoints: [
+        "Neurocranium: frontale, 2 parietale, 2 temporale, occipitale, sphenoidale, ethmoidale",
+        "Os sphenoidale termasuk neurocranium",
+        "Foramen rotundum → N. maxillaris (V2)",
+        "Foramen ovale → N. mandibularis (V3)",
+        "Foramen spinosum → A. meningea media",
+        "Foramen jugulare → N. IX, X, XI",
+        "Foramen magnum → medula oblongata → spinalis",
+        "Meatus acusticus internus → N. VII & VIII",
+        "Sutura coronalis → frontal + parietal",
+        "Sutura lambdoidea → parietal + occipital",
+        "Palatum durum: processus palatinus maxillae + lamina horizontalis ossis palatini",
+        "Os palatina membentuk palatum durum",
+        "Sella turcica → glandula hipofisis"
+      ],
+      questions: [
+        q("Tulang manakah yang termasuk Neurocranium?", 0, ["Os occipitale, parietale, temporale, frontale, sphenoidale, ethmoidale","Os maxillae, mandibula, zygomaticum","Os frontale, parietale, nasale","Os occipitale, temporale, mandibula"]),
+        q("Os manakah yang termasuk neurocranium?", 0, ["Os sphenoidale","Os maxillaris","Os zygomaticum","Os patella"]),
+        q("Pada basis cranii foramen rotundum. Nervus yang keluar?", 0, ["N. maxillaris (V2)","N. mandibularis (V3)","N. ophthalmicus (V1)","N. facialis (VII)"]),
+        q("Meatus acusticus internus tempat keluar nervus?", 0, ["N. VII & VIII","N. V & VI","N. IX & X","N. III & IV"]),
+        q("Lubang tempat keluar nervus IX, X, XI?", 0, ["Foramen jugulare","Foramen magnum","Foramen ovale","Foramen spinosum"]),
+        q("Arteri meningea media masuk melalui?", 0, ["Foramen spinosum","Foramen ovale","Foramen rotundum","Foramen magnum"]),
+        q("Tempat medula oblongata jadi medula spinalis?", 0, ["Foramen magnum","Foramen jugulare","Foramen ovale","Canalis opticus"]),
+        q("Glandula hipofisis terletak di?", 0, ["Sella turcica","Fossa cranii anterior","Fossa condylaris","Fossa jugularis"]),
+        q("Sendi antara os parietalis dan os frontalis?", 0, ["Sutura coronalis","Sutura sagittalis","Sutura lambdoidea","Sutura squamosa"]),
+        q("Sendi antara Os parietale dan Os occipitale?", 0, ["Sutura lambdoidea","Sutura coronalis","Atlantooccipitalis","Sutura sagitalis"]),
+        q("Tulang yang membangun palatum durum?", 0, ["Os palatina","Os nasal","Os mandibula","Os lacrimale"]),
+        q("Sendi antara os mandibula dan cranium?", 0, ["TMJ","Atlantooccipitalis","Atlantoaxialis","Symphysis mandibulae"]),
+        q("Hubungan antar corpus vertebra?", 0, ["Discus intervertebralis","Zygapophysialis","Lig. flavum","Symphysis pubis"]),
+        q("Otot mastikasi meliputi?", 0, ["Temporalis, masseter, pterygoideus lat & med","Buccinator, orbicularis oris","SCM, trapezius","Digastricus, mylohyoideus"]),
+        q("Jumlah nervi cervicales?", 0, ["8 pasang","5 pasang","7 pasang","12 pasang"]),
+        q("Foramen transversarium dilewati?", 0, ["A. vertebralis","A. carotis interna","N. spinalis","A. basilaris"]),
+        q("N. spinalis keluar melalui?", 0, ["Foramen intervertebrale","Foramen transversarium","Foramen vertebrale","Canalis centralis"]),
+        q("Angulus sternalis (Ludovici) patokan costa?", 0, ["Costa II","Costa I","Costa III","Costa VII"]),
+        q("Costa spuria fluctuantes?", 0, ["Costa XI","Costa I","Costa II","Costa VII"]),
+        q("Kumpulan badan sel saraf di luar SSP?", 0, ["Ganglion","Efektor","Nervus","Soma cell"]),
+        q("Jaringan ikat sekitar 1 fasciculus?", 0, ["Perimysium","Endomysium","Epimysium","Sarkolema"]),
+        q("Bagian perut otot seran lintang?", 0, ["Venter","Caput","Origo","Insertio"]),
+      ],
+      flashcards: [
+        fc("Neurocranium?","8 tulang: frontal, 2 parietal, 2 temporal, occipital, sphenoid, ethmoid"),
+        fc("Foramen rotundum?","N. maxillaris (V2)"),
+        fc("Foramen jugulare?","N. IX, X, XI"),
+        fc("Sutura coronalis?","Frontal + parietal"),
+        fc("Palatum durum?","Os palatina"),
+        fc("Jumlah nervi cervicales?","8 pasang"),
+        fc("Foramen transversarium?","A. vertebralis"),
+        fc("Costa spuria fluctuantes?","Costa XI"),
+        fc("Otot mastikasi?","Temporalis, masseter, pterygoideus"),
+        fc("TMJ?","Temporomandibular joint"),
+        fc("Discus intervertebralis?","Hubungan antar corpus vertebra"),
+        fc("Perimysium?","Jaringan ikat sekitar fasciculus"),
+        fc("Venter?","Bagian perut otot"),
       ]
-    }
-  ]
-});
-
-// ============================================================
-// TOPIK 6: BIOMEKANIKA
-// ============================================================
-DB.topics.push({
-  id: "biomekanika",
-  name: "Biomekanika",
-  icon: "⚙️",
-  color: "#2c5f7a",
-  description: "Prinsip fisika dalam tubuh: momentum, keseimbangan, tuas, traksi.",
-  subtopics: [
+    },
     {
-      id: "biomek-umum",
-      name: "Prinsip Biomekanika",
-      concepts: [
-        {
-          id: "keseimbangan-momentum",
-          name: "Keseimbangan & Momentum",
-          definition: "Penerapan hukum fisika Newton dan prinsip keseimbangan pada tubuh manusia.",
-          keyPoints: [
-            "Keseimbangan stabil: pusat gravitasi di dalam benda, permukaan luas",
-            "Keseimbangan labil: pusat gravitasi di luar benda",
-            "Helm dengan bantalan → aplikasi momentum",
-            "Traksi kulit/kaki → aplikasi biomekanika ortopedi",
-            "Angkat barbel: tuas kelas III"
-          ],
-          related: [],
-          questions: [
-            q("Keseimbangan menjadi labil saat?", 0, [
-              "Pusat gravitasi di luar benda",
-              "Pusat gravitasi di dalam benda",
-              "Permukaan lebih luas",
-              "Kontak lebih luas",
-              "Pusat gravitasi lebih rendah"
-            ], ["biomekanika", "keseimbangan"]),
-            q("Yang bukan cara membuat keseimbangan lebih stabil?", 0, [
-              "Membungkuk", "Memegang tongkat",
-              "Berjongkok", "Membuka kaki lebar",
-              "Membuka tangan (T pose)"
-            ], ["biomekanika", "keseimbangan"]),
-            q("Mengangkat barbel termasuk tuas kelas?", 0, [
-              "III", "I", "II", "IV", "V"
-            ], ["biomekanika", "keseimbangan"]),
-            q("Penggunaan helm bantalan merupakan penerapan?", 0, [
-              "Momentum", "Tuas kelas I", "Tuas kelas II",
-              "Tuas kelas III", "Traksi"
-            ], ["biomekanika", "keseimbangan"]),
-            q("Pernyataan benar tentang otot (biomekanika)?", 0, [
-              "Massa otot pria lansia > wanita lansia",
-              "Otot membentuk 70% massa tubuh",
-              "Otot mengubah energi kinetik jadi kimia",
-              "Massa otot wanita lansia > pria lansia"
-            ], ["biomekanika", "keseimbangan"]),
-            q("Penerapan biomekanika dalam ortopedi?", 0, [
-              "Traksi kulit untuk fraktur kaki",
-              "Penambahan beban agar lurus",
-              "Membungkus tulang fraktur",
-              "Operasi cepat"
-            ], ["biomekanika", "keseimbangan"])
-          ],
-          flashcards: [
-            fc("Keseimbangan labil?", "Pusat gravitasi di luar benda"),
-            fc("Helm bantalan?", "Aplikasi momentum"),
-            fc("Angkat barbel?", "Tuas kelas III")
-          ]
-        }
+      id: "f2-ekstremitas",
+      name: "Anatomi Ekstremitas",
+      definition: "Anatomi ekstremitas atas & bawah termasuk persarafan, pembuluh darah, dan area topografis.",
+      keyPoints: [
+        "Plexus brachialis: C5-Th1",
+        "Fasc. posterior → N. radialis, fasc. medialis → N. ulnaris",
+        "Erb-Duchenne palsy: C5-C6 → waiter's tip",
+        "Klumpke palsy: C8-Th1 → claw hand",
+        "Winged scapula: N. thoracicus longus",
+        "Wrist drop: N. radialis (Saturday night palsy)",
+        "Claw hand: N. ulnaris",
+        "N. axillaris → kulit lateral bahu",
+        "M. pectoralis minor membagi a. axillaris",
+        "V. mediana cubiti di fossa cubiti",
+        "A. radialis di lateral M. flexor carpi radialis",
+        "Refleks biceps: C5-C6",
+        "Trigonum femorale: sup=lig.inguinale, lat=m.sartorius, med=m.adductor longus",
+        "Isi trigonum (lat→med): nervus, arteri, vena",
+        "N. ischiadicus → n. tibialis & n. peroneus communis",
+        "Foot drop: n. peroneus communis di collum fibulae",
+        "First web space: n. peroneus profundus",
+        "Tendon Achilles: m. gastrocnemius + m. soleus",
+        "V. saphena magna → v. femoralis",
+        "V. saphena parva → v. poplitea",
+        "Hunter's canal: dilewati a.femoralis, v.femoralis, n.saphenus (BUKAN n.femoralis)",
+        "A. circumflexa femoris medialis → nekrosis caput femoris jika rusak",
+        "N. ischiadicus keluar via for. ischiadicum majus pars infrapiriformis"
+      ],
+      questions: [
+        q("Winged scapula, saraf yang jejas?", 0, ["N. thoracicus longus","N. axillaris","N. suprascapularis","N. dorsalis scapulae"]),
+        q("Abduksi lengan 15° pertama?", 0, ["M. supraspinatus","M. deltoideus","M. infraspinatus","M. teres minor"]),
+        q("Erb-Duchenne palsy (C5-C6)?", 0, ["Waiter's tip","Claw hand","Wrist drop","Carpal tunnel"]),
+        q("Klumpke palsy (C8-Th1)?", 0, ["Claw hand","Waiter's tip","Wrist drop","Saturday night"]),
+        q("Wrist drop lesi?", 0, ["N. radialis","N. medianus","N. ulnaris","N. musculocutaneus"]),
+        q("Claw hand lesi kronis?", 0, ["N. ulnaris","N. medianus","N. radialis","N. axillaris"]),
+        q("Parestesia jari ke-5?", 0, ["N. ulnaris","N. medianus","N. radialis","N. cutaneus antebrachii"]),
+        q("Nervus di epicondylus medialis?", 0, ["N. ulnaris","N. radialis","N. musculocutaneus","N. axillaris"]),
+        q("Pembagi arteri axillaris?", 0, ["M. pectoralis minor","M. pectoralis major","M. teres major","Clavicula"]),
+        q("Vena di fossa cubiti hubungkan cephalica & basilica?", 0, ["V. mediana cubiti","V. axillaris","V. brachialis","V. saphena magna"]),
+        q("Fraktur collum chirurgicum humeri risiko?", 0, ["N. axillaris & A. circumflexa humeri post.","N. radialis & A. profunda brachii","N. ulnaris","N. medianus"]),
+        q("A. radialis di lateral tendon?", 0, ["M. flexor carpi radialis","M. flexor carpi ulnaris","M. palmaris longus","M. brachioradialis"]),
+        q("Nervus kulit lateral bahu?", 0, ["N. cutaneus superior lateral","N. axillaris","N. radialis","N. suprascapularis"]),
+        q("Pemeriksaan refleks biceps (segmen)?", 0, ["C5-C6","C4-C5","C6-C7","C8-T1"]),
+        q("Batas lateral trigonum femorale?", 0, ["M. sartorius","M. adductor longus","Lig. inguinale","M. pectineus"]),
+        q("Batas superior trigonum femorale?", 0, ["Ligamentum inguinale","M. sartorius","M. adductor longus","M. pectineus"]),
+        q("Batas medial trigonum femorale?", 0, ["M. adductor longus","M. sartorius","Lig. inguinale","M. rectus femoris"]),
+        q("Isi trigonum femorale (lateral→medial)?", 0, ["Nervus – arteri – vena","Arteri – vena – nervus","Vena – arteri – nervus","Arteri – nervus – vena"]),
+        q("Tendon Achilles dibentuk?", 0, ["M. gastrocnemius & soleus","M. tibialis posterior & soleus","M. peroneus longus & brevis","M. flexor hallucis longus"]),
+        q("Percabangan n. ischiadicus?", 0, ["N. tibialis & peroneus communis","N. peroneus superfisial & profunda","N. tibialis & femoralis","N. femoralis & pudendus"]),
+        q("N. tibialis menginervasi kompartemen?", 0, ["Posterior tungkai bawah","Anterior tungkai bawah","Lateral tungkai bawah"]),
+        q("Foot drop lesi saraf di collum fibulae?", 0, ["N. peroneus (fibularis) communis","N. tibialis","N. saphenus","N. suralis"]),
+        q("First web space inervasi?", 0, ["N. peroneus profundus","N. peroneus superficialis","N. tibialis","N. saphenus"]),
+        q("Tidak melewati Hunter's Canal?", 0, ["N. femoralis","A. femoralis","V. femoralis","N. saphenus"]),
+        q("Fraktur collum femoris sebabkan nekrosis?", 0, ["A. circumflexa femoris medialis","A. obturatoria","A. circumflexa femoris lateralis","A. profunda femoris"]),
+        q("N. ischiadicus keluar pelvis via?", 0, ["For. ischiadicum majus pars infrapiriformis","For. ischiadicum majus pars suprapiriformis","For. ischiadicum minus","Canalis obturatorius"]),
+        q("Flexor utama panggul?", 0, ["M. iliopsoas","M. rectus femoris","M. sartorius","M. gracilis"]),
+        q("Otot adductor paling posterior?", 0, ["M. adductor magnus","M. adductor brevis","M. adductor longus","M. pectineus"]),
+        q("Unlocking lutut saat fleksi?", 0, ["M. popliteus","M. plantaris","M. gastrocnemius","M. soleus"]),
+        q("V. saphena magna bermuara ke?", 0, ["V. femoralis","V. poplitea","V. iliaca externa","V. tibialis posterior"]),
+        q("V. saphena parva bermuara ke?", 0, ["V. poplitea","V. femoralis","V. iliaca externa","V. tibialis posterior"]),
+        q("Trendelenburg sign positif → kelumpuhan?", 0, ["M. gluteus medius; N. gluteus superior","M. gluteus maximus","M. piriformis","M. quadriceps"]),
+        q("A. poplitea kelanjutan a. femoralis setelah?", 0, ["Hiatus adductorius","Trigonum femorale","Canalis inguinalis","Lacuna musculorum"]),
+        q("Otot hamstring?", 0, ["Biceps femoris, semitendinosus, semimembranosus","Rectus femoris, vastus","Sartorius, gracilis","Adductor magnus, longus"]),
+        q("Otot tailor (fleksi, abduksi, eksorotasi, fleksi lutut)?", 0, ["M. sartorius","M. gracilis","M. rectus femoris","M. tensor fasciae latae"]),
+        q("Otot rotator cuff rotasi internal?", 0, ["M. subscapularis","M. supraspinatus","M. infraspinatus","M. teres minor"]),
+      ],
+      flashcards: [
+        fc("Erb-Duchenne?","C5-C6 → waiter's tip"),
+        fc("Klumpke?","C8-Th1 → claw hand"),
+        fc("Winged scapula?","N. thoracicus longus"),
+        fc("Wrist drop?","N. radialis (Saturday night)"),
+        fc("Claw hand?","N. ulnaris"),
+        fc("Pembagi a. axillaris?","M. pectoralis minor"),
+        fc("V. mediana cubiti?","Fossa cubiti, hubung cephalica-basilica"),
+        fc("Trigonum femorale?","Sup=lig.inguinale, lat=m.sartorius, med=m.adductor longus"),
+        fc("Isi trigonum (lat→med)?","Nervus-Arteri-Vena (NAV)"),
+        fc("Tendon Achilles?","Gastrocnemius + soleus"),
+        fc("Foot drop?","N. peroneus communis di collum fibulae"),
+        fc("First web space?","N. peroneus profundus"),
+        fc("V. saphena magna →?","V. femoralis"),
+        fc("V. saphena parva →?","V. poplitea"),
+        fc("Hunter's canal tidak dilewati?","N. femoralis"),
+        fc("Hamstring?","Biceps femoris, semitendinosus, semimembranosus"),
+        fc("Refleks biceps?","C5-C6"),
+        fc("M. popliteus?","Unlocking lutut"),
+      ]
+    },
+    {
+      id: "f2-histologi",
+      name: "Histologi Tulang & Kartilago",
+      definition: "Jaringan tulang (osteon, sel tulang, ossifikasi, woven bone) dan kartilago.",
+      keyPoints: [
+        "Osteon = sistem Havers = unit dasar tulang kompak",
+        "Lamella interstitialis: di antara osteon, BUKAN bagian osteon",
+        "Lamella circumferentia externa: dekat periosteum",
+        "Kanal Volkmann: hubungkan antar kanal Havers (tegak lurus)",
+        "Canaliculi ossei: hubungkan antar lacuna",
+        "Osteoblas: kuboid basofilik, mensekresi osteoid",
+        "Osteosit: sel matang di lakuna, tonjolan di kanalikuli",
+        "Osteoklas: raksasa multinukleus di Lakuna Howship, resorpsi",
+        "Osteoid: matriks organik belum termineralisasi",
+        "Woven bone: kolagen tidak teratur, di cement akar gigi",
+        "Serabut Sharpey: lekatkan periosteum ke tulang",
+        "Periosteum: jaringan ikat padat luar tulang",
+        "Ossifikasi intramembranosa: mesenkim → tulang (tengkorak)",
+        "Ossifikasi endokondral: kartilago hialin → tulang panjang",
+        "Zona proliferasi: kondrosit tumpukan koin, mitosis aktif",
+        "Zona kalsifikasi: kartilago mengapur, kondrosit degenerasi",
+        "Kartilago hyalin: trakea, bronkus, ventral costae",
+        "Kartilago elastis: epiglotis, telinga luar",
+        "Kartilago fibrosa: simfisis pubis, discus intervertebralis"
+      ],
+      questions: [
+        q("Struktur yang TIDAK termasuk osteon?", 0, ["Lamella interstitialis","Osteosit","Lamella osteoni","Canalis centralis"]),
+        q("Struktur tidak termasuk osteonum?", 0, ["Lamella interstitial","Canalis havers","Lamella osteoni","Osteocytus"]),
+        q("Preparat tulang kompak: lingkaran konsentris + saluran tengah?", 0, ["Osteon (sistem Havers)","Lakuna","Kanalikuli","Trabekula"]),
+        q("Lamella di dekat periosteum?", 0, ["Lamella circumferentia externa","Lamella osteoni","Lamella interstitialis","Lamella circumferentia interna"]),
+        q("Saluran tegak lurus hubungkan kanal Havers?", 0, ["Kanal Volkmann","Kanalikuli","Lakuna","Lamela sirkumferensial"]),
+        q("Juluran sitoplasma osteosit hubungkan lacuna?", 0, ["Canaliculi ossei","Serat Sharpey","Lamella osteoni","Lamella circumferentia"]),
+        q("Sel besar di Lakuna Howship?", 0, ["Osteoklas","Osteosit","Osteoprogenitor","Osteoblas"]),
+        q("Osteoporosis, sel raksasa multinukleus di Howship. Fungsi?", 0, ["Resorpsi tulang","Sintesis kolagen","Produksi osteoid","Mineralisasi"]),
+        q("Fraktur humerus, sel kuboid mensekresi osteoid?", 0, ["Osteoblas","Osteosit","Osteoklas","Kondrosit"]),
+        q("Ciri osteoblas di tepi trabekula?", 0, ["Sitoplasma basofilik","Menyebar di matriks","Tidak punya tonjolan","Nukleus kecil"]),
+        q("Sel di lakuna dengan tonjolan di kanalikuli?", 0, ["Osteosit","Osteoblas","Osteoklas","Fibroblas"]),
+        q("Sel tulang matang?", 0, ["Osteosit","Osteoklas","Osteoblas","Osteoprogenitor"]),
+        q("Karakteristik osteoid?", 0, ["Diproduksi osteoblas","Berisi kolagen tipe II","Komponen cellular tulang","Berada di Howship"]),
+        q("Matriks organik tulang sebelum mineralisasi?", 0, ["Osteoid","Osteon","Lakuna","Kanalikuli"]),
+        q("Karakteristik woven bone?", 0, ["Ditemukan di cement akar gigi","Kolagen teratur","Membentuk Havers","Banyak sel & teratur"]),
+        q("Tulang embrio: serabut kolagen tidak teratur?", 0, ["Woven bone","Tulang kompak","Lamellar bone","Osteon"]),
+        q("Pernyataan benar tentang remodelling?", 0, ["Dipengaruhi hormon & gravitasi","Osteoklas > osteoblas","Osteoklas menyusun tulang","Hard callus jadi soft"]),
+        q("Serabut Sharpey fungsinya?", 0, ["Melekatkan periosteum ke tulang","Hematopoiesis","Hubungkan osteon","Bentuk osteoid"]),
+        q("Biopsi: jaringan ikat padat luar tulang, lapisan osteogenik?", 0, ["Periosteum","Endosteum","Perikondrium","Osteoid"]),
+        q("Ossifikasi tengkorak (langsung dari mesenkim)?", 0, ["Intramembranosa","Endokondral","Intrakartilaginea","Perikondral"]),
+        q("Kondrosit tumpukan koin di lempeng epifisis?", 0, ["Zona proliferasi","Zona istirahat","Zona hipertrofi","Zona kalsifikasi"]),
+        q("Kartilago mengapur, kondrosit degenerasi?", 0, ["Zona kalsifikasi","Zona istirahat","Zona proliferasi","Zona osifikasi"]),
+        q("Kartilago dengan serat elastis di epiglotis?", 0, ["Kartilago elastis","Kartilago hyalin","Kartilago fibrosa","Textus osseus"]),
+        q("Jaringan di simfisis pubis?", 0, ["Cartilago fibrosa","Cartilago elastica","Cartilago hyalina","Textus osseus"]),
+        q("Chondrosit dalam lacuna (kartilago elastis)?", 0, ["Chondrocyte","Fibroblas","Osteocyte","Sel mesenkim"]),
+        q("Asal mesenkim pembentuk kartilago?", 0, ["Stratum chondrogenicum perichondrium","Stratum fibrosum","Matriks teritorialis","Perimysium"]),
+        q("Struktur hubungkan antar lacuna?", 0, ["Canaliculi","Lamella interstitial","Osteoklas","Osteoid"]),
+      ],
+      flashcards: [
+        fc("Osteon?","Unit dasar tulang kompak (sistem Havers)"),
+        fc("Lamella interstitialis?","Antar osteon, BUKAN bagian osteon"),
+        fc("Kanal Volkmann?","Hubungkan Havers, tegak lurus"),
+        fc("Osteoblas?","Bentuk osteoid, basofilik"),
+        fc("Osteoklas?","Resorpsi tulang di Lakuna Howship"),
+        fc("Woven bone?","Di cement akar gigi, kolagen tak teratur"),
+        fc("Osifikasi intramembranosa?","Mesenkim→tulang (tengkorak)"),
+        fc("Zona proliferasi?","Kondrosit tumpukan koin, mitosis"),
+        fc("Periosteum?","Ikat padat luar tulang"),
+        fc("Serabut Sharpey?","Levatkan periosteum ke tulang"),
+        fc("Discus articularis?","Membagi rongga sendi diarthrosis"),
+        fc("Enarthrosis?","Sendi peluru"),
+        fc("Simfisis pubis?","Fibrocartilago"),
+        fc("Kartilago elastis?","Epiglotis, telinga luar"),
       ]
     }
   ]
 });
 
-// ============================================================
-// ALL QUESTIONS FLAT LIST (for quiz/tryout)
-// ============================================================
+// ──────────────────── FILE 3 ────────────────────
+// PAT MUSKULO 2.pdf — Fisiologi, Mikrobiologi, Embriologi
+DB.sources.push({
+  id: "file-3-pat2",
+  name: "PAT MUSKULO 2",
+  short: "File 3",
+  fileName: "PAT MUSKULO 2.pdf",
+  icon: "📗", color: "#a8442f",
+  desc: "Fisiologi otot (ATP, kontraksi), mikrobiologi (desinfeksi), embriologi.",
+  concepts: [
+    {
+      id: "f3-fisiologi",
+      name: "Fisiologi Otot & Metabolisme",
+      definition: "Mekanisme kontraksi otot, sumber energi, dan neuromuscular junction.",
+      keyPoints: [
+        "NMJ: potensial aksi → Ca²⁺ masuk terminal → ACh lepas → depolarisasi end plate",
+        "Relaksasi: Ca²⁺ dikembalikan ke retikulum sarkoplasma",
+        "Sumber energi 10 detik pertama: fosfokreatin",
+        "Glikolisis: glukosa → 2 piruvat → 2 laktat (+2 ATP)",
+        "1 mol glukosa aerob = 32 ATP",
+        "Sarkomer: dari garis Z ke garis Z",
+        "Saat kontraksi: pita I & zona H memendek, pita A tetap",
+        "Diameter aktin = 6nm, miosin = 16nm",
+        "Fase 0 jantung: pembukaan saluran Na⁺ cepat",
+        "Kalmodulin: aktivasi MLCK pada otot polos",
+        "Otot jantung: discus intercalatus, bercabang, inti 1-2 tengah",
+        "Otot polos: fusiform, inti 1 tengah, tidak striasi"
+      ],
+      questions: [
+        q("Enzim mitokondria hasilkan 3 ATP?", 0, ["Oxoglutarate dehydrogenase","Succinate dehydrogenase","Malate dehydrogenase","Pyruvate kinase"]),
+        q("ATP dari 1 mol glukosa (aerob)?", 0, ["32 ATP","2 ATP","8 ATP","16 ATP"]),
+        q("Struktur yang menjadi batas sarkomer?", 0, ["Garis Z","Pita A","Pita I","Garis M"]),
+        q("Saat kontraksi bagian mana memendek?", 0, ["Zona H","Pita A","Aktin","Miosin"]),
+        q("Diameter filamen tipis (aktin)?", 0, ["6 nm","0,6 nm","16 nm","60 nm"]),
+        q("Proses akhir kontraksi tunggal?", 0, ["Ca²⁺ kembali ke retikulum sarkoplasma","ACh dilepas","Reseptor dihidropirin kembali","Ca²⁺ dilepas"]),
+        q("Perbedaan otot halus multi-unit vs unitary?", 0, ["Multi-unit: kontraksi independen","Unitary: kontraksi independen","Tidak ada perbedaan","Multi-unit: kontraksi bersama"]),
+        q("Ciri otot halus (intestinum tenue)?", 0, ["Fusiform, inti 1 tengah, tidak striasi","Silindris, inti banyak tepi","Bercabang, discus intercalatus","Kuboid, inti bulat"]),
+        q("Apa itu syncytium pada otot jantung?", 0, ["Sel otot jantung berfungsi sebagai satu kesatuan","Setiap sel bekerja independen","Sel tidak berhubungan","Tidak punya discus intercalatus"]),
+        q("Fungsi kalmodulin?", 0, ["Aktifkan Myosin Light Chain Kinase","Naikkan Ca²⁺","Sinyal kontraksi","Mulai kontraksi"]),
+        q("Enzim kunci piruvat → asetil-KoA?", 0, ["Piruvat dehydrogenase","Laktat dehydrogenase","Piruvat kinase","Fosfat mutase"]),
+      
+        q("Reaksi glukosa → PEP hasilkan energi?", 0, ["+7 ATP","+1 ATP","+2 ATP","+5 ATP"]),
+        q("Sel buatan K⁺ dimasukkan dalam Na⁺ Cl⁻, potensial ekuilibrium Cl⁻?", 0, ["Menjadi negatif","Menjadi nol","Menjadi positif","Tidak berubah"]),
+        q("Fakta benar tentang otot lansia?", 0, ["Massa otot pria > wanita","Massa otot wanita > pria","Otot 70% massa tubuh","Otot ubah kinetik jadi kimia"]),
+      ],
+      flashcards: [
+        fc("NMJ?","Aksi saraf → Ca²⁺ masuk → ACh lepas → depolarisasi"),
+        fc("Energi 10 detik pertama?","Fosfokreatin"),
+        fc("ATP per glukosa aerob?","32 ATP"),
+        fc("Batas sarkomer?","Garis Z ke Z"),
+        fc("Otot jantung?","Discus intercalatus, bercabang"),
+        fc("Kalmodulin?","Aktifkan MLCK"),
+        fc("Oxoglutarate dehydrogenase?","3 ATP"),
+      ]
+    },
+    {
+      id: "f3-embrio-mikro",
+      name: "Embriologi & Mikrobiologi",
+      definition: "Embriogenesis (gastrulasi, implantasi) dan mikrobiologi (desinfeksi, koefisien fenol).",
+      keyPoints: [
+        "Gastrulasi: pembentukan 3 lapisan germinal (ektoderm, mesoderm, endoderm)",
+        "Penanda gastrulasi: primitive streak",
+        "Blastula: tahap implantasi di uterus",
+        "Mesoderm → miotom (otot), sklerotom (tulang), dermatom (kulit)",
+        "Bakteri uji koefisien fenol: Staphylococcus aureus",
+        "Pemanasan kering: flaming",
+        "Desinfektan tingkatkan permeabilitas: karbol",
+        "Savlon: tidak bunuh HIV & Hepatitis B"
+      ],
+      questions: [
+        q("Diferensiasi organ mulai pembentukan 3 lapisan germinal?", 0, ["Gastrulasi","Blastulasi","Morulasi","Evaginasi"]),
+        q("Penanda gastrulasi?", 0, ["Primitive streak","Primitive yolk","Primitive node","Primitive groove"]),
+        q("Mesoderm → otot rangka?", 0, ["Miotom","Sklerotom","Dermatom","Mioblas"]),
+        q("Implantasi hasil pembuahan zigot di tahap?", 0, ["Blastula","Mesoderm","Endoderm","Gastrula"]),
+        q("Bakteri untuk uji koefisien fenol?", 0, ["Staphylococcus aureus","Salmonella typhi","Bacillus subtilis","E. coli"]),
+        q("Termasuk pemanasan kering?", 0, ["Flaming","Autoclave","Pasteurisasi","Radiasi"]),
+        q("Desinfektan tingkatkan permeabilitas membran?", 0, ["Karbol","Etanol","Klorin","Formalin"]),
+        q("Desinfektan tidak bunuh HIV & Hepatitis B?", 0, ["Savlon","Betadin","Klorin","Etanol"]),
+        q("Waktu efektif dekontaminasi HIV/Hepatitis B?", 0, ["10 menit","5 menit","15 menit","30 menit"]),
+      ],
+      flashcards: [
+        fc("Gastrulasi?","Pembentukan 3 lapisan germinal"),
+        fc("Primitive streak?","Penanda gastrulasi"),
+        fc("Miotom?","Mesoderm → otot"),
+        fc("Blastula?","Tahap implantasi"),
+        fc("Uji koefisien fenol?","Gunakan S. aureus"),
+        fc("Pemanasan kering?","Flaming"),
+        fc("Savlon?","Tidak bunuh HIV & Hepatitis B"),
+      ]
+    }
+  ]
+});
+
+// ──────────────────── FILE 4 ────────────────────
+// MARTABAK UB SUMATIF 2 BLOK MUSKULOSKELETAL.pdf
+DB.sources.push({
+  id: "file-4-sumatif2",
+  name: "MARTABAK UB SUMATIF 2",
+  short: "File 4",
+  fileName: "MARTABAK UB SUMATIF 2.pdf",
+  icon: "📕", color: "#2c5f7a",
+  desc: "Biomekanika, Fisiologi Otot, Mikrobiologi, Histologi, Embriologi — Soal Sumatif 2.",
+  concepts: [
+    {
+      id: "f4-biomekanika",
+      name: "Biomekanika & Keseimbangan",
+      definition: "Penerapan prinsip fisika: momentum, keseimbangan, tuas, traksi.",
+      keyPoints: [
+        "Keseimbangan labil: pusat gravitasi di luar benda",
+        "Stabil: pusat gravitasi di dalam, permukaan luas, pusat gravitasi rendah",
+        "Helm bantalan: aplikasi momentum",
+        "Angkat barbel: tuas kelas III",
+        "Traksi kulit untuk fraktur: aplikasi biomekanika ortopedi",
+        "Membungkuk bukan cara membuat keseimbangan stabil"
+      ],
+      questions: [
+        q("Keseimbangan labil saat?", 0, ["Pusat gravitasi di luar benda","Pusat gravitasi di dalam","Permukaan luas","Kontak luas"]),
+        q("Bukan cara membuat keseimbangan lebih stabil?", 0, ["Membungkuk","Memegang tongkat","Berjongkok","Buka kaki lebar"]),
+        q("Mengangkat barbel tuas kelas?", 0, ["III","I","II","IV"]),
+        q("Helm bantalan penerapan?", 0, ["Momentum","Tuas I","Tuas II","Traksi"]),
+        q("Yang bukan keseimbangan stabil?", 0, ["Pusat gravitasi di luar benda","Pusat gravitasi di dalam","Kuasa luas","Permukaan luas"]),
+        q("Mengapa otot kontraksi massanya bertambah?", 0, ["Aliran darah meningkat","Sarkomer memendek","Hipertrofi serabut","Filamen menebal"]),
+        q("Cara seimbang saat diserang dari kejauhan?", 0, ["Berdiri kaki dibuka lebar, tangan siap","Berdiri 1 kaki","Tangan diatas","Tubuh berotasi"]),
+        q("Penerapan biomekanika dalam ortopedi?", 0, ["Traksi kulit untuk fraktur","Penambahan beban","Bungkus tulang fraktur","Operasi cepat"]),
+        q("Penerapan fisika momentum?", 0, ["Helm olahraga beladiri","Body alignment","Traksi kulit","Kursi ergonomis"]),
+      ],
+      flashcards: [
+        fc("Keseimbangan labil?","Pusat gravitasi di luar benda"),
+        fc("Helm bantalan?","Aplikasi momentum"),
+        fc("Angkat barbel?","Tuas kelas III"),
+        fc("Traksi kulit?","Biomekanika ortopedi"),
+      ]
+    },
+    {
+      id: "f4-fisiologi",
+      name: "Fisiologi Otot Lanjutan",
+      definition: "Kontraksi otot, NMJ, potensial aksi jantung, dan jenis otot.",
+      keyPoints: [
+        "NMJ: Ca²⁺ masuk terminal → ACh lepas → depolarisasi end plate",
+        "Relaksasi: Ca²⁺ kembali ke retikulum sarkoplasma (Ca²⁺ ATPase)",
+        "Fase 0 potensial aksi jantung: Na⁺ cepat masuk",
+        "Kalmodulin-Ca²⁺ aktivasi MLCK",
+        "Otot rangka hipertrofi: peningkatan jumlah sarkomer paralel",
+        "Otot jantung: discus intercalatus, gap junction (syncytium)",
+        "Sumber energi: fosfokreatin (10 detik pertama), glikolisis, oksidasi"
+      ],
+      questions: [
+        q("Proses di NMJ?", 0, ["Ca²⁺ masuk terminal → ACh lepas → depolarisasi end plate","Depolarisasi end plate → ACh lepas","ACh lepas → aksi saraf","Ca²⁺ masuk end plate → aksi otot"]),
+        q("Penyebab fase 0 potensial aksi jantung?", 0, ["Pembukaan saluran Na⁺ cepat","Penutupan saluran Na⁺ lambat","Pembukaan saluran K⁺ cepat","Masuknya Ca²⁺"]),
+        q("Fungsi ATP untuk relaksasi?", 0, ["Ca²⁺ ATPase","Na⁺ K⁺ ATPase","Miosin ATPase","Fosforilasi oksidatif"]),
+        q("ATP digunakan kontraksi otot pada?", 0, ["Miosin ATPase","Na⁺ K⁺ ATPase","Ca²⁺ ATPase","Fosforilasi oksidatif"]),
+        q("Hipertrofi otot angkat beban?", 0, ["Peningkatan jumlah sarkomer paralel","Peningkatan fast twitch","Aktivasi ATPase miosin","Peningkatan panjang serabut"]),
+        q("Hasil ketidakseimbangan laju aktivitas otot dan oksigenasi?", 0, ["Laktat","Piruvat","Asetil-KoA","Glukosa"]),
+      
+        q("Succinate-CoA ligase hasilkan energi?", 0, ["+1 ATP","+2 ATP","+3 ATP","+5 ATP"]),
+        q("Diamater F-actin?", 0, ["6 nanometer","0,6 nanometer","60 nanometer","16 nanometer"]),
+      ],
+      flashcards: [
+        fc("Fase 0 jantung?","Na⁺ cepat masuk"),
+        fc("Relaksasi?","Ca²⁺ ATPase → Ca²⁺ ke retikulum sarkoplasma"),
+        fc("Hipertrofi otot?","Peningkatan sarkomer paralel"),
+        fc("Produk anaerob?","Laktat"),
+      ]
+    }
+  ]
+});
+
+// ──────────────────── FILE 5 ────────────────────
+// MTB UB 2 FNMS CALVARIA.pdf — Campuran
+DB.sources.push({
+  id: "file-5-calvaria",
+  name: "MTB UB 2 FNMS CALVARIA",
+  short: "File 5",
+  fileName: "MTB UB 2 FNMS CALVARIA.pdf",
+  icon: "📙", color: "#6b5b8a",
+  desc: "Biomekanika, Fisiologi Otot, Mikrobiologi, Histologi, Embriologi — Soal Calvaria.",
+  concepts: [
+    {
+      id: "f5-fisiologi",
+      name: "Fisiologi Otot & Energi",
+      definition: "Mekanisme kontraksi, metabolisme energi otot, dan potensial aksi.",
+      keyPoints: [
+        "Relaksasi: Ca²⁺ dikembalikan ke retikulum sarkoplasma",
+        "Saat kontraksi: Zona H memendek, pita A tetap",
+        "Struktur sarkomer: dari garis Z ke Z",
+        "10 detik pertama: fosfokreatin",
+        "Oksigen sebagai akseptor elektron terakhir",
+        "Glikolisis anaerob: 2 ATP, tidak efisien",
+        "Peningkatan frekuensi rangsangan → tingkatkan gaya otot"
+      ],
+      questions: [
+        q("Bagian yang memendek saat kontraksi?", 0, ["Zona H","Pita A","Aktin","Miosin"]),
+        q("Fungsi oksigen dalam fosforilasi oksidatif?", 0, ["Akseptor elektron terakhir","Donor elektron","Ikat ATP jadi ADP","Hambat RTE"]),
+        q("Mengapa jalur asam laktat tidak efisien?", 0, ["Hanya 2 ATP, tanpa NADH tambahan","Tidak pakai glukosa","Lebih banyak NADH","Laktat masuk mitokondria"]),
+        q("Hasil glikolisis pada otot?", 0, ["Piruvat & laktat","Glikogen","Oksalasetat","Asetil-KoA"]),
+        q("Bagaimana tingkatkan gaya satu serat otot?", 0, ["Tingkatkan frekuensi rangsangan","Turunkan K⁺ ekstrasel","Naikkan Na⁺","Turunkan permeabilitas K⁺"]),
+        q("Enzim kunci ubah piruvat jadi asetil-KoA?", 0, ["Piruvat dehydrogenase","Laktat dehydrogenase","Piruvat kinase","Isomerase"]),
+        q("Pada oksigen cukup, metabolisme otot?", 0, ["Aerob, oksidasi lengkap → CO₂ + H₂O","Anaerob","Anaerob, hanya glikolisis","Aerob, hasil laktat"]),
+        q("Kontraksi tetanik akibat akumulasi?", 0, ["Ca²⁺","ATP","Troponin","Na⁺"]),
+        q("Yang bukan sistem penghasil energi otot?", 0, ["Siklus Cori","Glikolisis anaerob","Fosfokreatin","Dekarboksilasi oksidatif"]),
+      ],
+      flashcards: [
+        fc("Saat kontraksi memendek?","Zona H"),
+        fc("O₂ fungsi?","Akseptor elektron terakhir"),
+        fc("Glikolisis anaerob?","2 ATP, hasil laktat"),
+        fc("Frekuensi rangsangan?","Tingkatkan gaya otot"),
+        fc("Kontraksi tetanik?","Akumulasi Ca²⁺ intrasel"),
+      ]
+    },
+    {
+      id: "f5-biomekanika",
+      name: "Biomekanika",
+      definition: "Prinsip keseimbangan, momentum, dan penerapan biomekanika.",
+      keyPoints: [
+        "Pusat gravitasi di dalam benda → stabil",
+        "Pusat gravitasi di luar → labil",
+        "Bukan cara seimbang: membungkuk",
+        "Helm bantalan = aplikasi momentum",
+        "Momentum: pukulan kecepatan tinggi daya rusak lebih besar",
+        "Cara seimbang: melebar kaki, merentang tangan, tongkat, senderan dinding"
+      ],
+      questions: [
+        q("Yang bukan cara agar seimbang?", 0, ["Membungkuk","Melebarkan kaki","Merentangkan tangan","Pakai tongkat"]),
+        q("Mana hasil daya rusak lebih besar?", 0, ["Pukulan metakarpal kecepatan tinggi","Pukulan metakarpal kecepatan rendah","Telapak kecepatan rendah","Telapak kecepatan tinggi"]),
+        q("Penerapan prinsip biomekanika?", 0, ["Traksi untuk kaki patah","Bungkus tulang fraktur","Operasi cepat","Angkat kaki dg beban"]),
+        q("Kapan keseimbangan menjadi labil?", 0, ["Pusat gravitasi di luar benda","Permukaan luas","Kontak luas","Pusat gravitasi rendah"]),
+      
+        q("Sifat dan karakteristik otot?", 0, ["Massa otot pria lansia > wanita lansia","70% massa tubuh","Wanita > pria lansia","Jaringan terkecil"]),
+        q("Angkat beban tingkatkan massa otot?", 0, ["Hipertrofi individual","Hiperplasia","Kadar lemak meningkat","Cairan meningkat"]),
+      ],
+      flashcards: [
+        fc("Keseimbangan stabil?","Pusat gravitasi di dalam, permukaan luas"),
+        fc("Keseimbangan labil?","Pusat gravitasi di luar"),
+        fc("Momentum?","Helm bantalan, kecepatan tinggi daya rusak besar"),
+      ]
+    },
+    {
+      id: "f5-histologi-embrio",
+      name: "Histologi & Embriologi",
+      definition: "Jaringan otot, kartilago, osifikasi, perkembangan vertebra dan ekstremitas.",
+      keyPoints: [
+        "Otot jantung: discus intercalatus, sel bercabang",
+        "Otot rangka: silindris, inti banyak tepi, striasi",
+        "Ciri otot polos (intestinum tenue): fusiform, inti 1 tengah",
+        "Osteon: unit tulang kompak, canalis sentralis",
+        "Osifikasi vertebra selesai ~25 tahun",
+        "Osifikasi primer di diafisis, sekunder di epifisis",
+        "Tunas ekstremitas bentuk jari minggu 8-9",
+        "Pusat osifikasi primer femur di diafisis",
+        "Sel mesenkim → osteoblas → osteoid → mineralisasi → trabekula",
+        "Kartilago elastis: epiglotis (kondrosit di lakuna, serat elastis)"
+      ],
+      questions: [
+        q("Ciri myocytus cardiacus membedakan dari striatus & non-striatus?", 0, ["Memiliki discus intercalatus","Inti tunggal tengah","Nukleus oval","Sel bercabang"]),
+        q("Otot rangka? (ciri)", 0, ["Silindris, inti banyak di tepi, striasi","Fusiform, inti 1 tengah","Bercabang, discus intercalatus","Kuboid, inti bulat"]),
+        q("Struktur hubungkan sel otot jantung?", 0, ["Discus intercalatus","Stria","Nukleus","Anastomosis"]),
+        q("Apa struktur utama tulang kompak?", 0, ["Osteon (sistem Havers)","Trabekula","Kanalikuli","Laguna Howship"]),
+        q("Osifikasi vertebra selesai usia?", 0, ["25 tahun","10 tahun","15 tahun","18 tahun"]),
+        q("Pusat osifikasi primer tulang panjang?", 0, ["Diafisis","Epifisis","Metafisis","Lempeng epifisis"]),
+        q("Tunas ekstremitas bentuk jari minggu?", 0, ["8-9","3-4","10-11","12-13"]),
+        q("Osifikasi intramembranosa: sel mesenkim → osteoblas →?", 0, ["Osteoid","Lamella","Trabekula","Kartilago hyalina"]),
+        q("Tulang pengulangan primer ekstremitas bawah?", 0, ["Femur","Radius","Klavikula","Humerus"]),
+        q("Jaringan kartilago elastis di epiglotis?", 0, ["Kartilago elastis","Kartilago hyalin","Kartilago fibrosa","Textus osseus"]),
+        q("Sel utama kartilago elastis dalam lacuna?", 0, ["Chondrocyte","Fibroblas","Osteocyte","Sel mesenkim"]),
+        q("Lapisan mesoderm pembentuk otot rangka?", 0, ["Miotom","Sklerotom","Dermatom","Mioblas"]),
+        q("Otot dari mesoderm kecuali?", 0, ["Otot siliaris & sfingter pupil","Otot kepala","Otot ekstremitas","Otot mammaria"]),
+        q("Perkembangan vertebra: sel padat ke kranial bentuk?", 0, ["Arkus vertebra","Diskus intervertebralis","Processus transversum","Processus spinosus"]),
+        q("Urutan struktur otot dari besar ke kecil?", 0, ["Fasikulus → miolibril → sarkomer","Sarkomer → miolibril → fasikulus","Bundle → aktin → miolibril","Miolibril → serabut → aktin"]),
+        q("Sumber energi utama 10 detik pertama?", 0, ["Fosfokreatin","Siklus Cori","Glukoneogenesis","Glikolisis"]),
+        q("Enzim ubah piruvat jadi asetil-KoA?", 0, ["Piruvat dehydrogenase","Laktat dehydrogenase","Piruvat kinase","Fosfat mutase"]),
+      
+        q("Sarkomer unit struktural dibentuk?", 0, ["Garis Z","Pita A","Pita I","Zona H"]),
+        q("Diamater filamen tebal (miosin)?", 0, ["16 nm","6 nm","0,6 nm","60 nm"]),
+      ],
+      flashcards: [
+        fc("Otot jantung?","Discus intercalatus, bercabang"),
+        fc("Otot rangka?","Silindris, inti banyak tepi"),
+        fc("Otot polos?","Fusiform, inti 1 tengah"),
+        fc("Osteon?","Unit tulang kompak, canalis sentralis"),
+        fc("Osifikasi primer?","Diafisis"),
+        fc("Osifikasi vertebra selesai?","~25 tahun"),
+        fc("Tunas jari?","Minggu 8-9"),
+        fc("Miotom?","Mesoderm → otot rangka"),
+      ]
+    }
+  ]
+});
+
+// ──────────────────────────────────────────────
+// FLAT LISTS (for quiz, tryout, flashcard)
+// ──────────────────────────────────────────────
 DB.allQuestions = [];
-DB.topics.forEach(topic => {
-  topic.subtopics.forEach(st => {
-    st.concepts.forEach(con => {
-      con.questions.forEach(q => {
-        q.topicId = topic.id;
-        q.topicName = topic.name;
-        q.subtopicId = st.id;
-        q.subtopicName = st.name;
-        q.conceptId = con.id;
-        q.conceptName = con.name;
-        DB.allQuestions.push(q);
-      });
+DB.allFlashcards = [];
+DB.sources.forEach(src => {
+  src.concepts.forEach(con => {
+    (con.questions || []).flat().forEach(q => {
+      q.sourceId = src.id; q.sourceName = src.name; q.conceptId = con.id; q.conceptName = con.name;
+      DB.allQuestions.push(q);
+    });
+    (con.flashcards || []).forEach(f => {
+      f.sourceId = src.id; f.sourceName = src.name; f.conceptId = con.id; f.conceptName = con.name;
+      DB.allFlashcards.push(f);
     });
   });
 });
 
-// ALL FLASHCARDS FLAT LIST
-DB.allFlashcards = [];
-DB.topics.forEach(topic => {
-  topic.subtopics.forEach(st => {
-    st.concepts.forEach(con => {
-      con.flashcards.forEach(f => {
-        f.topicId = topic.id;
-        f.topicName = topic.name;
-        f.subtopicId = st.id;
-        f.subtopicName = st.name;
-        f.conceptId = con.id;
-        f.conceptName = con.name;
-        DB.allFlashcards.push(f);
-      });
-    });
-  });
-});
+
+
+
