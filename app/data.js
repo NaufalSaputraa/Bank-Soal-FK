@@ -46,6 +46,17 @@ DB.sources.push({
         q("Jumlah bakteri urine menandakan ISK?", 0, [">10⁵ sel/ml",">1000 sel/ml",">100 sel/ml",">10 sel/ml"]),
         q("Faktor kolonisasi flora vagina?", 0, ["Umur, hormonal, kebiasaan seksual, antiseptik genitalia","pH vagina","Jumlah flora normal","Mikroba pembentuk biofilm"]),
         q("Area traktus respiratorius yang steril?", 0, ["Alveoli, nasofaring","Laring, sinus nasalis","Orofaring, tonsil","Mulut, tenggorokan"]),
+        q("Sifat oportunis Bacteroides di kolon → trauma → rongga perineum?", 0, ["Supurasi & bakteriemia","Cystitis","Apendisitis","Pyelonefritis","Uretritis"]),
+        q("Faktor keseimbangan flora normal (2 anak sakit, 4 tidak)?", 0, ["Virulensi","Nutrisi","Hygiene","Vaksinasi","Iklim"]),
+        q("Area traktus gastrointestinal yang relatif steril?", 0, ["Hati & kantung empedu","Usus besar, ileum","Esofagus","Usus halus"]),
+        q("Kontaminasi spora Clostridia → efek neurotoksik?", 0, ["Clostridium botulinum","C. perfringens A","C. defecile","C. tetani"]),
+        q("Koloni MacConkey merah → patogen oportunis saluran cerna & kontaminan perairan?", 0, ["Escherichia coli","C. diphteriae","M. leprae","S. pneumonia"]),
+        q("Imun lemah → kolonisasi mukosa invasif → meningitis?", 0, ["Neisseria meningitidis","N. gonorrhoeae","B. anthracis","B. subtilis"]),
+        q("Bahan disinfeksi cegah kolonisasi Candida biofilm kateter?", 0, ["Khlorin","Alkohol","Aseton","Spirtus"]),
+        q("Infeksi nosokomial → masalah bagi rumah sakit?", 0, ["Bertambah biaya operasional","Menularkan bakteri resisten","Daya tampung menurun","Masa rawat bertambah"]),
+        q("Sampel ILO (infeksi luka operasi)?", 0, ["Drainase purulen","Sputum","Feses","Urin"]),
+        q("Surveilans infeksi nosokomial: typing bakteri & sensitivitas?", 0, ["Serotyping","Biotyping","Phage typing","Antibiogram"]),
+
         q("Flora komensal saluran napas yang jadi oportunistik?", 0, ["Strep. viridans → endokarditis","Candida → bakteriemi","Rotavirus → ISK","C. diphteriae → tetanus"]),
         q("Bakteri flora usus yang invasif dan resisten fagosit?", 0, ["Leukosidin, hemolisin, fibrinolisin","Flagel, spora, kapsul","Peptidoglikan, asam mikolat","Endotoksin, LPS"]),
         q("Faktor penentu mikroflora traktus gastrointestinal?", 0, ["Sanitasi, higiene, habitasi","Invasi dan toksigenitas","Komponen permukaan dan enzim","Sistem imun host"]),
@@ -102,6 +113,11 @@ DB.sources.push({
         q("Infeksi nosokomial patogen kondisional?", 0, ["Staphylococcus aureus","Salmonella typhi","Mycobacterium atipik","Proteus"]),
         q("Antiseptik cara kerja merusak protein & asam nukleat?", 0, ["Hidrogen peroksida","Hibiscrub","Povidon碘in","Hibitane"]),
         q("Disinfektan yang bisa jadi antiseptik dosis tertentu?", 0, ["Betadine","Handscrub","Byclin","H2O2"]),
+        q("Cara penyucihamaan yang benar?", 0, ["Luar → dalam → luar","Dalam → luar","Luar → dalam","Bebas"]),
+        q("Langkah pertama aseptik sebelum operasi?", 0, ["Dekontaminasi","Disinfeksi","Cuci tangan","Sterilisasi"]),
+        q("Bycline mekanisme kerja?", 0, ["Merusak membran sel","Denaturasi protein","Oksidasi protein","Inaktivasi enzim"]),
+        q("Desinfektan tingkatkan permeabilitas dinding sitoplasma?", 0, ["Karbol","Formalin","Lisol","Etanol","Klorin"]),
+
         q("Cara penyucihamaan yang benar?", 0, ["Luar → dalam → luar","Dalam → luar","Luar → dalam","Bebas"]),
         q("Langkah pertama aseptik sebelum operasi?", 0, ["Dekontaminasi","Disinfeksi","Cuci tangan","Sterilisasi"]),
       ],
@@ -171,6 +187,11 @@ DB.sources.push({
         q("Kumpulan badan sel saraf di luar SSP?", 0, ["Ganglion","Efektor","Nervus","Soma cell"]),
         q("Jaringan ikat sekitar 1 fasciculus?", 0, ["Perimysium","Endomysium","Epimysium","Sarkolema"]),
         q("Bagian perut otot seran lintang?", 0, ["Venter","Caput","Origo","Insertio"]),
+        q("Arteri kompartemen posterior lengan atas?", 0, ["A. profunda brachii","A. brachialis","A. radialis","A. ulnaris"]),
+        q("Otot yang memiliki dua caput?", 0, ["M. biceps brachii","M. quadriceps femoris","M. pronator quadratus","M. triceps brachii","M. semimembranosus"]),
+        q("Cairan yang mengisi ruang articulatio diartrosis?", 0, ["Cairan synovial","Capsule articulatio","Discus articulatio","Cartilage articulatio"]),
+        q("Patella merupakan segmen medulla spinalis?", 0, ["L2-L4","C5-C6","T1-T4","S1-S2"]),
+
       ],
       flashcards: [
         fc("Neurocranium?","8 tulang: frontal, 2 parietal, 2 temporal, occipital, sphenoid, ethmoid"),
@@ -254,6 +275,14 @@ DB.sources.push({
         q("Otot hamstring?", 0, ["Biceps femoris, semitendinosus, semimembranosus","Rectus femoris, vastus","Sartorius, gracilis","Adductor magnus, longus"]),
         q("Otot tailor (fleksi, abduksi, eksorotasi, fleksi lutut)?", 0, ["M. sartorius","M. gracilis","M. rectus femoris","M. tensor fasciae latae"]),
         q("Otot rotator cuff rotasi internal?", 0, ["M. subscapularis","M. supraspinatus","M. infraspinatus","M. teres minor"]),
+        q("Struktur anatomis yang dilalui fasciculus medialis?", 0, ["Sulcus nervi ulnaris","Sulcus nervi radialis","Canalis carpi","Sulcus bicipitalis medialis"]),
+        q("Fasciculus medialis berasal dari segmen?", 0, ["C8-T1","C5-C6","T2-T5","L1-L5","S2-S4"]),
+        q("N. vastus medialis dipersarafi oleh?", 0, ["N. femoralis","N. saphenus","N. suralis","N. ischiadicus","N. obturatorius"]),
+        q("Otot kompartemen lateral regio cruris?", 0, ["M. peroneus brevis","M. plantaris","M. tibialis anterior","M. gastrocnemius"]),
+        q("Serabut saraf anyaman di permukaan a. radialis → komponen fungsional?", 0, ["GVE simpatis postganglioner","GVA","GSA","GVE preganglioner"]),
+        q("Refleks biceps brachii → saraf servikal spesifik?", 0, ["C5","C6","C7","T1","L1"]),
+        q("Pemeriksaan otot gastrocnemius dengan gerakan?", 0, ["Melompat","Push up","Menjepit bola","Menendang bola"]),
+
       ],
       flashcards: [
         fc("Erb-Duchenne?","C5-C6 → waiter's tip"),
@@ -329,6 +358,9 @@ DB.sources.push({
         q("Chondrosit dalam lacuna (kartilago elastis)?", 0, ["Chondrocyte","Fibroblas","Osteocyte","Sel mesenkim"]),
         q("Asal mesenkim pembentuk kartilago?", 0, ["Stratum chondrogenicum perichondrium","Stratum fibrosum","Matriks teritorialis","Perimysium"]),
         q("Struktur hubungkan antar lacuna?", 0, ["Canaliculi","Lamella interstitial","Osteoklas","Osteoid"]),
+        q("Bukan struktur tulang kompak?", 0, ["Perineurium","Osteon","Canalis Volkmann","Canalis centralis","Lamella circumferentia"]),
+        q("Myocytus cardiacus yang membedakan dari striatus?", 0, ["Discus intercalatus","Inti tunggal di tengah","Nukleus oval","Sel bercabang"]),
+
       ],
       flashcards: [
         fc("Osteon?","Unit dasar tulang kompak (sistem Havers)"),
@@ -475,6 +507,9 @@ DB.sources.push({
         q("Cara seimbang saat diserang dari kejauhan?", 0, ["Berdiri kaki dibuka lebar, tangan siap","Berdiri 1 kaki","Tangan diatas","Tubuh berotasi"]),
         q("Penerapan biomekanika dalam ortopedi?", 0, ["Traksi kulit untuk fraktur","Penambahan beban","Bungkus tulang fraktur","Operasi cepat"]),
         q("Penerapan fisika momentum?", 0, ["Helm olahraga beladiri","Body alignment","Traksi kulit","Kursi ergonomis"]),
+        q("Atlet angkat beban → keseimbangan dengan?", 0, ["Membuka kedua kaki","Telungkup","Jongkok","Membungkuk"]),
+        q("Pemanfaatan fisika momentum yang tepat?", 0, ["Helm olahraga beladiri","Body alignment","Traksi kulit fraktur","Kursi ergonomis","Kuda-kuda pesilat"]),
+
       ],
       flashcards: [
         fc("Keseimbangan labil?","Pusat gravitasi di luar benda"),
@@ -506,6 +541,22 @@ DB.sources.push({
       
         q("Succinate-CoA ligase hasilkan energi?", 0, ["+1 ATP","+2 ATP","+3 ATP","+5 ATP"]),
         q("Diamater F-actin?", 0, ["6 nanometer","0,6 nanometer","60 nanometer","16 nanometer"]),
+        q("Reaksi glukosa → PEP hasilkan energi?", 0, ["+7 ATP","+1 ATP","+2 ATP","+5 ATP"]),
+        q("Reaksi Succinate-CoA ligase hasilkan?", 0, ["+1 ATP","+2 ATP","+3 ATP","+5 ATP"]),
+        q("Senyawa diperlukan oksidasi di sitoplasma & mitokondria?", 0, ["NADH","O₂","GTP","Glukosa","Asetil-KoA"]),
+        q("Perubahan senyawa TIDAK terjadi di sitoplasma otot?", 0, ["Piruvat → asetil-KoA","Glukosa → asetil-KoA","Piruvat → laktat","Piruvat → malat"]),
+        q("Kompleks Ca²⁺-kalmodulin berperan?", 0, ["Aktivasi saluran Ca²⁺ & kontraksi","Hasilkan ATP","Hentikan kontraksi","Buat miosin"]),
+        q("Desinfektan yang bisa bunuh HIV & Hep B?", 0, ["Betadin","Savlon","Hibitane","Dettol"]),
+        q("Sterilisasi pemanasan basah?", 0, ["Autoclave","Incineration","Flaming","Radiasi"]),
+        q("Enzim di reaksi akrosom?", 0, ["Hyaluronidase","Acrosin","Tripsin","Amilase"]),
+        q("Zona osteoid (lingkaran kuning) adalah?", 0, ["Daerah osteoid (matriks belum termineralisasi)","Jaringan termineralisasi","Jaringan ikat longgar","Degradasi tulang"]),
+        q("Minggu ke-3 → penanda gastrulasi?", 0, ["Primitive streak","Primitive yolk","Primitive node","Primitive groove"]),
+        q("Atrofi otot perut lateral → saraf yang inervasi?", 0, ["Miotom hypaxial","Miotom epaxial","Skleretom","Dermatom","Miotom abaxial"]),
+        q("Area traktus genitourinarius ditumbuhi mikroorganisme?", 0, ["Genitalia eksterna, uretra anterior, vagina","Genitalia eksterna saja","Vagina saja","Uretra anterior saja"]),
+        q("Antiseptik merusak protein & asam nukleat?", 0, ["Povidon iodine","H₂O₂","Hibiscrub","Hibitane","Alkohol"]),
+        q("Pelepasan zat inhibitor di akrosom?", 0, ["Reaksi akrosom","Kapasitasi","Adaptasi","Fertilisasi"]),
+        q("Impuls atrium tak lewat AV ring → akibat?", 0, ["Atrium & ventrikel tidak kontraksi bersamaan","Atrium kontraksi lebih cepat","Ventrikel kontraksi lebih cepat","Atrium & ventrikel kontraksi bersamaan"]),
+
       ],
       flashcards: [
         fc("Fase 0 jantung?","Na⁺ cepat masuk"),
@@ -550,6 +601,17 @@ DB.sources.push({
         q("Pada oksigen cukup, metabolisme otot?", 0, ["Aerob, oksidasi lengkap → CO₂ + H₂O","Anaerob","Anaerob, hanya glikolisis","Aerob, hasil laktat"]),
         q("Kontraksi tetanik akibat akumulasi?", 0, ["Ca²⁺","ATP","Troponin","Na⁺"]),
         q("Yang bukan sistem penghasil energi otot?", 0, ["Siklus Cori","Glikolisis anaerob","Fosfokreatin","Dekarboksilasi oksidatif"]),
+        q("Penumpukan asam laktat → efek ke enzim glikolisis?", 0, ["Penurunan aktivitas enzim (inhibisi asidosis)","Glikolisis berhenti total","Peningkatan aktivitas enzim","Tidak terbentuk ATP"]),
+        q("Pada oksigen cukup, metabolisme otot berlangsung secara?", 0, ["Aerob, oksidasi lengkap → CO₂+H₂O","Anaerob, hanya glikolisis","Aerob, hasil laktat","Anaerob, tanpa mitokondria"]),
+        q("Otot saat berkontraksi massanya bertambah karena?", 0, ["Aliran darah meningkat","Sarkomer memendek","Hipertrofi serabut","Filamen menebal"]),
+        q("Fungsi serat eksitatori & konduktif dalam jantung?", 0, ["Menghasilkan & mentransmisikan impuls untuk ritme","Menjaga pernapasan","Menjaga tekanan darah","Mengatur frekuensi"]),
+        q("Peningkatan massa otot angkat beban?", 0, ["Hipertrofi individual","Hiperplasia","Kadar lemak meningkat","Cairan meningkat"]),
+        q("Otot TIDAK berasal dari mesoderm?", 0, ["Otot siliaris & sfingter pupil","Otot kepala","Otot ekstremitas atas","Otot mammaria"]),
+        q("Myosin light chain kinase saat Ca²⁺ keluar dari sel menjadi?", 0, ["Tidak aktif","Lebih aktif","Tetap aktif","Terdegradasi total"]),
+        q("Model perbaikan fraktur (osteoblas + osteoklas bersama)?", 0, ["Remodelling","Osifikasi intramembranosa","Osifikasi endokondral"]),
+        q("Otot jantung berasal dari lapisan mesoderm?", 0, ["Mesoderm splanknik","Neural crest","Mesoderm paraksial","Miotom","Mesoderm lateral"]),
+        q("Otot hipertrofi dari sel mesoderm?", 0, ["Somit / paraksial","Neural crest","Mesoderm lateral","Splanchnik"]),
+
       ],
       flashcards: [
         fc("Saat kontraksi memendek?","Zona H"),
