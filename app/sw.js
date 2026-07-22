@@ -1,4 +1,4 @@
-const CACHE = 'banksoal-v4';
+const CACHE = 'banksoal-v6';
 const FILES = [
   '../index.html',
   'data.js',
