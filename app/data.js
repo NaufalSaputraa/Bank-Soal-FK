@@ -6541,6 +6541,21 @@ const DB = {
               "sourceName": "Embriologi Muskuloskeletal",
               "conceptId": "embriologi-skeletal",
               "conceptName": "Embriologi Sistem Skeletal & Aksial"
+            },
+            {
+              "text": "Seluruh rangka manusia berasal dari kompartemen/lapisan embrional apa?",
+              "answerIdx": 0,
+              "opts": [
+                "Mesenkim embrional dari berbagai asal (neural crest, mesoderm paraaksial, lateral plate mesoderm)",
+                "Hanya mesoderm paraaksial (sklerotom somit)",
+                "Hanya mesoderm splanknik lateral plate",
+                "Ektoderm permukaan dan endoderm"
+              ],
+              "explanation": "Rangka manusia berasal dari TIGA sumber mesenkim: sel krista neuralis (tulang wajah/calvaria anterior), mesoderm paraaksial/sklerotom (vertebra, iga, calvaria posterior), dan mesoderm lempeng lateral parietal (tulang ekstremitas).",
+              "sourceId": "file-6-embriologi",
+              "sourceName": "Embriologi Muskuloskeletal",
+              "conceptId": "embriologi-skeletal",
+              "conceptName": "Embriologi Sistem Skeletal & Aksial"
             }
           ],
           "flashcards": [
@@ -12770,6 +12785,21 @@ const DB = {
         "Sindetom"
       ],
       "explanation": "Sel-sel sklerotom keluar dari somit dan mengelilingi notokorda serta tabung saraf untuk membentuk elemen tulang rangka aksial (vertebra dan iga).",
+      "sourceId": "file-6-embriologi",
+      "sourceName": "Embriologi Muskuloskeletal",
+      "conceptId": "embriologi-skeletal",
+      "conceptName": "Embriologi Sistem Skeletal & Aksial"
+    },
+    {
+      "text": "Seluruh rangka manusia berasal dari kompartemen/lapisan embrional apa?",
+      "answerIdx": 0,
+      "opts": [
+        "Mesenkim embrional dari berbagai asal (neural crest, mesoderm paraaksial, lateral plate mesoderm)",
+        "Hanya mesoderm paraaksial (sklerotom somit)",
+        "Hanya mesoderm splanknik lateral plate",
+        "Ektoderm permukaan dan endoderm"
+      ],
+      "explanation": "Rangka manusia berasal dari TIGA sumber mesenkim: sel krista neuralis (tulang wajah/calvaria anterior), mesoderm paraaksial/sklerotom (vertebra, iga, calvaria posterior), dan mesoderm lempeng lateral parietal (tulang ekstremitas).",
       "sourceId": "file-6-embriologi",
       "sourceName": "Embriologi Muskuloskeletal",
       "conceptId": "embriologi-skeletal",
