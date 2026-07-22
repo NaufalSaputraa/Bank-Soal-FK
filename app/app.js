@@ -5,6 +5,9 @@ const S = {
   flashcard:{active:false, cards:[], idx:0},
   progress:JSON.parse(localStorage.getItem('bs_prog')||'{}'),
   bookmarks:JSON.parse(localStorage.getItem('bs_bm')||'[]'),
+  missed:JSON.parse(localStorage.getItem('bs_missed')||'[]'),
+  subjectStats:JSON.parse(localStorage.getItem('bs_stats')||'{}'),
+  ankiCards:JSON.parse(localStorage.getItem('bs_anki')||'{}'),
   sidebarCollapsed:localStorage.getItem('bs_col')==='true',
   lastConcept:localStorage.getItem('bs_lastc')||null,
   qShuffle:{}
@@ -37,6 +40,35 @@ const applySidebarState=()=>{
   else { sb?.classList.remove('collapsed'); app?.classList.remove('collapsed'); }
 };
 
+// Medical Subject Topic Detection
+function getQuestionTopic(q){
+  const txt = ((q.conceptName||'') + ' ' + (q.text||'') + ' ' + (q.sourceName||'')).toLowerCase();
+  if(txt.includes('mikrob') || txt.includes('flora') || txt.includes('bakteri') || txt.includes('sterilisasi') || txt.includes('desinfeksi')) return 'Mikrobiologi';
+  if(txt.includes('embriolog') || txt.includes('somit') || txt.includes('sklerotom') || txt.includes('aer') || txt.includes('zpa')) return 'Embriologi';
+  if(txt.includes('histolog') || txt.includes('osteon') || txt.includes('kartilago') || txt.includes('tulang')) return 'Histologi';
+  if(txt.includes('fisiolog') || txt.includes('kontraksi') || txt.includes('sarkomer') || txt.includes('plateau') || txt.includes('energi')) return 'Fisiologi';
+  if(txt.includes('biomekanik') || txt.includes('tuas') || txt.includes('keseimbangan') || txt.includes('traksi')) return 'Biomekanika';
+  if(txt.includes('anatomi') || txt.includes('cranium') || txt.includes('foramen') || txt.includes('ekstremitas') || txt.includes('otot')) return 'Anatomi';
+  return 'Umum Kedokteran';
+}
+
+function recordAnswerStat(q, isCorrect){
+  const topic = getQuestionTopic(q);
+  if(!S.subjectStats[topic]) S.subjectStats[topic] = { total: 0, correct: 0 };
+  S.subjectStats[topic].total++;
+  if(isCorrect) {
+    S.subjectStats[topic].correct++;
+    // Remove from missed list if correct
+    const idx = S.missed.indexOf(q.text);
+    if(idx >= 0) S.missed.splice(idx, 1);
+  } else {
+    // Add to missed list if incorrect
+    if(!S.missed.includes(q.text)) S.missed.push(q.text);
+  }
+  localStorage.setItem('bs_stats', JSON.stringify(S.subjectStats));
+  localStorage.setItem('bs_missed', JSON.stringify(S.missed));
+}
+
 function shuffleOpts(q){
   const key = q.text;
   if(S.qShuffle[key]) return S.qShuffle[key];
@@ -61,9 +93,9 @@ function sideProg(){
   if(el) el.innerHTML=`<span class="sf-text">${done}/${total} konsep dipelajari</span>`;
 }
 
-// EVENT DELEGATION — single listener for everything
+// EVENT DELEGATION
 document.addEventListener('click', e => {
-  // ── Desktop / Mobile Sidebar toggle ──
+  // ── Sidebar toggle ──
   const logo = e.target.closest('#menuBtn, .sidebar-brand .logo');
   if(logo) {
     if(window.innerWidth<=768) {
@@ -76,7 +108,6 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // ── Sidebar toggle auto-close on mobile outside click ──
   if(window.innerWidth<=768 && !e.target.closest('.sidebar') && e.target.id!=='menuBtn') {
     $('#sidebar')?.classList.remove('open');
   }
@@ -99,7 +130,10 @@ document.addEventListener('click', e => {
         tryout($('#pageContent'));
       } else {
         S.quiz.answers[S.quiz.idx]=i;
-        if(i===ans) S.quiz.score++;
+        const q = S.quiz.questions[S.quiz.idx];
+        const isCorr = (i===ans);
+        if(isCorr) S.quiz.score++;
+        if(q) recordAnswerStat(q, isCorr);
         kuis($('#pageContent'));
       }
     } else {
@@ -115,7 +149,7 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // ── Tree toggle (folder in materi tree) ──
+  // ── Tree toggle ──
   const treeToggle = e.target.closest('.tree-toggle');
   if(treeToggle) {
     const item = treeToggle.closest('.tree-item');
@@ -159,8 +193,17 @@ document.addEventListener('click', e => {
   if(start) {
     const [type, param] = start.dataset.start.split(',');
     if(type==='quiz') startQuiz(parseInt(param)||10);
+    else if(type==='quiz-missed') startMissedQuiz();
+    else if(type==='quiz-topic') startTopicQuiz(param);
     else if(type==='tryout') startTryout(param||'all');
     else if(type==='fc') startFlashcards(param||'all');
+    return;
+  }
+
+  // ── Anki Rating Buttons ──
+  const ankiBtn = e.target.closest('[data-anki]');
+  if(ankiBtn) {
+    rateAnkiCard(ankiBtn.dataset.anki);
     return;
   }
 
@@ -189,7 +232,7 @@ document.addEventListener('click', e => {
 
   // ── Flashcard flip ──
   const fcCard = e.target.closest('.fc-card');
-  if(fcCard && !fcCard.closest('[data-mode]') && !e.target.closest('[data-fc],[data-start]')) {
+  if(fcCard && !fcCard.closest('[data-mode]') && !e.target.closest('[data-fc],[data-start],[data-anki]')) {
     fcCard.classList.toggle('flipped');
     return;
   }
@@ -233,12 +276,12 @@ function nav(view, params={}){
 }
 
 function render(){
-  const t={home:'Beranda',materi:'Materi',soal:'Bank Soal',kuis:'Quiz Cepat',tryout:'Try Out CBT',flashcard:'Flashcard',cari:'Cari',bookmark:'Soal Disimpan'}[S.view]||'';
+  const t={home:'Beranda',materi:'Materi',soal:'Bank Soal',kuis:'Quiz Cepat',tryout:'Try Out CBT',flashcard:'Flashcard',cari:'Cari',bookmark:'Soal Disimpan',analisis:'Analisis Performa'}[S.view]||'';
   $('#pageTitle').textContent=t;
   const bc=$('#breadcrumb');
   if(S.selectedConcept){const c=findConcept(S.selectedConcept);bc.textContent=c?`Materi › ${c.sourceName} › ${c.name}`:''}
   else if(S.selectedSource){const s=DB.sources.find(x=>x.id===S.selectedSource);bc.textContent=s?`Materi › ${s.name}`:'Materi'}
-  else bc.textContent=S.view==='materi'?'Jelajahi File':S.view==='bookmark'?'Favorites':'Blok Muskuloskeletal';
+  else bc.textContent=S.view==='materi'?'Jelajahi File':S.view==='bookmark'?'Favorites':S.view==='analisis'?'Statistik & Performa':'Blok Muskuloskeletal';
   $('#headerMeta').textContent=DB.allQuestions.length+' soal · '+DB.allFlashcards.length+' flashcard';
   $('#soalCount').textContent=DB.allQuestions.length;
   updateBmBadge();
@@ -252,10 +295,11 @@ function render(){
   else if(S.view==='flashcard') flashcard(c);
   else if(S.view==='cari') cari(c);
   else if(S.view==='bookmark') bookmark(c);
+  else if(S.view==='analisis') analisis(c);
   sideProg();
 }
 
-// ── HOME (3-COLUMN DASHBOARD) ──
+// ── HOME ──
 function home(c){
   const totalConcepts = DB.sources.reduce((a,s)=>a+s.concepts.length,0);
   const doneConcepts = Object.keys(S.progress).length;
@@ -305,7 +349,7 @@ function home(c){
         </div>
       </div>
 
-      <!-- Widget 2: Continue Studying / Last Opened Concept -->
+      <!-- Widget 2: Continue Studying -->
       ${lastC ? `<div class="widget-card">
         <div class="widget-header"><span>📖 Lanjutkan Belajar</span></div>
         <div style="font-size:13px;font-weight:600;color:var(--primary)">${lastC.name}</div>
@@ -317,8 +361,9 @@ function home(c){
       <div class="widget-card">
         <div class="widget-header"><span>⚡ Akses Cepat</span></div>
         <div style="display:flex;flex-direction:column;gap:8px">
+          ${S.missed.length ? `<button class="btn btn-accent" style="justify-content:flex-start" data-start="quiz-missed">🔴 Ulangi Soal Salah (${S.missed.length})</button>` : ''}
           <button class="btn btn-primary" style="justify-content:flex-start" data-start="quiz,10">⚡ Quiz Cepat (10 Soal)</button>
-          <button class="btn btn-accent" style="justify-content:flex-start" data-nav="tryout">📝 Try Out CBT (30 Min)</button>
+          <button class="btn" style="justify-content:flex-start" data-nav="tryout">📝 Try Out CBT (30 Min)</button>
           <button class="btn" style="justify-content:flex-start" data-start="fc,all">🃏 Flashcard Kedokteran</button>
         </div>
       </div>
@@ -443,7 +488,7 @@ function soal(c){
     `).join('')}`;
 }
 
-// ── BOOKMARK (SOAL DISIMPAN) ──
+// ── BOOKMARK ──
 function bookmark(c){
   const bms = DB.allQuestions.filter(q => isBookmarked(q.text));
   if(!bms.length) {
@@ -458,6 +503,69 @@ function bookmark(c){
     ${bms.map(q => qCard(q, false)).join('')}`;
 }
 
+// ── ANALISIS PERFORMA ──
+function analisis(c){
+  const topics = ['Anatomi', 'Fisiologi', 'Embriologi', 'Mikrobiologi', 'Histologi', 'Biomekanika'];
+  let totalAnswered = 0;
+  let totalCorrect = 0;
+
+  topics.forEach(t => {
+    const st = S.subjectStats[t] || { total: 0, correct: 0 };
+    totalAnswered += st.total;
+    totalCorrect += st.correct;
+  });
+
+  const overallPct = totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0;
+
+  c.innerHTML = `<div class="analytics-card" style="margin-bottom:20px">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div>
+        <div style="font-size:18px;font-weight:700;color:var(--ink)">📈 Analisis Performa & Akurasi</div>
+        <div style="font-size:12.5px;color:var(--ink-3);margin-top:2px">Berdasarkan ${totalAnswered} soal yang telah dikerjakan di Quiz & Tryout</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:28px;font-weight:800;color:var(--primary);font-family:var(--mono)">${overallPct}%</div>
+        <div style="font-size:11px;color:var(--ink-3)">Rata-Rata Akurasi</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Akurasi Per Cabang Ilmu Kedokteran</div>
+  <div class="analytics-grid">${topics.map(t => {
+    const st = S.subjectStats[t] || { total: 0, correct: 0 };
+    const pct = st.total > 0 ? Math.round((st.correct / st.total) * 100) : 0;
+    let badgeClass = 'badge-review', barClass = 'bg-review', labelText = 'Belum Cukup Data';
+    if(st.total >= 3) {
+      if(pct >= 80) { badgeClass = 'badge-mastered'; barClass = 'bg-mastered'; labelText = 'Menguasai'; }
+      else if(pct >= 60) { badgeClass = 'badge-review'; barClass = 'bg-review'; labelText = 'Cukup Baik'; }
+      else { badgeClass = 'badge-weak'; barClass = 'bg-weak'; labelText = 'Perlu Pendalaman'; }
+    }
+    return `<div class="analytics-card">
+      <div class="subject-info">
+        <span>${t}</span>
+        <span class="${badgeClass}">${labelText} (${pct}%)</span>
+      </div>
+      <div class="subject-bar-wrap">
+        <div class="subject-bar-fill ${barClass}" style="width:${pct}%"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ink-3);margin-top:8px">
+        <span>${st.correct} benar dari ${st.total} dijawab</span>
+        <button class="btn btn-sm" data-start="quiz-topic,${t}" style="font-size:11px;padding:2px 8px">Latih ${t} →</button>
+      </div>
+    </div>`;
+  }).join('')}</div>
+
+  ${S.missed.length ? `<div class="card" style="margin-top:24px;padding:18px;border-color:rgba(201,79,50,0.3);background:var(--red-light)">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="font-size:15px;font-weight:700;color:var(--red)">🔴 Soal Perlu Diulang (${S.missed.length} Soal)</div>
+        <div style="font-size:12.5px;color:var(--ink-2);margin-top:2px">Kamu memiliki ${S.missed.length} soal yang pernah dijawab salah. Latih kembali untuk mempertajam pemahaman!</div>
+      </div>
+      <button class="btn btn-accent" data-start="quiz-missed">Ulangi Soal Salah →</button>
+    </div>
+  </div>` : ''}`;
+}
+
 // ── KUIS ──
 function kuis(c){
   if(S.quiz.done){
@@ -466,7 +574,22 @@ function kuis(c){
     return;
   }
   if(!S.quiz.active){
-    c.innerHTML=`<div style="text-align:center;padding:40px 0"><div style="font-size:48px;margin-bottom:12px">⚡</div><div style="font-size:18px;font-weight:600;margin-bottom:6px">Quiz Cepat</div><div style="color:var(--ink-3);margin-bottom:20px">Soal acak dari semua file</div><div class="btn-group" style="justify-content:center"><button class="btn btn-primary" data-start="quiz,10">10 soal</button><button class="btn" data-start="quiz,20">20 soal</button><button class="btn" data-start="quiz,0">Semua (${DB.allQuestions.length})</button></div></div>`;
+    const topics = ['Anatomi', 'Fisiologi', 'Embriologi', 'Mikrobiologi', 'Histologi', 'Biomekanika'];
+    c.innerHTML=`<div style="text-align:center;padding:40px 0">
+      <div style="font-size:48px;margin-bottom:12px">⚡</div>
+      <div style="font-size:18px;font-weight:600;margin-bottom:6px">Quiz Cepat & Kategori</div>
+      <div style="color:var(--ink-3);margin-bottom:20px">Latih pemahaman medis secara acak atau per topik</div>
+      ${S.missed.length ? `<div style="margin-bottom:20px"><button class="btn btn-accent" data-start="quiz-missed">🔴 Ulangi Soal Salah (${S.missed.length} Soal)</button></div>` : ''}
+      <div class="btn-group" style="justify-content:center;margin-bottom:24px">
+        <button class="btn btn-primary" data-start="quiz,10">⚡ 10 Soal Acak</button>
+        <button class="btn" data-start="quiz,20">⚡ 20 Soal Acak</button>
+        <button class="btn" data-start="quiz,0">Semua (${DB.allQuestions.length})</button>
+      </div>
+      <div class="section-title">Pilih Berdasarkan Topik Kedokteran</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:600px;margin:0 auto">
+        ${topics.map(t => `<button class="btn" data-start="quiz-topic,${t}">📖 ${t}</button>`).join('')}
+      </div>
+    </div>`;
     return;
   }
   const qs=S.quiz.questions;const idx=S.quiz.idx;
@@ -484,6 +607,19 @@ function kuis(c){
 }
 function nextQuiz(){S.quiz.idx++;if(S.quiz.idx>=S.quiz.questions.length){S.quiz.done=true}render()}
 function startQuiz(c=10){S.qShuffle={};let pool=shf([...DB.allQuestions]);if(c>0) pool=pool.slice(0,Math.min(c,pool.length));S.quiz={active:true,done:false,questions:pool,idx:0,score:0,answers:new Array(pool.length).fill(undefined)};nav('kuis')}
+function startMissedQuiz(){
+  if(!S.missed.length) return;
+  S.qShuffle={};
+  const pool = shf(DB.allQuestions.filter(q => S.missed.includes(q.text)));
+  S.quiz={active:true,done:false,questions:pool,idx:0,score:0,answers:new Array(pool.length).fill(undefined)};
+  nav('kuis');
+}
+function startTopicQuiz(topic){
+  S.qShuffle={};
+  const pool = shf(DB.allQuestions.filter(q => getQuestionTopic(q) === topic));
+  S.quiz={active:true,done:false,questions:pool,idx:0,score:0,answers:new Array(pool.length).fill(undefined)};
+  nav('kuis');
+}
 
 // ── TRYOUT ──
 let timerRef=null;
@@ -494,7 +630,9 @@ function tryout(c){
     to.questions.forEach((q,i)=>{
       const userAns=to.answers[i];
       const sq=shuffleOpts(q);
-      if(userAns===sq.answerIdx) sc++;
+      const isCorr = (userAns===sq.answerIdx);
+      if(isCorr) sc++;
+      recordAnswerStat(q, isCorr);
     });
     to.score=sc;
     c.innerHTML=`<div class="qc">
@@ -554,32 +692,78 @@ function startTryout(t='all'){
   },1000);nav('tryout');
 }
 
-// ── FLASHCARD ──
+// ── FLASHCARD (SPACED REPETITION ANKI) ──
+function rateAnkiCard(rating){
+  const cards = S.flashcard.cards;
+  const idx = S.flashcard.idx;
+  if(!cards || idx >= cards.length) return;
+  const card = cards[idx];
+  const key = card.front;
+  
+  if(!S.ankiCards[key]) S.ankiCards[key] = { level: 0, reviews: 0 };
+  const entry = S.ankiCards[key];
+  entry.reviews++;
+  
+  if(rating === 'hard') {
+    entry.level = 0;
+    // Push card to repeat later in current deck
+    cards.push(card);
+  } else if(rating === 'medium') {
+    entry.level = 1;
+  } else if(rating === 'easy') {
+    entry.level = 2;
+  }
+  
+  localStorage.setItem('bs_anki', JSON.stringify(S.ankiCards));
+  nextFc();
+}
+
 function flashcard(c){
   if(S.flashcard.active&&!S.flashcard.cards.length)S.flashcard.active=false;
   if(!S.flashcard.active){
-    c.innerHTML=`<div style="text-align:center;padding:40px 0"><div style="font-size:48px;margin-bottom:12px">🃏</div><div style="font-size:18px;font-weight:600;margin-bottom:20px">${DB.allFlashcards.length} Flashcard</div><div class="btn-group" style="justify-content:center"><button class="btn btn-primary" data-start="fc,all">Semua (${DB.allFlashcards.length})</button>${DB.sources.map(s=>`<button class="btn" data-start="fc,${s.id}">${s.icon} ${s.short||s.name}</button>`).join('')}</div></div>`;
+    c.innerHTML=`<div style="text-align:center;padding:40px 0"><div style="font-size:48px;margin-bottom:12px">🃏</div><div style="font-size:18px;font-weight:600;margin-bottom:20px">${DB.allFlashcards.length} Flashcard Kedokteran (Spaced Repetition)</div><div class="btn-group" style="justify-content:center"><button class="btn btn-primary" data-start="fc,all">Semua (${DB.allFlashcards.length})</button>${DB.sources.map(s=>`<button class="btn" data-start="fc,${s.id}">${s.icon} ${s.short||s.name}</button>`).join('')}</div></div>`;
     return;
   }
   const cards=S.flashcard.cards;const idx=S.flashcard.idx;
   if(!cards.length||idx>=cards.length){S.flashcard.active=false;flashcard(c);return}
   const card=cards[idx];
+  const entry = S.ankiCards[card.front] || { level: 0, reviews: 0 };
+  const levelLabel = entry.level === 2 ? '🟢 Mudah' : entry.level === 1 ? '🟡 Sedang' : '🔴 Belum Dihafal';
+
   c.innerHTML=`<div style="text-align:center;max-width:580px;margin:0 auto">
-    <div style="font-size:12px;color:var(--ink-3);margin-bottom:10px;font-family:var(--mono)">${idx+1}/${cards.length}</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <span style="font-size:12px;color:var(--ink-3);font-family:var(--mono)">${idx+1}/${cards.length}</span>
+      <span class="badge-review" style="font-size:11px">${levelLabel}</span>
+    </div>
     <div class="fc-card" tabindex="0">
       <div class="fc-front">${card.front}</div>
       <div class="fc-back">${card.back}</div>
       <div class="fc-meta">${card.sourceName} · ${card.conceptName}</div>
-      <div class="fc-hint">👆 Klik untuk balik</div>
+      <div class="fc-hint">👆 Klik untuk membalik jawaban</div>
     </div>
-    <div class="btn-group" style="justify-content:center;margin-top:14px">
-      <button class="btn btn-sm" data-fc="prev">←</button>
-      <button class="btn btn-primary btn-sm" data-fc="next">→</button>
+    <div class="anki-btn-group">
+      <button class="btn-anki anki-hard" data-anki="hard"><span>🔴 Sulit</span><span class="anki-sub">Ulang Nanti</span></button>
+      <button class="btn-anki anki-medium" data-anki="medium"><span>🟡 Sedang</span><span class="anki-sub">Cukup Paham</span></button>
+      <button class="btn-anki anki-easy" data-anki="easy"><span>🟢 Mudah</span><span class="anki-sub">Sangat Paham</span></button>
     </div>
-    <button class="btn btn-sm" style="margin-top:8px" data-start="fc,${S.flashcard.sourceId||'all'}">🔄 Acak Ulang</button>
+    <div style="display:flex;justify-content:space-between;margin-top:14px">
+      <button class="btn btn-sm" data-fc="prev">← Sebelumnya</button>
+      <button class="btn btn-sm" data-start="fc,${S.flashcard.sourceId||'all'}">🔄 Reset Deck</button>
+      <button class="btn btn-sm" data-fc="next">Lanjut →</button>
+    </div>
   </div>`;
 }
-function startFlashcards(t='all'){let cards=t==='all'?[...DB.allFlashcards]:DB.allFlashcards.filter(f=>f.sourceId===t);S.flashcard={active:true,cards:shf(cards),idx:0,sourceId:t};nav('flashcard')}
+function startFlashcards(t='all'){
+  let cards=t==='all'?[...DB.allFlashcards]:DB.allFlashcards.filter(f=>f.sourceId===t);
+  // Sort cards: prioritize unmastered / hard cards
+  cards.sort((a, b) => {
+    const lvlA = (S.ankiCards[a.front] || {level: 0}).level;
+    const lvlB = (S.ankiCards[b.front] || {level: 0}).level;
+    return lvlA - lvlB;
+  });
+  S.flashcard={active:true,cards:cards,idx:0,sourceId:t};
+  nav('flashcard');
+}
 function nextFc(){S.flashcard.idx++;render()}
 function prevFc(){if(S.flashcard.idx>0)S.flashcard.idx--;render()}
 

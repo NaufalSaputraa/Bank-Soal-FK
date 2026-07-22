@@ -11,7 +11,7 @@
 <link rel="manifest" href="app/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="app/style.css?v=3">
+<link rel="stylesheet" href="app/style.css?v=4">
 </head>
 <body>
 <div class="app-layout">
@@ -28,6 +28,7 @@
       <div class="nav-item active" data-view="home" title="Beranda"><span class="nav-icon">📊</span> <span class="nav-text">Beranda</span></div>
       <div class="nav-item" data-view="materi" title="Materi"><span class="nav-icon">📖</span> <span class="nav-text">Materi</span></div>
       <div class="nav-item" data-view="soal" title="Bank Soal"><span class="nav-icon">❓</span> <span class="nav-text">Bank Soal</span> <span class="nav-badge" id="soalCount">0</span></div>
+      <div class="nav-item" data-view="analisis" title="Analisis Performa"><span class="nav-icon">📈</span> <span class="nav-text">Analisis</span></div>
       <div class="nav-group">Belajar</div>
       <div class="nav-item" data-view="kuis" title="Quiz Cepat"><span class="nav-icon">⚡</span> <span class="nav-text">Quiz Cepat</span></div>
       <div class="nav-item" data-view="tryout" title="Try Out CBT"><span class="nav-icon">📝</span> <span class="nav-text">Try Out CBT</span></div>
@@ -50,8 +51,8 @@
   </main>
 </div>
 
-<script src="app/data.js?v=3"></script>
-<script src="app/app.js?v=3"></script>
+<script src="app/data.js?v=4"></script>
+<script src="app/app.js?v=4"></script>
 <script>
 if('serviceWorker' in navigator) {
   navigator.serviceWorker.register('app/sw.js').catch(() => {});
