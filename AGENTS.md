@@ -1,76 +1,75 @@
-# BankSoal FK — Repo Guide
+# BankSoal FK — Repo Guide & Agent Specification
 
-## Project structure
+> Primary Agent Entry Point for BankSoal FK (Medical Question Bank PWA)
+
+---
+
+## 📋 Overview & Architecture
+
+BankSoal FK is a zero-build, offline-first Progressive Web Application (PWA) built for medical students.
+
+- **Stack**: Pure HTML5, Vanilla CSS3 (Custom Properties & Glassmorphism), Vanilla JavaScript (ES6+). Zero build tools, zero dependencies.
+- **Detailed Specification**: See [.agent/ARCHITECTURE.md](file:///d:/Coding/BankSoal/.agent/ARCHITECTURE.md)
+- **Rules & Constraints**: See [.agent/rules/BANKSOAL_RULES.md](file:///d:/Coding/BankSoal/.agent/rules/BANKSOAL_RULES.md)
+
+---
+
+## 📁 Project Structure
+
 ```
-index.html        ← Loader (46 lines), load app/style.css + app/data.js + app/app.js
+index.html        ← Shell loader & layout (Sidebar, Main, Header)
 app/
-  style.css       ← CSS (styling, responsif, aksesibilitas)
-  data.js         ← Knowledge base (5 file sumber, 30+ konsep, 199+ soal, 98+ flashcard)
-  app.js          ← Aplikasi logic (event delegation, render, routing)
-  manifest.json   ← PWA manifest
-  sw.js           ← Service worker (cache offline)
+  style.css       ← CSS Design system (Glassmorphism, Dark mode, Animations, Responsive)
+  data.js         ← Knowledge base (5 sources, 12 concepts, 253 questions, 98 flashcards)
+  app.js          ← Application logic (State S, View router, Single event delegation listener)
+  manifest.json   ← PWA Web App Manifest
+  sw.js           ← Service Worker (Offline caching strategy)
+.agent/           ← Agent System & Tooling imported & adapted from ag-kit
+  ARCHITECTURE.md # Full architecture specification
+  rules/          # Development & Data rules
+  skills/         # Domain skills (content-validator, frontend-design, context-compression)
+  workflows/      # Procedures (add-blok, verify, ui-ux-pro-max)
+  scripts/        # Standalone Node.js data validator (`validate_data.js`)
 ```
-No build step, no package.json, no frameworks.
 
-## How to run
-Open `index.html` in browser langsung jalan. Deploy via GitHub Pages (branch `main`, root folder).
+---
 
-## Architecture
-- **Data per file sumber** — 5 file PDF asli sebagai grup utama (bukan per topik)
-  - File 1: PR + Mikrobiologi
-  - File 2: MTB UB PAT FN MUSKULOSKELETAL 1 (Anatomi + Histologi)
-  - File 3: PAT MUSKULO 2
-  - File 4: MARTABAK UB SUMATIF 2
-  - File 5: MTB UB 2 FNMS CALVARIA
-- `DB` global object di `app/data.js`: `DB.sources[]` → tiap source punya `concepts[]`
-- `S` global state di `app/app.js` → progress, quiz, tryout, flashcard
-- Progress disimpan di `localStorage` key `bs_prog`
-- Semua render pakai template literal + innerHTML (no DOM diffing)
-- Event delegation: SATU click listener di `document`, no inline onclick
-- Pilihan jawaban diacak per sesi (disimpan di `S.qShuffle`)
+## 🚀 How to Run & Deploy
 
-## Adding new content (blok baru)
-1. Buka `app/data.js`
-2. Tambah objek ke array `DB.sources`:
-   ```js
-   DB.sources.push({
-     id: "file-6-respirasi",
-     name: "Respirasi",
-     short: "File 6",
-     fileName: "respirasi.pdf",
-     icon: "🫁", color: "#...",
-     desc: "...",
-     concepts: [{
-       id: "paru",
-       name: "Paru",
-       definition: "...",
-       keyPoints: ["..."],
-       questions: [q("soal", 0, ["A","B","C","D"])],
-       flashcards: [fc("depan", "belakang")]
-     }]
-   });
-   ```
-3. `DB.allQuestions` dan `DB.allFlashcards` otomatis terisi (dihitung di bottom data.js)
-4. `git add -A && git commit && git push` → Pages auto-deploy
+- **Run Locally**: Open `index.html` directly in browser (no local server required).
+- **Deployment**: Deployed via GitHub Pages from `main` branch root directory (`https://naufalsaputraa.github.io/Bank-Soal-FK/`).
 
-## Data validation rules
-- `q(text, answerIdx, opts, tags)` → `opts` harus array of strings, jangan nested array. Semua q() dalam SATU array `questions: [...]`, jangan dipisah dengan `],[`
-- `answerIdx` harus 0-based, valid untuk panjang `opts`
-- `fc(front, back, tags)` → front & back harus string
-- Duplicate question text diperbolehkan (beda file bisa mirip)
+---
 
-## Key gotchas
-- `const DB` di data.js — jangan ganti jadi `let`/`var`
-- LocalStorage key: `bs_prog` — jangan diubah tanpa migrasi
-- Google Fonts (Inter, JetBrains Mono) — fallback ke system font jika offline
-- GitHub Pages URL: `https://naufalsaputraa.github.io/Bank-Soal-FK/`
-- Branch: `main` default, Pages deploy dari branch `main` folder `/ (root)`
-- Tidak ada test, lint, atau typecheck — validasi manual via `node -e "new Function(fs.readFileSync('app/data.js','utf8'))"`
-- Service worker cache di `app/sw.js` — perlu update versi (`CACHE` variable) kalau ganti konten
+## ⚙️ Key Architectural Concepts
 
-## Cleanup
-- File ekstrak PDF (`.txt`) di `data/` dan `tmp_pdf/` bisa dihapus setelah data masuk
-- Jangan commit PDF asli ke repo
+1. **Knowledge Base (`app/data.js`)**:
+   - Organized as: `DB.sources[]` → `concepts[]` → `questions[]` & `flashcards[]`.
+   - `DB.allQuestions` and `DB.allFlashcards` are populated automatically on boot.
+2. **State & Event Delegation (`app/app.js`)**:
+   - `S` object stores runtime state (current view, active quiz/tryout/flashcard state, progress).
+   - Progress saved in `localStorage` under key `bs_prog`.
+   - **Single Event Delegation**: All click interactions handled via ONE `document.addEventListener('click', ...)` listener.
+3. **PWA & Service Worker (`app/sw.js`)**:
+   - Offline-first cache. Increment `CACHE_NAME` version whenever static assets change.
 
-## For future blok
-Cukup edit `app/data.js` → tambah source baru. Aplikasi otomatis handle tanpa perubahan lain.
+---
+
+## 🧪 Data Validation
+
+Run the standalone validator script before committing any changes:
+
+```bash
+node .agent/scripts/validate_data.js
+```
+
+---
+
+## 📦 Agent Tooling & Workflows
+
+- **Data Validation**: [.agent/skills/content-validator/SKILL.md](file:///d:/Coding/BankSoal/.agent/skills/content-validator/SKILL.md)
+- **Frontend Design System**: [.agent/skills/frontend-design/SKILL.md](file:///d:/Coding/BankSoal/.agent/skills/frontend-design/SKILL.md)
+- **Context Compression**: [.agent/skills/context-compression/SKILL.md](file:///d:/Coding/BankSoal/.agent/skills/context-compression/SKILL.md)
+- **Workflow - Add Block**: [.agent/workflows/add-blok.md](file:///d:/Coding/BankSoal/.agent/workflows/add-blok.md)
+- **Workflow - Verify**: [.agent/workflows/verify.md](file:///d:/Coding/BankSoal/.agent/workflows/verify.md)
+- **Workflow - UI Audit**: [.agent/workflows/ui-ux-pro-max.md](file:///d:/Coding/BankSoal/.agent/workflows/ui-ux-pro-max.md)

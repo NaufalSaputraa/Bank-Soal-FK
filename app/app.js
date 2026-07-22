@@ -1,10 +1,12 @@
-
 const S = {
   view:'home', selectedSource:null, selectedConcept:null,
   quiz:{active:false, questions:[], idx:0, score:0, answers:[], done:false},
   tryout:{active:false, questions:[], idx:0, score:0, answers:[], timeLeft:0, done:false},
   flashcard:{active:false, cards:[], idx:0},
   progress:JSON.parse(localStorage.getItem('bs_prog')||'{}'),
+  bookmarks:JSON.parse(localStorage.getItem('bs_bm')||'[]'),
+  sidebarCollapsed:localStorage.getItem('bs_col')==='true',
+  lastConcept:localStorage.getItem('bs_lastc')||null,
   qShuffle:{}
 };
 const $=(s,c=document)=>c.querySelector(s);
@@ -15,6 +17,25 @@ const ltr=i=>String.fromCharCode(65+i);
 const save=()=>localStorage.setItem('bs_prog',JSON.stringify(S.progress));
 const learned=id=>!!S.progress[id];
 const mark=id=>{S.progress[id]=true;save();sideProg()};
+
+const isBookmarked=qText=>S.bookmarks.includes(qText);
+const toggleBookmark=(qText,btn)=>{
+  const idx=S.bookmarks.indexOf(qText);
+  if(idx>=0) S.bookmarks.splice(idx,1);
+  else S.bookmarks.push(qText);
+  localStorage.setItem('bs_bm',JSON.stringify(S.bookmarks));
+  updateBmBadge();
+  if(btn) btn.classList.toggle('bookmarked',isBookmarked(qText));
+};
+const updateBmBadge=()=>{
+  const el=$('#bmCount');
+  if(el) el.textContent=S.bookmarks.length;
+};
+const applySidebarState=()=>{
+  const sb=$('#sidebar'), app=$('.app-layout');
+  if(S.sidebarCollapsed) { sb?.classList.add('collapsed'); app?.classList.add('collapsed'); }
+  else { sb?.classList.remove('collapsed'); app?.classList.remove('collapsed'); }
+};
 
 function shuffleOpts(q){
   const key = q.text;
@@ -36,26 +57,45 @@ function countQ(srcId){return DB.allQuestions.filter(q=>q.sourceId===srcId).leng
 function sideProg(){
   const total=DB.sources.reduce((a,s)=>a+s.concepts.length,0);
   const done=Object.keys(S.progress).length;
-  $('#sidebarFooter').textContent=`${done}/${total} konsep dipelajari`;
+  const el=$('#sidebarFooter');
+  if(el) el.innerHTML=`<span class="sf-text">${done}/${total} konsep dipelajari</span>`;
 }
 
 // EVENT DELEGATION — single listener for everything
 document.addEventListener('click', e => {
-  // ── Sidebar toggle (mobile) ──
+  // ── Desktop / Mobile Sidebar toggle ──
+  const logo = e.target.closest('#menuBtn, .sidebar-brand .logo');
+  if(logo) {
+    if(window.innerWidth<=768) {
+      $('#sidebar')?.classList.toggle('open');
+    } else {
+      S.sidebarCollapsed = !S.sidebarCollapsed;
+      localStorage.setItem('bs_col', S.sidebarCollapsed);
+      applySidebarState();
+    }
+    return;
+  }
+
+  // ── Sidebar toggle auto-close on mobile outside click ──
   if(window.innerWidth<=768 && !e.target.closest('.sidebar') && e.target.id!=='menuBtn') {
     $('#sidebar')?.classList.remove('open');
   }
 
-  // ── Quiz/Tryout answer ── (must be FIRST: highest priority, stops propagation)
+  // ── Bookmark button ──
+  const bmBtn = e.target.closest('[data-bm]');
+  if(bmBtn) {
+    toggleBookmark(decodeURIComponent(bmBtn.dataset.bm), bmBtn);
+    return;
+  }
+
+  // ── Quiz/Tryout answer ──
   const opt = e.target.closest('.q-opt:not(.locked)');
   if(opt) {
     const i=parseInt(opt.dataset.i), ans=parseInt(opt.dataset.ans);
     const mode = opt.closest('[data-mode]');
     if(mode) {
-      // Inside quiz or tryout mode
       if(mode.dataset.mode==='tryout') {
         S.tryout.answers[S.tryout.idx]=i;
-        if(i===ans) S.tryout.score++;
         tryout($('#pageContent'));
       } else {
         S.quiz.answers[S.quiz.idx]=i;
@@ -63,18 +103,31 @@ document.addEventListener('click', e => {
         kuis($('#pageContent'));
       }
     } else {
-      // Standalone question (bank soal / concept detail) — visually mark only
       const parent = opt.closest('.q-card');
       parent.querySelectorAll('.q-opt').forEach(o => {
         o.classList.add('locked');
         if(parseInt(o.dataset.i)===ans) o.classList.add('correct');
       });
       if(i!==ans) opt.classList.add('wrong');
+      const expl = parent.querySelector('.q-explanation');
+      if(expl) expl.classList.remove('hidden');
     }
     return;
   }
 
-  // ── Source card (home / source detail) ──
+  // ── Tree toggle (folder in materi tree) ──
+  const treeToggle = e.target.closest('.tree-toggle');
+  if(treeToggle) {
+    const item = treeToggle.closest('.tree-item');
+    if(item) {
+      item.classList.toggle('open');
+      const isExp = treeToggle.getAttribute('aria-expanded') === 'true';
+      treeToggle.setAttribute('aria-expanded', !isExp);
+    }
+    return;
+  }
+
+  // ── Source card ──
   const srcCard = e.target.closest('.source-card');
   if(srcCard) {
     const concept = srcCard.dataset.concept;
@@ -84,14 +137,14 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // ── Tree leaf (concept in materi tree) ──
+  // ── Tree leaf ──
   const leaf = e.target.closest('.tree-leaf');
   if(leaf) {
     nav('materi',{selectedConcept:leaf.dataset.concept,selectedSource:leaf.dataset.source});
     return;
   }
 
-  // ── Navigation (sidebar, links, search results) ──
+  // ── Navigation ──
   const navEl = e.target.closest('[data-nav], [data-view]');
   if(navEl) {
     const view = navEl.dataset.view || navEl.dataset.nav;
@@ -101,7 +154,7 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // ── Start actions (quiz, tryout, flashcard) ──
+  // ── Start actions ──
   const start = e.target.closest('[data-start]');
   if(start) {
     const [type, param] = start.dataset.start.split(',');
@@ -111,11 +164,19 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // ── Next question (quiz/tryout) ──
+  // ── Next question ──
   const next = e.target.closest('[data-next]');
   if(next) {
     if(next.dataset.next==='quiz') nextQuiz();
     else nextTryout();
+    return;
+  }
+
+  // ── Finish tryout ──
+  const finish = e.target.closest('[data-finish="tryout"]');
+  if(finish) {
+    S.tryout.done = true;
+    tryout($('#pageContent'));
     return;
   }
 
@@ -153,20 +214,15 @@ document.addEventListener('click', e => {
   const sr = e.target.closest('.sr-item');
   if(sr) {
     const concept = sr.dataset.concept;
+    const searchRes = $('#searchResults');
+    if(searchRes) searchRes.style.display='none';
     if(concept) nav('materi',{selectedConcept:concept});
-    $('#searchResults').style.display='none';
     return;
   }
 
   // ── Flashcard start from meta button ──
   const fcNavBtn = e.target.closest('[data-fc-nav]');
   if(fcNavBtn) { startFlashcards(fcNavBtn.dataset.fcNav||'all'); return; }
-});
-
-// ── Menu button ──
-$('#menuBtn')?.addEventListener('click', e => {
-  e.stopPropagation();
-  $('#sidebar').classList.toggle('open');
 });
 
 function nav(view, params={}){
@@ -177,14 +233,16 @@ function nav(view, params={}){
 }
 
 function render(){
-  const t={home:'Beranda',materi:'Materi',soal:'Bank Soal',kuis:'Quiz Cepat',tryout:'Try Out CBT',flashcard:'Flashcard',cari:'Cari'}[S.view]||'';
+  const t={home:'Beranda',materi:'Materi',soal:'Bank Soal',kuis:'Quiz Cepat',tryout:'Try Out CBT',flashcard:'Flashcard',cari:'Cari',bookmark:'Soal Disimpan'}[S.view]||'';
   $('#pageTitle').textContent=t;
   const bc=$('#breadcrumb');
   if(S.selectedConcept){const c=findConcept(S.selectedConcept);bc.textContent=c?`Materi › ${c.sourceName} › ${c.name}`:''}
   else if(S.selectedSource){const s=DB.sources.find(x=>x.id===S.selectedSource);bc.textContent=s?`Materi › ${s.name}`:'Materi'}
-  else bc.textContent=S.view==='materi'?'Jelajahi File':'Blok Muskuloskeletal';
+  else bc.textContent=S.view==='materi'?'Jelajahi File':S.view==='bookmark'?'Favorites':'Blok Muskuloskeletal';
   $('#headerMeta').textContent=DB.allQuestions.length+' soal · '+DB.allFlashcards.length+' flashcard';
   $('#soalCount').textContent=DB.allQuestions.length;
+  updateBmBadge();
+  applySidebarState();
   const c=$('#pageContent');c.innerHTML='';
   if(S.view==='home') home(c);
   else if(S.view==='materi') materi(c);
@@ -193,32 +251,86 @@ function render(){
   else if(S.view==='tryout') tryout(c);
   else if(S.view==='flashcard') flashcard(c);
   else if(S.view==='cari') cari(c);
+  else if(S.view==='bookmark') bookmark(c);
   sideProg();
 }
 
-// ── HOME ──
+// ── HOME (3-COLUMN DASHBOARD) ──
 function home(c){
-  c.innerHTML=`<div class="stats">
-      <div class="stat"><div class="num">${DB.sources.length}</div><div class="label">File Sumber</div></div>
-      <div class="stat"><div class="num">${DB.sources.reduce((a,s)=>a+s.concepts.length,0)}</div><div class="label">Konsep</div></div>
-      <div class="stat"><div class="num gold">${DB.allQuestions.length}</div><div class="label">Soal</div></div>
-      <div class="stat"><div class="num accent">${DB.allFlashcards.length}</div><div class="label">Flashcard</div></div>
-    </div>
-    <div class="section-title" role="heading">File Sumber</div>
-    <div class="topics">${DB.sources.map(s=>`
-      <div class="topic source-card" data-source="${s.id}" tabindex="0" role="button">
-        <div class="icon">${s.icon}</div>
-        <h3>${s.name}</h3>
-        <div class="meta">${s.concepts.length} konsep · ${countQ(s.id)} soal · ${DB.allFlashcards.filter(f=>f.sourceId===s.id).length} flashcard</div>
-        <div class="meta" style="font-size:11px;margin-top:2px">${s.desc}</div>
+  const totalConcepts = DB.sources.reduce((a,s)=>a+s.concepts.length,0);
+  const doneConcepts = Object.keys(S.progress).length;
+  const pct = Math.round((doneConcepts / (totalConcepts||1)) * 100);
+  const offset = 169.6 - (169.6 * pct / 100);
+  const lastC = S.lastConcept ? findConcept(S.lastConcept) : null;
+  const bms = DB.allQuestions.filter(q => isBookmarked(q.text));
+
+  c.innerHTML = `<div class="dashboard-layout">
+    <div class="main-area">
+      <div class="stats">
+        <div class="stat"><div class="num">${DB.sources.length}</div><div class="label">File Sumber</div></div>
+        <div class="stat"><div class="num">${totalConcepts}</div><div class="label">Konsep</div></div>
+        <div class="stat"><div class="num gold">${DB.allQuestions.length}</div><div class="label">Soal</div></div>
+        <div class="stat"><div class="num accent">${DB.allFlashcards.length}</div><div class="label">Flashcard</div></div>
       </div>
-    `).join('')}</div>
-    <div class="section-title" style="margin-top:16px">Akses Cepat</div>
-    <div class="btn-group">
-      <button class="btn btn-primary" data-start="quiz,10">⚡ Quiz Cepat</button>
-      <button class="btn" data-start="fc,all">🃏 Semua Flashcard</button>
-      <button class="btn btn-accent" data-nav="tryout">📝 Try Out CBT</button>
-    </div>`;
+      <div class="section-title" role="heading">File Sumber Belajar</div>
+      <div class="topics">${DB.sources.map(s=>`
+        <div class="topic source-card" data-source="${s.id}" tabindex="0" role="button">
+          <div class="icon">${s.icon}</div>
+          <h3>${s.name}</h3>
+          <div class="meta">${s.concepts.length} konsep · ${countQ(s.id)} soal · ${DB.allFlashcards.filter(f=>f.sourceId===s.id).length} flashcard</div>
+          <div class="meta" style="font-size:11px;margin-top:2px">${s.desc}</div>
+        </div>
+      `).join('')}</div>
+    </div>
+
+    <div class="right-panel">
+      <!-- Widget 1: Kemajuan Belajar -->
+      <div class="widget-card">
+        <div class="widget-header">
+          <span>📊 Kemajuan Belajar</span>
+          <span class="w-badge">${doneConcepts}/${totalConcepts} Konsep</span>
+        </div>
+        <div class="progress-box">
+          <div class="progress-ring">
+            <svg viewBox="0 0 60 60">
+              <circle class="bg-circle" cx="30" cy="30" r="27"></circle>
+              <circle class="val-circle" cx="30" cy="30" r="27" stroke-dasharray="169.6" stroke-dashoffset="${offset}"></circle>
+            </svg>
+            <div class="val-text">${pct}%</div>
+          </div>
+          <div>
+            <div style="font-size:13.5px;font-weight:700;color:var(--ink)">${pct}% Selesai</div>
+            <div style="font-size:11.5px;color:var(--ink-3);margin-top:2px">Selesaikan seluruh konsep untuk persiapan ujian CBT.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Widget 2: Continue Studying / Last Opened Concept -->
+      ${lastC ? `<div class="widget-card">
+        <div class="widget-header"><span>📖 Lanjutkan Belajar</span></div>
+        <div style="font-size:13px;font-weight:600;color:var(--primary)">${lastC.name}</div>
+        <div style="font-size:11.5px;color:var(--ink-3);margin-top:2px;line-height:1.4">${lastC.definition.substring(0, 80)}...</div>
+        <button class="btn btn-sm btn-primary" style="width:100%;margin-top:12px" data-buka="${lastC.id}" data-source="${lastC.sourceId}">Buka Materi →</button>
+      </div>` : ''}
+
+      <!-- Widget 3: Quick Launch Actions -->
+      <div class="widget-card">
+        <div class="widget-header"><span>⚡ Akses Cepat</span></div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button class="btn btn-primary" style="justify-content:flex-start" data-start="quiz,10">⚡ Quiz Cepat (10 Soal)</button>
+          <button class="btn btn-accent" style="justify-content:flex-start" data-nav="tryout">📝 Try Out CBT (30 Min)</button>
+          <button class="btn" style="justify-content:flex-start" data-start="fc,all">🃏 Flashcard Kedokteran</button>
+        </div>
+      </div>
+
+      <!-- Widget 4: Soal Disimpan Summary -->
+      ${bms.length ? `<div class="widget-card">
+        <div class="widget-header"><span>🔖 Soal Disimpan</span><span class="w-badge">${bms.length} Soal</span></div>
+        <div style="font-size:12px;color:var(--ink-3);margin-bottom:10px">Ada ${bms.length} soal yang kamu tandai untuk diulas kembali.</div>
+        <button class="btn btn-sm" style="width:100%" data-nav="bookmark">Lihat Soal Disimpan →</button>
+      </div>` : ''}
+    </div>
+  </div>`;
 }
 
 // ── MATERI ──
@@ -248,23 +360,28 @@ function sourceDetail(c,srcId){
   if(!src){c.innerHTML='<div class="card">File tidak ditemukan.</div>';return}
   const fcCount=DB.allFlashcards.filter(f=>f.sourceId===srcId).length;
   c.innerHTML=`<div class="concept">
-      <h2>${src.icon} ${src.name}</h2>
-      <div class="def">${src.desc}</div>
-      <div class="meta" style="font-size:13px;margin-top:8px">${src.concepts.length} konsep · ${countQ(srcId)} soal · ${fcCount} flashcard</div>
+    <h2>${src.icon} ${src.name}</h2>
+    <div class="def">${src.desc}</div>
+    <div style="margin-top:16px;display:flex;gap:8px">
+      <button class="btn btn-primary" data-start="quiz,10">⚡ Quiz ${src.short}</button>
+      <button class="btn" data-start="fc,${srcId}">🃏 Flashcard (${fcCount})</button>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:14px">
-      ${src.concepts.map(c=>`
-        <div class="topic source-card" data-source="${srcId}" data-concept="${c.id}" tabindex="0">
-          <h3 style="font-size:14px">${c.name}</h3>
-          <div class="meta">${(c.questions||[]).flat().length} soal</div>
-        </div>
-      `).join('')}
-    </div>`;
+    <div class="section-title" style="margin-top:24px">Konsep Dalam File Ini</div>
+    <div class="topics">${src.concepts.map(con=>`
+      <div class="topic" data-buka="${con.id}" data-source="${srcId}" tabindex="0" role="button">
+        <h3>${con.name} ${learned(con.id)?'✓':''}</h3>
+        <div class="meta">${(con.questions||[]).flat().length} soal · ${(con.flashcards||[]).length} flashcard</div>
+        <div class="meta" style="font-size:11px;margin-top:2px">${con.definition}</div>
+      </div>
+    `).join('')}</div>
+  </div>`;
 }
 
 function detail(c,conceptId){
   const con=findConcept(conceptId);
   if(!con){c.innerHTML='<div class="card">Konsep tidak ditemukan.</div>';return}
+  S.lastConcept = conceptId;
+  localStorage.setItem('bs_lastc', conceptId);
   mark(conceptId);
   const qs=DB.allQuestions.filter(q=>q.conceptId===conceptId);
   const fcs=DB.allFlashcards.filter(f=>f.conceptId===conceptId);
@@ -285,12 +402,19 @@ function detail(c,conceptId){
 
 function qCard(q,showAns){
   const sq = showAns ? {opts:q.opts, answerIdx:q.answerIdx} : shuffleOpts(q);
-  return `<div class="q-card"><div class="q-text">${q.text}</div>
+  const bmClass = isBookmarked(q.text) ? ' bookmarked' : '';
+  return `<div class="q-card">
+    <div style="display:flex;align-items:flex-start;gap:8px">
+      <div class="q-text" style="flex:1">${q.text}</div>
+      <button class="bm-btn${bmClass}" data-bm="${encodeURIComponent(q.text)}" title="Simpan Soal">🔖</button>
+    </div>
     <div class="q-opts">${sq.opts.map((o,i)=>`<div class="q-opt${showAns?(i===sq.answerIdx?' correct':' locked'):''}" data-i="${i}" data-ans="${sq.answerIdx}" tabindex="0" role="button">${ltr(i)} ${o}</div>`).join('')}</div>
     <div class="q-tags">${(q.tags||[]).map(t=>`<span class="q-tag">#${t}</span>`).join('')}</div>
-    ${showAns?`<div style="margin-top:8px;padding:8px 10px;border-radius:var(--radius-sm);font-size:12.5px;background:var(--green-light);color:var(--green)"><strong>✓ ${ltr(sq.answerIdx)}. ${sq.opts[sq.answerIdx]}</strong>
-      ${q.explanation?`<div style="margin-top:4px;padding-top:4px;border-top:1px solid rgba(0,0,0,0.08);font-weight:400;color:var(--ink-2)">${q.explanation}</div>`:''}</div>
-      <div style="font-size:12px;color:var(--ink-3);margin-top:6px">📍 ${q.sourceName} › ${q.conceptName}</div>`:''}</div>`;
+    <div class="q-explanation${showAns ? '' : ' hidden'}" style="margin-top:10px;padding:10px;border-radius:var(--radius-sm);font-size:12.5px;background:var(--green-light);color:var(--green)">
+      <strong>✓ ${ltr(sq.answerIdx)}. ${sq.opts[sq.answerIdx]}</strong>
+      ${q.explanation?`<div style="margin-top:4px;padding-top:4px;border-top:1px solid rgba(0,0,0,0.08);font-weight:400;color:var(--ink-2)"><strong>Pembahasan:</strong> ${q.explanation}</div>`:''}
+      <div style="font-size:12px;color:var(--ink-3);margin-top:6px">📍 ${q.sourceName} › ${q.conceptName}</div>
+    </div></div>`;
 }
 
 function fcMini(f){
@@ -317,6 +441,21 @@ function soal(c){
       <div class="section-title">📌 ${con} <span class="count">(${qss.length} soal)</span></div>
       ${qss.map(q=>qCard(q,false)).join('')}
     `).join('')}`;
+}
+
+// ── BOOKMARK (SOAL DISIMPAN) ──
+function bookmark(c){
+  const bms = DB.allQuestions.filter(q => isBookmarked(q.text));
+  if(!bms.length) {
+    c.innerHTML = `<div style="text-align:center;padding:48px 20px;color:var(--ink-3)">
+      <div style="font-size:48px;margin-bottom:12px">🔖</div>
+      <div style="font-size:16px;font-weight:600;color:var(--ink)">Belum Ada Soal Disimpan</div>
+      <div style="font-size:13px;margin-top:4px">Klik ikon 🔖 pada soal mana saja untuk menyimpannya di sini.</div>
+    </div>`;
+    return;
+  }
+  c.innerHTML = `<div class="section-title">📌 Soal Disimpan <span class="count">(${bms.length} soal)</span></div>
+    ${bms.map(q => qCard(q, false)).join('')}`;
 }
 
 // ── KUIS ──
@@ -351,7 +490,35 @@ let timerRef=null;
 function tryout(c){
   if(S.tryout.done){
     const to=S.tryout;
-    c.innerHTML=`<div class="qc"><div class="score">${to.score}/${to.questions.length}</div><div class="label">Try Out Selesai!</div><div class="sub">Waktu: ${fmt(to.timeLimit||0)}</div><div class="btn-group" style="justify-content:center;margin-top:20px"><button class="btn btn-primary" data-start="tryout,all">Ulangi</button></div></div>`;
+    let sc=0;
+    to.questions.forEach((q,i)=>{
+      const userAns=to.answers[i];
+      const sq=shuffleOpts(q);
+      if(userAns===sq.answerIdx) sc++;
+    });
+    to.score=sc;
+    c.innerHTML=`<div class="qc">
+      <div class="score">${to.score}/${to.questions.length}</div>
+      <div class="label">Try Out CBT Selesai!</div>
+      <div class="sub">Waktu Sisa: ${fmt(to.timeLeft||0)}</div>
+      <div class="btn-group" style="justify-content:center;margin-top:20px">
+        <button class="btn btn-primary" data-start="tryout,all">Ulangi Try Out</button>
+      </div>
+    </div>
+    <div class="section-title" style="margin-top:24px">Pembahasan & Kunci Jawaban</div>
+    ${to.questions.map((q,idx)=>{
+      const userAns=to.answers[idx];
+      const sq=shuffleOpts(q);
+      const isCorrect=userAns===sq.answerIdx;
+      return `<div class="q-card" style="margin-bottom:12px">
+        <div class="q-text"><strong>${idx+1}.</strong> ${q.text}</div>
+        <div class="q-opts">${sq.opts.map((o,i)=>`<div class="q-opt locked ${i===sq.answerIdx?'correct':i===userAns?'wrong':''}">${ltr(i)} ${o}</div>`).join('')}</div>
+        <div style="margin-top:8px;padding:8px 10px;border-radius:var(--radius-sm);font-size:12.5px;${isCorrect?'background:var(--green-light);color:var(--green)':'background:var(--red-light);color:var(--red)'}">
+          <strong>${isCorrect?'✓ Benar':'✕ Jawaban Anda: '+(userAns!==undefined?ltr(userAns):'Kosong')+' (Kunci: '+ltr(sq.answerIdx)+')'}</strong>
+          ${q.explanation?`<div style="margin-top:4px;padding-top:4px;border-top:1px solid rgba(0,0,0,0.08);font-weight:400;color:var(--ink-2)">${q.explanation}</div>`:''}
+        </div>
+      </div>`;
+    }).join('')}`;
     return;
   }
   if(!S.tryout.active){
@@ -360,14 +527,19 @@ function tryout(c){
   }
   const to=S.tryout;const qs=to.questions;const idx=to.idx;
   if(idx>=qs.length||to.timeLeft<=0){to.done=true;tryout(c);return}
-  const q=qs[idx];const ans=to.answers[idx];const locked=ans!==undefined;
+  const q=qs[idx];const ans=to.answers[idx];
   const sq=shuffleOpts(q);
-  c.innerHTML=`<div class="quiz-bar"><span class="qb-stat"><strong>${idx+1}</strong>/${qs.length}</span><div class="quiz-progress"><div class="qp-fill" style="width:${(idx+1)/qs.length*100}%"></div></div><span class="timer" id="timerDisplay">${fmt(to.timeLeft)}</span></div>
+  c.innerHTML=`<div class="quiz-bar"><span class="qb-stat">Soal <strong>${idx+1}</strong>/${qs.length}</span><div class="quiz-progress"><div class="qp-fill" style="width:${(idx+1)/qs.length*100}%"></div></div><span class="timer" id="timerDisplay">⏱️ ${fmt(to.timeLeft)}</span></div>
     <div class="q-card" data-mode="tryout"><div class="q-text">${q.text}</div>
-    <div class="q-opts">${sq.opts.map((o,i)=>`<div class="q-opt${locked?(i===sq.answerIdx?' correct':i===ans?' wrong':' locked'):''}" data-i="${i}" data-ans="${sq.answerIdx}" tabindex="0">${ltr(i)} ${o}</div>`).join('')}</div></div>
-    ${locked?`<div style="padding:10px;margin-top:8px;border-radius:var(--radius-sm);font-size:13px;${ans===sq.answerIdx?'background:var(--green-light);color:var(--green)':'background:var(--red-light);color:var(--red)'}"><strong>${ans===sq.answerIdx?'✓ Benar':'✕ Jawaban: '+ltr(sq.answerIdx)}</strong>${q.explanation?`<div style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(0,0,0,0.1);font-weight:400;font-size:12px;color:var(--ink-2)">${q.explanation}</div>`:''}</div>
-      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px"><span style="font-size:12px;color:var(--ink-3);margin-right:auto">📍 ${q.sourceName} › ${q.conceptName}</span><button class="btn btn-sm" data-buka="${q.conceptId}" data-source="${q.sourceId}">📖 Buka Materi</button><button class="btn btn-primary btn-sm" data-next="tryout">${idx+1>=qs.length?'Selesai':'→'}</button></div>`:''}
-    <div class="qnav">${qs.map((_,i)=>`<button data-goto="${i}" class="${to.answers[i]!==undefined?'done':''}${i===idx?' cur':''}" tabindex="0">${i+1}</button>`).join('')}</div>`;
+    <div class="q-opts">${sq.opts.map((o,i)=>`<div class="q-opt${ans===i?' selected':''}" data-i="${i}" data-ans="${sq.answerIdx}" tabindex="0">${ltr(i)} ${o}</div>`).join('')}</div></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+      <span style="font-size:12px;color:var(--ink-3)">📍 ${q.sourceName}</span>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-sm" data-next="tryout">${idx+1>=qs.length?'Selesai':'Lanjut →'}</button>
+        <button class="btn btn-primary btn-sm" data-finish="tryout">Submit Try Out</button>
+      </div>
+    </div>
+    <div class="qnav" style="margin-top:16px">${qs.map((_,i)=>`<button data-goto="${i}" class="${to.answers[i]!==undefined?'done':''}${i===idx?' cur':''}" tabindex="0">${i+1}</button>`).join('')}</div>`;
 }
 function nextTryout(){S.tryout.idx++;if(S.tryout.idx>=S.tryout.questions.length){S.tryout.done=true}render()}
 function goTryout(i){S.tryout.idx=i;render()}

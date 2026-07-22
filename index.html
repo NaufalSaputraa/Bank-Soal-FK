@@ -11,13 +11,13 @@
 <link rel="manifest" href="app/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="app/style.css">
+<link rel="stylesheet" href="app/style.css?v=3">
 </head>
 <body>
 <div class="app-layout">
   <aside class="sidebar" id="sidebar">
-    <div class="sidebar-brand">
-      <div class="logo">B</div>
+    <div class="sidebar-brand" id="sidebarBrand">
+      <div class="logo" title="Toggle Sidebar">B</div>
       <div class="brand-text">
         <strong>BankSoal</strong>
         Blok Muskuloskeletal
@@ -25,22 +25,23 @@
     </div>
     <div class="sidebar-nav" id="sidebarNav">
       <div class="nav-group">Menu</div>
-      <div class="nav-item active" data-view="home"><span class="nav-icon">📊</span> Beranda</div>
-      <div class="nav-item" data-view="materi"><span class="nav-icon">📖</span> Materi</div>
-      <div class="nav-item" data-view="soal"><span class="nav-icon">❓</span> Bank Soal <span class="nav-badge" id="soalCount">0</span></div>
+      <div class="nav-item active" data-view="home" title="Beranda"><span class="nav-icon">📊</span> <span class="nav-text">Beranda</span></div>
+      <div class="nav-item" data-view="materi" title="Materi"><span class="nav-icon">📖</span> <span class="nav-text">Materi</span></div>
+      <div class="nav-item" data-view="soal" title="Bank Soal"><span class="nav-icon">❓</span> <span class="nav-text">Bank Soal</span> <span class="nav-badge" id="soalCount">0</span></div>
       <div class="nav-group">Belajar</div>
-      <div class="nav-item" data-view="kuis"><span class="nav-icon">⚡</span> Quiz Cepat</div>
-      <div class="nav-item" data-view="tryout"><span class="nav-icon">📝</span> Try Out CBT</div>
-      <div class="nav-item" data-view="flashcard"><span class="nav-icon">🃏</span> Flashcard</div>
+      <div class="nav-item" data-view="kuis" title="Quiz Cepat"><span class="nav-icon">⚡</span> <span class="nav-text">Quiz Cepat</span></div>
+      <div class="nav-item" data-view="tryout" title="Try Out CBT"><span class="nav-icon">📝</span> <span class="nav-text">Try Out CBT</span></div>
+      <div class="nav-item" data-view="flashcard" title="Flashcard"><span class="nav-icon">🃏</span> <span class="nav-text">Flashcard</span></div>
       <div class="nav-group">Lainnya</div>
-      <div class="nav-item" data-view="cari"><span class="nav-icon">🔍</span> Cari</div>
+      <div class="nav-item" data-view="cari" title="Cari"><span class="nav-icon">🔍</span> <span class="nav-text">Cari</span></div>
+      <div class="nav-item" data-view="bookmark" title="Soal Disimpan"><span class="nav-icon">🔖</span> <span class="nav-text">Disimpan</span> <span class="nav-badge" id="bmCount">0</span></div>
     </div>
     <div class="sidebar-footer" id="sidebarFooter">0/0 konsep</div>
   </aside>
 
   <main class="main">
     <div class="main-header">
-      <button class="menu-btn" id="menuBtn">☰</button>
+      <button class="menu-btn" id="menuBtn" title="Toggle Sidebar">☰</button>
       <h1 id="pageTitle">Beranda</h1>
       <div class="bc" id="breadcrumb">Blok Muskuloskeletal</div>
       <div class="header-meta" id="headerMeta">0 soal</div>
@@ -49,8 +50,8 @@
   </main>
 </div>
 
-<script src="app/data.js"></script>
-<script src="app/app.js"></script>
+<script src="app/data.js?v=3"></script>
+<script src="app/app.js?v=3"></script>
 <script>
 if('serviceWorker' in navigator) {
   navigator.serviceWorker.register('app/sw.js').catch(() => {});

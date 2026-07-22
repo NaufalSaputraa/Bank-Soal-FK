@@ -481,7 +481,7 @@ DB.sources.push({
   id: "file-4-sumatif2",
   name: "MARTABAK UB SUMATIF 2",
   short: "File 4",
-  fileName: "MARTABAK UB SUMATIF 2.pdf",
+  fileName: "MARTABAK UB SUMATIF 2 BLOK MUSKULOSKELETAL.pdf",
   icon: "📕", color: "#2c5f7a",
   desc: "Biomekanika, Fisiologi Otot, Mikrobiologi, Histologi, Embriologi — Soal Sumatif 2.",
   concepts: [
@@ -701,6 +701,503 @@ DB.sources.push({
 });
 
 // ──────────────────────────────────────────────
+
+// ──────────────────── NEW SOURCES (FILE 6 & 7) ────────────────────
+// NEW SOURCES GENERATED
+DB.sources.push({
+  "id": "file-6-embriologi",
+  "name": "Embriologi Muskuloskeletal",
+  "short": "File 6",
+  "fileName": "Gabungan File Embriologi.pdf",
+  "icon": "👶",
+  "color": "#7c3aed",
+  "desc": "Gabungan komprehensif embriologi skeletal, perkembangan somit, osifikasi, embriologi otot, & perkembangan ekstremitas.",
+  "concepts": [
+    {
+      "id": "embriologi-skeletal",
+      "name": "Embriologi Sistem Skeletal & Aksial",
+      "definition": "Perkembangan tulang belakang, iga, sternum, serta neurocranium & viscerocranium dari mesoderm & sel krista neuralis.",
+      "keyPoints": [
+        "Mesoderm paraksial → Somit → Sklerotom (tulang belakang & iga)",
+        "Notokorda sisa → Nukleus Pulposus diskus intervertebralis",
+        "Resegmentasi vertebra: kaudal sklerotom atas berfusi dengan kranial sklerotom bawah",
+        "Atap tengkorak (calvaria) → osifikasi intramembranosa",
+        "Basis cranii → osifikasi endokondral",
+        "Lengkung Faring I → Malleus, Incus, Maksila, Mandibula",
+        "Lengkung Faring II → Stapes, Proc. Styloideus, Os Hyoideum"
+      ],
+      "questions": [
+        {
+          "text": "Sistem skeletal (rangka) berkembang dari lapisan embrional mana?",
+          "answerIdx": 0,
+          "opts": [
+            "Mesoderm paraksial, mesoderm lempeng lateral, & krista neuralis",
+            "Ektoderm permukaan & endoderm",
+            "Hanya mesoderm intermediat",
+            "Endoderm & notokorda"
+          ],
+          "explanation": "Neurocranium & viscerocranium sebagian berasal dari sel krista neuralis (ektoderm), sedangkan kerangka aksial (vertebra, iga, sternum) dari mesoderm paraksial (sklerotom) dan kerangka anggota badan dari mesoderm lempeng lateral (somatik)."
+        },
+        {
+          "text": "Struktur somit yang berdiferensiasi membentuk tulang belakang (columna vertebralis) dan iga adalah?",
+          "answerIdx": 0,
+          "opts": [
+            "Sklerotom",
+            "Dermatom",
+            "Miotom",
+            "Pronefros"
+          ],
+          "explanation": "Pada akhir minggu ke-4, sel-sel sklerotom menjadi mesenkim dan bermigrasi mengelilingi medulla spinalis dan notokorda untuk membentuk vertebra dan iga."
+        },
+        {
+          "text": "Dalam proses resegmentasi vertebra, bagian kaudal suatu sklerotom akan menyatu dengan?",
+          "answerIdx": 1,
+          "opts": [
+            "Bagian kaudal sklerotom di bawahnya",
+            "Bagian kranial sklerotom segmen di bawahnya",
+            "Notokorda segmen atas",
+            "Nervus spinalis"
+          ],
+          "explanation": "Resegmentasi terjadi ketika separuh kaudal tiap sklerotom tumbuh dan berfusi dengan separuh kranial sklerotom di bawahnya. Diskus intervertebralis berkembang di antara segmen tersebut."
+        },
+        {
+          "text": "Struktur embrional apakah yang membentuk nukleus pulposus pada diskus intervertebralis?",
+          "answerIdx": 0,
+          "opts": [
+            "Notokorda",
+            "Sklerotom kranial",
+            "Mesoesofagus",
+            "Aorta dorsalis"
+          ],
+          "explanation": "Notokorda mengalami regresi total di regio korpus vertebra, tetapi membesar dan bertahan di area diskus intervertebralis membentuk Nukleus Pulposus."
+        },
+        {
+          "text": "Tengkorak dibagi menjadi neurocranium dan viscerocranium. Membranous neurocranium (atap tengkorak) mengalami osifikasi jenis apa?",
+          "answerIdx": 0,
+          "opts": [
+            "Osifikasi intramembranosa (desmal)",
+            "Osifikasi endokondral",
+            "Osifikasi sekunder",
+            "Osifikasi fibrokartilago"
+          ],
+          "explanation": "Tulang pipih atap tengkorak (atrium/calvaria: frontal, parietal) terbentuk langsung dari mesenkim melalui osifikasi intramembranosa tanpa melalui model kartilago."
+        },
+        {
+          "text": "Basis cranii (kondrocranium) mengalami proses penulangan berupa?",
+          "answerIdx": 1,
+          "opts": [
+            "Osifikasi intramembranosa",
+            "Osifikasi endokondral",
+            "Osifikasi langsung",
+            "Osifikasi desmal"
+          ],
+          "explanation": "Basis cranii mula-mula dibentuk dari sejumlah kartilago yang terpisah yang kemudian menyatu dan mengalami penulangan endokondral."
+        },
+        {
+          "text": "Lengkung faring I (lengkung mandibularis) menghasilkan tulang-tulang viscerocranium berupa?",
+          "answerIdx": 0,
+          "opts": [
+            "Malleus, incus, maksila, zigomatikum, & mandibula",
+            "Stapes & processus styloideus",
+            "Os hyoideum cornu majus",
+            "Kartilago tiroid"
+          ],
+          "explanation": "Lengkung faring 1 membentuk bagian dorsalnya (prosesus maksilaris: maksila, zigomatikum, os temporale pars skuamosa) dan bagian ventral (prosesus mandibularis: kartilago Meckel → malleus, incus, mandibula)."
+        },
+        {
+          "text": "Lengkung faring II (lengkung hioid) membentuk tulang pendengaran berupa?",
+          "answerIdx": 0,
+          "opts": [
+            "Stapes & processus styloideus",
+            "Malleus & incus",
+            "Os ethmoidale",
+            "Os sphenoidale"
+          ],
+          "explanation": "Kartilago lengkung faring II (kartilago Reichert) membentuk stapes, processus styloideus, ligamentum stylohyoideum, serta cornu minus dan corpus bagian atas os hyoideum."
+        },
+        {
+          "text": "Sternum berkembang dari sepasang acuan mesenkim yang terletak di dinding tubuh ventral yang disebut?",
+          "answerIdx": 0,
+          "opts": [
+            "Bilah sternum (sternal bars / sternal bands)",
+            "Sklerotom thorakal",
+            "Prosesus xiphoideus primordium",
+            "Dermatom thorax"
+          ],
+          "explanation": "Bilah sternum berkembang secara independen di mesoderm lempeng lateral somatik pada kedua sisi dinding tubuh ventral, kemudian menyatu di garis tengah."
+        },
+        {
+          "text": "Pada osifikasi endokondral tulang panjang, pusat osifikasi primer muncul di regio mana?",
+          "answerIdx": 0,
+          "opts": [
+            "Diafisis",
+            "Epifisis",
+            "Metafisis",
+            "Kartilago artikularis"
+          ],
+          "explanation": "Pusat osifikasi primer muncul di diafisis (batang tulang) sebelum lahir, sedangkan pusat osifikasi sekunder muncul di epifisis setelah lahir."
+        }
+      ],
+      "flashcards": [
+        {
+          "front": "Sklerotom?",
+          "back": "Bagian somit → pembentuk vertebra, iga, & tulang belakang."
+        },
+        {
+          "front": "AER (Apical Ectodermal Ridge)?",
+          "back": "Ektoderm distal tunas ekstremitas → eksresi FGF4/8 → pertumbuhan proksimodistal."
+        },
+        {
+          "front": "ZPA (Zone of Polarizing Activity)?",
+          "back": "Mesenkim posterior tunas ekstremitas → eksresi Sonic Hedgehog (SHH) → penentu pola jari anteroposterior."
+        },
+        {
+          "front": "Sindaktili?",
+          "back": "Kegagalan apoptosis jaringan interdigital → jari menyatu."
+        }
+      ]
+    },
+    {
+      "id": "embriologi-muskular",
+      "name": "Embriologi Sistem Muskular & Otot",
+      "definition": "Perkembangan otot rangka, otot jantung, & otot polos dari mesoderm paraksial, splanknik, & neuroektoderm.",
+      "keyPoints": [
+        "Somitomer (kepala) & Somit (aksial/ekstremitas) → Dermomiotom",
+        "Epimere (epaksial) → otot dorsalis / ekstensor → Ramus Dorsalis N. Spinalis",
+        "Hypomere (hipaksial) → otot ventrolateral / dinding tubuh → Ramus Ventralis N. Spinalis",
+        "Otot pengunyah → Lengkung Faring I (N. V3)",
+        "Otot ekspresi wajah → Lengkung Faring II (N. VII)",
+        "Otot pupil & mioepitel kelenjar → berasal unik dari Neuroektoderm"
+      ],
+      "questions": [
+        {
+          "text": "Seluruh sistem otot tubuh berkembang dari mesoderm, KECUALI otot-otot berikut yang berasal dari neuroektoderm yaitu?",
+          "answerIdx": 0,
+          "opts": [
+            "Otot sfingter & dilatator pupil, otot polos kelenjar mammaria & keringat",
+            "Otot miokardium jantung",
+            "Otot diafragma & otot lidah",
+            "Otot biseps & triseps brakii"
+          ],
+          "explanation": "Otot sfingter pupil, otot dilatator pupil, serta sel-sel mioepitel kelenjar mammaria dan keringat berasal dari ektoderm (neuroektoderm)."
+        },
+        {
+          "text": "Otot rangka (muskulus skeletal) kerangka aksial dan ekstremitas terutama berasal dari?",
+          "answerIdx": 0,
+          "opts": [
+            "Mesoderm paraksial (somit & somitomer)",
+            "Mesoderm lempeng lateral splanknik",
+            "Mesoderm intermediat",
+            "Endoderm parietal"
+          ],
+          "explanation": "Somitomer (di kepala) dan somit (dari regio oksipital ke kaudal) berdiferensiasi membentuk dermomiotom yang menjadi sumber utama otot rangka."
+        },
+        {
+          "text": "Dermomiotom terbagi menjadi regio epaksial (epimere) dan hipaksial (hypomere). Epimere dipersarafi oleh?",
+          "answerIdx": 0,
+          "opts": [
+            "Ramus dorsalis nervus spinalis",
+            "Ramus ventralis nervus spinalis",
+            "Nervus kranialis V",
+            "Nervus phrenicus"
+          ],
+          "explanation": "Epimere (otot epaksial: otot ekstensor columna vertebralis/autokton) dipersarafi oleh ramus dorsalis nervus spinalis, sedangkan hypomere (otot hipaksial: otot dinding tubuh & ekstremitas) dipersarafi ramus ventralis."
+        },
+        {
+          "text": "Otot-otot ekspresi wajah (muskulus fasialis) berkembang dari somitomer/lengkung faring ke berapa?",
+          "answerIdx": 1,
+          "opts": [
+            "Lengkung faring I (N. V)",
+            "Lengkung faring II (N. VII / N. Fasialis)",
+            "Lengkung faring III (N. IX)",
+            "Lengkung faring IV (N. X)"
+          ],
+          "explanation": "Lengkung faring II membentuk otot-otot ekspresi wajah (m. orbicularis oris, m. orbicularis oculi, m. platysma, m. stapedius) yang dipersarafi N. Fasialis (CN VII)."
+        },
+        {
+          "text": "Otot-otot pengunyah (m. masseter, m. temporalis, m. pterygoideus) berasal dari lengkung faring ke berapa?",
+          "answerIdx": 0,
+          "opts": [
+            "Lengkung faring I (N. Trigeminus / V3)",
+            "Lengkung faring II (N. VII)",
+            "Lengkung faring III (N. IX)",
+            "Somit oksipital"
+          ],
+          "explanation": "Lengkung faring I membentuk otot-otot pengunyah (mastication) yang dipersarafi caban mandibularis Nervus Trigeminus (N. V3)."
+        },
+        {
+          "text": "Otot jantung (miokardium) berkembang dari lapisan mesoderm apa?",
+          "answerIdx": 0,
+          "opts": [
+            "Mesoderm lempeng lateral splanknik (viseral)",
+            "Mesoderm paraksial",
+            "Mesoderm somatik",
+            "Ektoderm neural"
+          ],
+          "explanation": "Otot jantung berkembang dari mesoderm splanknik yang mengelilingi tabung jantung endotel primer."
+        },
+        {
+          "text": "Ciri khas perkembangan sel otot polos (smooth muscle) pada dinding pembuluh darah adalah berasal dari?",
+          "answerIdx": 0,
+          "opts": [
+            "Mesoderm lempeng lateral splanknik & sel krista neuralis (di aorta)",
+            "Mesoderm paraksial sklerotom",
+            "Endoderm usus",
+            "Ektoderm permukaan"
+          ],
+          "explanation": "Otot polos dinding pembuluh darah berasal dari mesoderm splanknik dan sel krista neuralis (khusus aorta & pembuluh darah besar)."
+        }
+      ],
+      "flashcards": [
+        {
+          "front": "Polidaktili?",
+          "back": "Jari tambahan (extra digits) akibat ekspresi SHH abnormal."
+        },
+        {
+          "front": "Nukleus pulposus?",
+          "back": "Sisa notokorda di diskus intervertebralis."
+        },
+        {
+          "front": "Osifikasi intramembranosa?",
+          "back": "Penulangan langsung dari mesenkim (tulang atap tengkorak/calvaria, klavikula)."
+        },
+        {
+          "front": "Osifikasi endokondral?",
+          "back": "Penulangan via model kartilago hialin (tulang panjang & basis cranii)."
+        }
+      ]
+    },
+    {
+      "id": "embriologi-ekstremitas",
+      "name": "Perkembangan Ekstremitas & Anomalik",
+      "definition": "Perkembangan tunas ekstremitas (limb bud), sumbu proksimodistal & anteroposterior, serta kelainan kongenital.",
+      "keyPoints": [
+        "AER (Apical Ectodermal Ridge) → FGF4/8 → proliferasi proksimodistal",
+        "ZPA (Zone of Polarizing Activity) → Sonic Hedgehog (SHH) → pola digit anteroposterior",
+        "Rotasi ekstremitas: Atas 90° Lateral, Bawah 90° Medial",
+        "Sindaktili: kegagalan apoptosis jaringan interdigital (jari menyatu)",
+        "Polidaktili: jari tambahan akibat ekspresi SHH abnormal",
+        "Amelia / Meromelia: hilangnya seluruh atau sebagian ekstremitas"
+      ],
+      "questions": [
+        {
+          "text": "Struktur ektoderm tebal di ujung distal tunas ekstremitas (limb bud) yang mengontrol pertumbuhan proksimodistal adalah?",
+          "answerIdx": 0,
+          "opts": [
+            "Apical Ectodermal Ridge (AER)",
+            "Zone of Polarizing Activity (ZPA)",
+            "Progress Zone (PZ)",
+            "Notochordal Plate"
+          ],
+          "explanation": "AER (Apical Ectodermal Ridge) mengekspresikan FGF4 dan FGF8 yang menjaga mesenkim di bawahnya tetap berproliferasi, mendorong pertumbuhan ekstremitas sepanjang sumbu proksimodistal."
+        },
+        {
+          "text": "Kerusakan atau ablasi pada Apical Ectodermal Ridge (AER) pada tahap awal pembentukan limb bud akan mengakibatkan?",
+          "answerIdx": 0,
+          "opts": [
+            "Amelia atau Meromelia (defek/hilangnya ekstremitas)",
+            "Polidaktili (jari berlebih)",
+            "Sindaktili (jari menyatu)",
+            "Brakidaktili (jari pendek)"
+          ],
+          "explanation": "Tanpa AER, proliferasi mesenkim terhenti sehingga pertumbuhan distal ekstremitas terhenti (menyebebkan amelia: tidak ada ekstremitas, atau meromelia: ekstremitas parsial)."
+        },
+        {
+          "text": "Zone of Polarizing Activity (ZPA) terletak di posterior tunas ekstremitas dan mengatur pola anteroposterior (ibu jari ke kelingking) dengan mengeluarkan morfogen apa?",
+          "answerIdx": 0,
+          "opts": [
+            "Sonic Hedgehog (SHH)",
+            "FGF8",
+            "Wnt7a",
+            "BMP4"
+          ],
+          "explanation": "ZPA menghasilkan protein Sonic Hedgehog (SHH) yang menentukan identitas digit anteroposterior (dari ibu jari/pollex di anterior ke kelingking di posterior)."
+        },
+        {
+          "text": "Seorang bayi lahir dengan jari ke-4 dan ke-5 pada tangan kanan menyatu (fused digits). Kelainan kongenital ini disebut?",
+          "answerIdx": 0,
+          "opts": [
+            "Sindaktili",
+            "Polidaktili",
+            "Ektrodaktili",
+            "Brakidaktili"
+          ],
+          "explanation": "Sindaktili terjadi akibat kegagalan pemisahan jari karena gangguan apoptosis (kematian sel terprogram) pada jaringan interdigital minggu ke-7 embrional."
+        },
+        {
+          "text": "Kelainan kongenital berupa terbentuknya jari tambahan (extra digits) disebut?",
+          "answerIdx": 1,
+          "opts": [
+            "Sindaktili",
+            "Polidaktili",
+            "Phocomelia",
+            "Achondroplasia"
+          ],
+          "explanation": "Polidaktili adalah adanya jari tambahan, sering akibat regulasi berlebih dari eksresi SHH pada ZPA."
+        },
+        {
+          "text": "Kelainan ekstremitas pendek seperti sirip anjing laut akibat penghentian osifikasi endokondral (dapat dipicu obat talidomid) disebut?",
+          "answerIdx": 0,
+          "opts": [
+            "Phocomelia",
+            "Polidaktili",
+            "Sindaktili",
+            "Craniosynostosis"
+          ],
+          "explanation": "Phocomelia ditandai dengan hilangnya tulang panjang ekstremitas (humerus/radius/femur/tibia) sehingga tangan/kaki melekat langsung pada truncus."
+        },
+        {
+          "text": "Rotasi ekstremitas terjadi pada minggu ke-7 embrional. Ekstremitas atas dan bawah berotasi ke arah mana?",
+          "answerIdx": 0,
+          "opts": [
+            "Ekstremitas atas berotasi 90° ke lateral, ekstremitas bawah 90° ke medial",
+            "Ekstremitas atas berotasi 90° ke medial, ekstremitas bawah 90° ke lateral",
+            "Keduanya berotasi 180° ke medial",
+            "Keduanya berotasi 90° ke lateral"
+          ],
+          "explanation": "Ekstremitas atas berotasi 90° ke LATERAL (ekstensor di posterior/lateral), sedangkan ekstremitas bawah berotasi 90° ke MEDIAL (ekstensor di anterior)."
+        }
+      ],
+      "flashcards": [
+        {
+          "front": "Lengkung faring I?",
+          "back": "Mandibularis (N. V3) → Malleus, Incus, Maksila, Mandibula, otot pengunyah."
+        },
+        {
+          "front": "Lengkung faring II?",
+          "back": "Hioid (N. VII) → Stapes, Proc. styloideus, otot ekspresi wajah."
+        },
+        {
+          "front": "Phocomelia?",
+          "back": "Defek ekstremitas pendek seperti sirip akibat terhentinya diferensiasi tulang panjang."
+        }
+      ]
+    }
+  ]
+});
+
+DB.sources.push({
+  "id": "file-7-fisiologi",
+  "name": "Fisiologi Otot & Muskuloskeletal",
+  "short": "File 7",
+  "fileName": "soal fisiologi.pdf",
+  "icon": "⚡",
+  "color": "#0284c7",
+  "desc": "Fisiologi potensial aksi jantung, mekanika sliding filament sarkomer, unitary smooth muscle, & bioenergetika kontraksi.",
+  "concepts": [
+    {
+      "id": "fisiologi-kontraksi-sarkomer",
+      "name": "Fisiologi Kontraksi & Mekanika Sarkomer",
+      "definition": "Mekanisme biokimia & biofisika kontraksi otot rangka, jantung, & polos.",
+      "keyPoints": [
+        "Potensial aksi jantung Plateau (Fase 2) → Influks Ca2+ L-type + efluks K+ berkurang",
+        "Teori Sliding Filament: Pita A TETAP, Pita I MEMENDEK, Zona H MEMENDEK/hilang",
+        "Unitary Smooth Muscle berkontraksi sebagai sinsitium lewat Gap Junctions",
+        "Sumber energi 10 detik pertama → Fosfokreatin (Kreatin Fosfat)",
+        "Troponin C (otot rangka) vs Kalmodulin (otot polos) sebagai sensor Ca2+"
+      ],
+      "questions": [
+        {
+          "text": "Mengapa potensial aksi pada otot jantung memiliki fase plateau yang tidak ditemukan pada sebagian besar neuron?",
+          "answerIdx": 1,
+          "opts": [
+            "Karena kanal natrium tetap terbuka selama seluruh potensial aksi",
+            "Karena terjadi influks Ca²⁺ melalui kanal L-type bersamaan dengan berkurangnya efluks K⁺",
+            "Karena pompa Na-K ATPase bekerja lebih cepat dibanding neuron",
+            "Karena konsentrasi K⁺ ekstrasel jauh lebih tinggi",
+            "Karena Na-Ca exchanger meningkatkan influks Na⁺"
+          ],
+          "explanation": "Fase plateau (fase 2) potensial aksi jantung disebabkan oleh pembukaan kanal Kalsium lambat tipe L (L-type Ca2+ channels) yang memasukkan Ca2+ ke intraseluler diimbangi penurunan permeabilitas K+."
+        },
+        {
+          "text": "Selama kontraksi maksimal otot rangka, manakah kombinasi perubahan sarkomer berikut yang PALING tepat?",
+          "answerIdx": 2,
+          "opts": [
+            "A band memendek, I band memendek, H band tetap",
+            "A band tetap, I band memanjang, H band memanjang",
+            "A band tetap, I band memendek, H band memendek atau menghilang",
+            "A band memanjang, I band tetap, H band memendek",
+            "Semua bagian memendek dengan proporsi yang sama"
+          ],
+          "explanation": "Menurut teori Sliding Filament: Pita A (filamen miosin) panjangnya TETAP. Pita I (filamen aktin murni) MEMENDEK, dan Zona H (daerah miosin murni tanpa tumpang tindih) MEMENDEK atau menghilang saat aktin saling bergeser ke tengah."
+        },
+        {
+          "text": "Karakteristik yang paling mendukung agar unitary smooth muscle (otot polos viseral) dapat berkontraksi sebagai satu kesatuan adalah?",
+          "answerIdx": 2,
+          "opts": [
+            "Setiap serabut dipersarafi oleh satu ujung saraf independen",
+            "Adanya basement membrane tebal yang memisahkan setiap serabut",
+            "Sitoplasma antarserabut dihubungkan oleh gap junction (nectus)",
+            "Tidak adanya hubungan mekanik antarserabut",
+            "Setiap serabut menghasilkan potensial aksi secara terisolasi"
+          ],
+          "explanation": "Otot polos unitary (seperti di usus, uterus, pembuluh darah) memiliki gap junctions (nectus) yang memungkinkan arus ion mengalir bebas dari satu sel ke sel lain sehingga berkontraksi sinkron sebagai sinsitium fungsional."
+        },
+        {
+          "text": "Sumber energi utama yang langsung digunakan untuk regenerasi ATP pada 10 detik pertama aktivitas otot intensif adalah?",
+          "answerIdx": 0,
+          "opts": [
+            "Fosfokreatin (Kreatin Fosfat)",
+            "Glikolisis anaerob",
+            "Siklus Kreb & fosforilasi oksidatif",
+            "Glikogenolisis hati",
+            "Siklus Cori"
+          ],
+          "explanation": "Sistem fosfagen (ATP + Kreatin Fosfat) memberikan pasokan energi maksimal tercepat dalam 8-10 detik pertama kontraksi otot sebelum glikolisis mengambil alih."
+        },
+        {
+          "text": "Peran ion Kalsium (Ca²⁺) dalam memicu kontraksi otot rangka adalah dengan berikatan pada subunit mana?",
+          "answerIdx": 0,
+          "opts": [
+            "Troponin C",
+            "Troponin I",
+            "Troponin T",
+            "Tropomiosin",
+            "Kepala Miosin"
+          ],
+          "explanation": "Ca2+ dilepaskan dari retikulum sarkoplasma dan berikatan dengan Troponin C. Ini menginduksi perubahan konformasi Troponin-Tropomiosin sehingga tempat pengikatan miosin pada aktin terbuka."
+        },
+        {
+          "text": "Pada otot polos, ion Ca²⁺ yang masuk ke sitosol memicu kontraksi dengan membentuk kompleks bersama protein apa?",
+          "answerIdx": 0,
+          "opts": [
+            "Kalmodulin (Calmodulin)",
+            "Troponin C",
+            "Kalsekuestrin",
+            "Kalseksin",
+            "Kalsekuestrin"
+          ],
+          "explanation": "Otot polos tidak memiliki troponin. Ca2+ berikatan dengan Kalmodulin membentuk kompleks Ca2+-Kalmodulin yang mengaktifkan Myosin Light Chain Kinase (MLCK) untuk memfosforilasi kepala miosin."
+        }
+      ],
+      "flashcards": [
+        {
+          "front": "Fase Plateau Otot Jantung?",
+          "back": "Influks Ca²⁺ lewat kanal L-type + efluks K⁺ menurun."
+        },
+        {
+          "front": "Perubahan Sarkomer saat Kontraksi?",
+          "back": "Pita A tetap, Pita I memendek, Zona H memendek/menghilang."
+        },
+        {
+          "front": "Unitary Smooth Muscle?",
+          "back": "Otot polos viseral dengan gap junctions → kontraksi sinkron sebagai sinsitium."
+        },
+        {
+          "front": "Sumber energi otot 10 detik pertama?",
+          "back": "Fosfokreatin (Kreatin Fosfat)."
+        },
+        {
+          "front": "Pengikat Ca²⁺ otot rangka vs otot polos?",
+          "back": "Otot Rangka = Troponin C; Otot Polos = Kalmodulin (Calmodulin)."
+        }
+      ]
+    }
+  ]
+});
+
+
+
 // FLAT LISTS (for quiz, tryout, flashcard)
 // ──────────────────────────────────────────────
 DB.allQuestions = [];

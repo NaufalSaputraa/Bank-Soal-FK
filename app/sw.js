@@ -1,4 +1,4 @@
-const CACHE = 'banksoal-v1';
+const CACHE = 'banksoal-v3';
 const FILES = [
   '../index.html',
   'data.js',
@@ -24,6 +24,11 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   e.respondWith(
-    caches.match(e.request).then(r => r || fetch(e.request))
+    fetch(e.request).then(res => {
+      const clone = res.clone();
+      caches.open(CACHE).then(cache => cache.put(e.request, clone));
+      return res;
+    }).catch(() => caches.match(e.request))
   );
 });
+
