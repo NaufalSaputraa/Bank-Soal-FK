@@ -3686,6 +3686,7 @@ const DB = {
         {
           "id": "sumatif2-biokimia",
           "name": "Biokimia Energi & Metabolisme Otot",
+    "definition": "Metabolisme energi otot: glikolisis, siklus Krebs, fosfokreatin, rantai transpor elektron, dan peran ATP dalam kontraksi otot.",
           "questions": [
             {
               "text": "Edo, usia 16 tahun, berlatih setiap hari untuk mempersiapkan dirinya mengikuti lomba renang 100 meter gaya bebas. Ia mempunyai target untuk mencapai finish dalam waktu 65 detik. Reaksi Succinate-CoA ligase di mitokondria dihasilkan energi sebanyak:",
@@ -3901,6 +3902,7 @@ const DB = {
         {
           "id": "sumatif2-biomekanika",
           "name": "Biomekanika, Fisika & Postur",
+    "definition": "Keseimbangan (stabil/labil), momentum, sistem tuas kelas I-III, pusat gravitasi, dan aplikasi biomekanika dalam ortopedi & olahraga.",
           "questions": [
             {
               "text": "Manakah pemanfaatan fisika momentum yang tepat?",
@@ -4052,6 +4054,7 @@ const DB = {
         {
           "id": "sumatif2-histologi",
           "name": "Histologi, Embriologi & Klinis Rangka",
+    "definition": "Jaringan kartilago (hyalin, elastis, fibrosa), osifikasi intramembranosa & endokondral, woven bone, remodelling, dan struktur histologi otot.",
           "questions": [
             {
               "text": "Berapakah diamater F-actin?",
@@ -4986,6 +4989,7 @@ const DB = {
         {
           "id": "calvaria-fisiologi",
           "name": "Fisiologi Otot & Keseimbangan",
+    "definition": "Fisiologi kontraksi otot rangka: NMJ, sliding filament, sumber energi (fosfokreatin, glikolisis, oksidatif), dan potensial aksi otot jantung.",
           "questions": [
             {
               "text": "Berapakah diameter filamen tebal sel otot?",
@@ -5152,6 +5156,7 @@ const DB = {
         {
           "id": "calvaria-mikrobiologi",
           "name": "Mikrobiologi & Flora Normal",
+    "definition": "Flora normal tubuh, desinfeksi & sterilisasi, bakteri tahan asam (BTA), pewarnaan Gram & Ziehl-Neelsen, dan infeksi nosokomial.",
           "questions": [
             {
               "text": "Sekumpulan musuh tiba tiba menyerang dari kejauhan. apa yang harus kita lakukan agar tubuh tetap dalam posisi seimbang",
@@ -5381,6 +5386,7 @@ const DB = {
         {
           "id": "calvaria-histologi",
           "name": "Histologi, Anatomi & Klinis Muskuloskeletal",
+    "definition": "Histologi tulang kompak (osteon, Havers, Volkmann), kartilago (hyalin, elastis, fibrosa), dan anatomi klinis persarafan ekstremitas.",
           "questions": [
             {
               "text": "Apa yang membedakan textus muscularis striatus cardiacus dengan textus muscularis non striatus maupun striatus ?",
@@ -6220,6 +6226,7 @@ const DB = {
         {
           "id": "embriologi-skeletal",
           "name": "Embriologi Sistem Skeletal & Aksial",
+    "definition": "Osifikasi intramembranosa & endokondral, somit & sklerotom, perkembangan vertebra & cranium, gastrulasi & lapisan germinal.",
           "questions": [
             {
               "text": "Pada osifikasi endokondral, struktur apakah yang dibentuk terlebih dahulu sebelum osifikasi terjadi?",
@@ -6589,6 +6596,7 @@ const DB = {
         {
           "id": "embriologi-muskular",
           "name": "Embriologi Sistem Muskular & Otot",
+    "definition": "Perkembangan otot dari mesoderm (miotom), diferensiasi otot rangka/jantung/polos, dan pembentukan anggota gerak.",
           "questions": [
             {
               "text": "Pasangan lapisan germinal dan turunannya pada sistem muskuloskeletal & sensorik berikut yang benar adalah?",
@@ -6770,6 +6778,7 @@ const DB = {
         {
           "id": "embriologi-ekstremitas",
           "name": "Perkembangan Ekstremitas & Anomalik",
+    "definition": "Tunas ekstremitas (minggu 4-8), AER & ZPA, pembentukan jari, apoptosis interdigital, dan kelainan kongenital (amelia, polidaktili).",
           "questions": [
             {
               "text": "Ablasi struktur ektoderm menyebabkan gangguan pertumbuhan proksimodistal ekstremitas. Struktur apakah yang dimaksud?",
@@ -7038,6 +7047,8 @@ const DB = {
           "id": "fisiologi-kontraksi-sarkomer",
           "name": "Fisiologi Kontraksi & Mekanika Sarkomer",
           "definition": "Mekanisme biokimia & biofisika kontraksi otot rangka, jantung, & polos.",
+  "definition": "Pembentukan tulang (osifikasi intramembranosa & endokondral), perkembangan vertebra & cranium, somit & sklerotom, serta tahap gastrulasi.",
+  "definition": "Perkembangan otot rangka dari mesoderm (miotom), diferensiasi otot polos & jantung, serta pembentukan lapisan germinal.",
           "keyPoints": [
             "Potensial aksi jantung Plateau (Fase 2) → Influks Ca2+ L-type + efluks K+ berkurang",
             "Teori Sliding Filament: Pita A TETAP, Pita I MEMENDEK, Zona H MEMENDEK/hilang",

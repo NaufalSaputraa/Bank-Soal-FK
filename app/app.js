@@ -353,7 +353,7 @@ function home(c){
       ${lastC ? `<div class="widget-card">
         <div class="widget-header"><span>📖 Lanjutkan Belajar</span></div>
         <div style="font-size:13px;font-weight:600;color:var(--primary)">${lastC.name}</div>
-        <div style="font-size:11.5px;color:var(--ink-3);margin-top:2px;line-height:1.4">${lastC.definition.substring(0, 80)}...</div>
+        <div style="font-size:11.5px;color:var(--ink-3);margin-top:2px;line-height:1.4">${(lastC.definition||'').substring(0, 80)}${lastC.definition?'.':'⚡ Klik untuk buka'}..</div>
         <button class="btn btn-sm btn-primary" style="width:100%;margin-top:12px" data-buka="${lastC.id}" data-source="${lastC.sourceId}">Buka Materi →</button>
       </div>` : ''}
 
