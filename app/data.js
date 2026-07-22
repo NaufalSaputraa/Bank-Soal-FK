@@ -14058,5 +14058,22 @@ const DB = {
   ]
 };
 
+DB.allQuestions = [];
+DB.allFlashcards = [];
+DB.sources.forEach(src => {
+  src.concepts.forEach(con => {
+    (con.questions || []).forEach(q => {
+      q.sourceId = src.id; q.sourceName = src.name; q.conceptId = con.id; q.conceptName = con.name;
+      if(!q.tags) q.tags = [];
+      if(!q.explanation) q.explanation = '';
+      DB.allQuestions.push(q);
+    });
+    (con.flashcards || []).forEach(f => {
+      f.sourceId = src.id; f.sourceName = src.name; f.conceptId = con.id; f.conceptName = con.name;
+      DB.allFlashcards.push(f);
+    });
+  });
+});
+
 if (typeof window !== "undefined") window.DB = DB;
 if (typeof module !== "undefined") module.exports = DB;
