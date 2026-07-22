@@ -1,15 +1,10 @@
+
 const S = {
   view:'home', selectedSource:null, selectedConcept:null,
   quiz:{active:false, questions:[], idx:0, score:0, answers:[], done:false},
   tryout:{active:false, questions:[], idx:0, score:0, answers:[], timeLeft:0, done:false},
   flashcard:{active:false, cards:[], idx:0},
   progress:JSON.parse(localStorage.getItem('bs_prog')||'{}'),
-  bookmarks:JSON.parse(localStorage.getItem('bs_bm')||'[]'),
-  missed:JSON.parse(localStorage.getItem('bs_missed')||'[]'),
-  subjectStats:JSON.parse(localStorage.getItem('bs_stats')||'{}'),
-  ankiCards:JSON.parse(localStorage.getItem('bs_anki')||'{}'),
-  sidebarCollapsed:localStorage.getItem('bs_col')==='true',
-  lastConcept:localStorage.getItem('bs_lastc')||null,
   qShuffle:{}
 };
 const $=(s,c=document)=>c.querySelector(s);
@@ -20,54 +15,6 @@ const ltr=i=>String.fromCharCode(65+i);
 const save=()=>localStorage.setItem('bs_prog',JSON.stringify(S.progress));
 const learned=id=>!!S.progress[id];
 const mark=id=>{S.progress[id]=true;save();sideProg()};
-
-const isBookmarked=qText=>S.bookmarks.includes(qText);
-const toggleBookmark=(qText,btn)=>{
-  const idx=S.bookmarks.indexOf(qText);
-  if(idx>=0) S.bookmarks.splice(idx,1);
-  else S.bookmarks.push(qText);
-  localStorage.setItem('bs_bm',JSON.stringify(S.bookmarks));
-  updateBmBadge();
-  if(btn) btn.classList.toggle('bookmarked',isBookmarked(qText));
-};
-const updateBmBadge=()=>{
-  const el=$('#bmCount');
-  if(el) el.textContent=S.bookmarks.length;
-};
-const applySidebarState=()=>{
-  const sb=$('#sidebar'), app=$('.app-layout');
-  if(S.sidebarCollapsed) { sb?.classList.add('collapsed'); app?.classList.add('collapsed'); }
-  else { sb?.classList.remove('collapsed'); app?.classList.remove('collapsed'); }
-};
-
-// Medical Subject Topic Detection
-function getQuestionTopic(q){
-  const txt = ((q.conceptName||'') + ' ' + (q.text||'') + ' ' + (q.sourceName||'')).toLowerCase();
-  if(txt.includes('mikrob') || txt.includes('flora') || txt.includes('bakteri') || txt.includes('sterilisasi') || txt.includes('desinfeksi')) return 'Mikrobiologi';
-  if(txt.includes('embriolog') || txt.includes('somit') || txt.includes('sklerotom') || txt.includes('aer') || txt.includes('zpa')) return 'Embriologi';
-  if(txt.includes('histolog') || txt.includes('osteon') || txt.includes('kartilago') || txt.includes('tulang')) return 'Histologi';
-  if(txt.includes('fisiolog') || txt.includes('kontraksi') || txt.includes('sarkomer') || txt.includes('plateau') || txt.includes('energi')) return 'Fisiologi';
-  if(txt.includes('biomekanik') || txt.includes('tuas') || txt.includes('keseimbangan') || txt.includes('traksi')) return 'Biomekanika';
-  if(txt.includes('anatomi') || txt.includes('cranium') || txt.includes('foramen') || txt.includes('ekstremitas') || txt.includes('otot')) return 'Anatomi';
-  return 'Umum Kedokteran';
-}
-
-function recordAnswerStat(q, isCorrect){
-  const topic = getQuestionTopic(q);
-  if(!S.subjectStats[topic]) S.subjectStats[topic] = { total: 0, correct: 0 };
-  S.subjectStats[topic].total++;
-  if(isCorrect) {
-    S.subjectStats[topic].correct++;
-    // Remove from missed list if correct
-    const idx = S.missed.indexOf(q.text);
-    if(idx >= 0) S.missed.splice(idx, 1);
-  } else {
-    // Add to missed list if incorrect
-    if(!S.missed.includes(q.text)) S.missed.push(q.text);
-  }
-  localStorage.setItem('bs_stats', JSON.stringify(S.subjectStats));
-  localStorage.setItem('bs_missed', JSON.stringify(S.missed));
-}
 
 function shuffleOpts(q){
   const key = q.text;
@@ -89,79 +36,45 @@ function countQ(srcId){return DB.allQuestions.filter(q=>q.sourceId===srcId).leng
 function sideProg(){
   const total=DB.sources.reduce((a,s)=>a+s.concepts.length,0);
   const done=Object.keys(S.progress).length;
-  const el=$('#sidebarFooter');
-  if(el) el.innerHTML=`<span class="sf-text">${done}/${total} konsep dipelajari</span>`;
+  $('#sidebarFooter').textContent=`${done}/${total} konsep dipelajari`;
 }
 
-// EVENT DELEGATION
+// EVENT DELEGATION — single listener for everything
 document.addEventListener('click', e => {
-  // ── Sidebar toggle ──
-  const logo = e.target.closest('#menuBtn, .sidebar-brand .logo');
-  if(logo) {
-    if(window.innerWidth<=768) {
-      $('#sidebar')?.classList.toggle('open');
-    } else {
-      S.sidebarCollapsed = !S.sidebarCollapsed;
-      localStorage.setItem('bs_col', S.sidebarCollapsed);
-      applySidebarState();
-    }
-    return;
-  }
-
+  // ── Sidebar toggle (mobile) ──
   if(window.innerWidth<=768 && !e.target.closest('.sidebar') && e.target.id!=='menuBtn') {
     $('#sidebar')?.classList.remove('open');
   }
 
-  // ── Bookmark button ──
-  const bmBtn = e.target.closest('[data-bm]');
-  if(bmBtn) {
-    toggleBookmark(decodeURIComponent(bmBtn.dataset.bm), bmBtn);
-    return;
-  }
-
-  // ── Quiz/Tryout answer ──
+  // ── Quiz/Tryout answer ── (must be FIRST: highest priority, stops propagation)
   const opt = e.target.closest('.q-opt:not(.locked)');
   if(opt) {
     const i=parseInt(opt.dataset.i), ans=parseInt(opt.dataset.ans);
     const mode = opt.closest('[data-mode]');
     if(mode) {
+      // Inside quiz or tryout mode
       if(mode.dataset.mode==='tryout') {
         S.tryout.answers[S.tryout.idx]=i;
+        if(i===ans) S.tryout.score++;
         tryout($('#pageContent'));
       } else {
         S.quiz.answers[S.quiz.idx]=i;
-        const q = S.quiz.questions[S.quiz.idx];
-        const isCorr = (i===ans);
-        if(isCorr) S.quiz.score++;
-        if(q) recordAnswerStat(q, isCorr);
+        if(i===ans) S.quiz.score++;
         kuis($('#pageContent'));
       }
     } else {
+      // Standalone question (bank soal / concept detail) — visually mark only
       const parent = opt.closest('.q-card');
       parent.querySelectorAll('.q-opt').forEach(o => {
         o.classList.add('locked');
         if(parseInt(o.dataset.i)===ans) o.classList.add('correct');
       });
       if(i!==ans) opt.classList.add('wrong');
-      const expl = parent.querySelector('.q-explanation');
-      if(expl) expl.classList.remove('hidden');
     }
     return;
   }
 
-  // ── Tree toggle ──
-  const treeToggle = e.target.closest('.tree-toggle');
-  if(treeToggle) {
-    const item = treeToggle.closest('.tree-item');
-    if(item) {
-      item.classList.toggle('open');
-      const isExp = treeToggle.getAttribute('aria-expanded') === 'true';
-      treeToggle.setAttribute('aria-expanded', !isExp);
-    }
-    return;
-  }
-
-  // ── Source card ──
+  // ── Source card (home / source detail) ──
   const srcCard = e.target.closest('.source-card');
   if(srcCard) {
     const concept = srcCard.dataset.concept;
@@ -171,14 +84,14 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // ── Tree leaf ──
+  // ── Tree leaf (concept in materi tree) ──
   const leaf = e.target.closest('.tree-leaf');
   if(leaf) {
     nav('materi',{selectedConcept:leaf.dataset.concept,selectedSource:leaf.dataset.source});
     return;
   }
 
-  // ── Navigation ──
+  // ── Navigation (sidebar, links, search results) ──
   const navEl = e.target.closest('[data-nav], [data-view]');
   if(navEl) {
     const view = navEl.dataset.view || navEl.dataset.nav;
@@ -188,38 +101,21 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // ── Start actions ──
+  // ── Start actions (quiz, tryout, flashcard) ──
   const start = e.target.closest('[data-start]');
   if(start) {
     const [type, param] = start.dataset.start.split(',');
     if(type==='quiz') startQuiz(parseInt(param)||10);
-    else if(type==='quiz-missed') startMissedQuiz();
-    else if(type==='quiz-topic') startTopicQuiz(param);
     else if(type==='tryout') startTryout(param||'all');
     else if(type==='fc') startFlashcards(param||'all');
     return;
   }
 
-  // ── Anki Rating Buttons ──
-  const ankiBtn = e.target.closest('[data-anki]');
-  if(ankiBtn) {
-    rateAnkiCard(ankiBtn.dataset.anki);
-    return;
-  }
-
-  // ── Next question ──
+  // ── Next question (quiz/tryout) ──
   const next = e.target.closest('[data-next]');
   if(next) {
     if(next.dataset.next==='quiz') nextQuiz();
     else nextTryout();
-    return;
-  }
-
-  // ── Finish tryout ──
-  const finish = e.target.closest('[data-finish="tryout"]');
-  if(finish) {
-    S.tryout.done = true;
-    tryout($('#pageContent'));
     return;
   }
 
@@ -232,7 +128,7 @@ document.addEventListener('click', e => {
 
   // ── Flashcard flip ──
   const fcCard = e.target.closest('.fc-card');
-  if(fcCard && !fcCard.closest('[data-mode]') && !e.target.closest('[data-fc],[data-start],[data-anki]')) {
+  if(fcCard && !fcCard.closest('[data-mode]') && !e.target.closest('[data-fc],[data-start]')) {
     fcCard.classList.toggle('flipped');
     return;
   }
@@ -257,15 +153,20 @@ document.addEventListener('click', e => {
   const sr = e.target.closest('.sr-item');
   if(sr) {
     const concept = sr.dataset.concept;
-    const searchRes = $('#searchResults');
-    if(searchRes) searchRes.style.display='none';
     if(concept) nav('materi',{selectedConcept:concept});
+    $('#searchResults').style.display='none';
     return;
   }
 
   // ── Flashcard start from meta button ──
   const fcNavBtn = e.target.closest('[data-fc-nav]');
   if(fcNavBtn) { startFlashcards(fcNavBtn.dataset.fcNav||'all'); return; }
+});
+
+// ── Menu button ──
+$('#menuBtn')?.addEventListener('click', e => {
+  e.stopPropagation();
+  $('#sidebar').classList.toggle('open');
 });
 
 function nav(view, params={}){
@@ -276,16 +177,14 @@ function nav(view, params={}){
 }
 
 function render(){
-  const t={home:'Beranda',materi:'Materi',soal:'Bank Soal',kuis:'Quiz Cepat',tryout:'Try Out CBT',flashcard:'Flashcard',cari:'Cari',bookmark:'Soal Disimpan',analisis:'Analisis Performa'}[S.view]||'';
+  const t={home:'Beranda',materi:'Materi',soal:'Bank Soal',kuis:'Quiz Cepat',tryout:'Try Out CBT',flashcard:'Flashcard',cari:'Cari'}[S.view]||'';
   $('#pageTitle').textContent=t;
   const bc=$('#breadcrumb');
   if(S.selectedConcept){const c=findConcept(S.selectedConcept);bc.textContent=c?`Materi › ${c.sourceName} › ${c.name}`:''}
   else if(S.selectedSource){const s=DB.sources.find(x=>x.id===S.selectedSource);bc.textContent=s?`Materi › ${s.name}`:'Materi'}
-  else bc.textContent=S.view==='materi'?'Jelajahi File':S.view==='bookmark'?'Favorites':S.view==='analisis'?'Statistik & Performa':'Blok Muskuloskeletal';
+  else bc.textContent=S.view==='materi'?'Jelajahi File':'Blok Muskuloskeletal';
   $('#headerMeta').textContent=DB.allQuestions.length+' soal · '+DB.allFlashcards.length+' flashcard';
   $('#soalCount').textContent=DB.allQuestions.length;
-  updateBmBadge();
-  applySidebarState();
   const c=$('#pageContent');c.innerHTML='';
   if(S.view==='home') home(c);
   else if(S.view==='materi') materi(c);
@@ -294,88 +193,32 @@ function render(){
   else if(S.view==='tryout') tryout(c);
   else if(S.view==='flashcard') flashcard(c);
   else if(S.view==='cari') cari(c);
-  else if(S.view==='bookmark') bookmark(c);
-  else if(S.view==='analisis') analisis(c);
   sideProg();
 }
 
 // ── HOME ──
 function home(c){
-  const totalConcepts = DB.sources.reduce((a,s)=>a+s.concepts.length,0);
-  const doneConcepts = Object.keys(S.progress).length;
-  const pct = Math.round((doneConcepts / (totalConcepts||1)) * 100);
-  const offset = 169.6 - (169.6 * pct / 100);
-  const lastC = S.lastConcept ? findConcept(S.lastConcept) : null;
-  const bms = DB.allQuestions.filter(q => isBookmarked(q.text));
-
-  c.innerHTML = `<div class="dashboard-layout">
-    <div class="main-area">
-      <div class="stats">
-        <div class="stat"><div class="num">${DB.sources.length}</div><div class="label">File Sumber</div></div>
-        <div class="stat"><div class="num">${totalConcepts}</div><div class="label">Konsep</div></div>
-        <div class="stat"><div class="num gold">${DB.allQuestions.length}</div><div class="label">Soal</div></div>
-        <div class="stat"><div class="num accent">${DB.allFlashcards.length}</div><div class="label">Flashcard</div></div>
-      </div>
-      <div class="section-title" role="heading">File Sumber Belajar</div>
-      <div class="topics">${DB.sources.map(s=>`
-        <div class="topic source-card" data-source="${s.id}" tabindex="0" role="button">
-          <div class="icon">${s.icon}</div>
-          <h3>${s.name}</h3>
-          <div class="meta">${s.concepts.length} konsep · ${countQ(s.id)} soal · ${DB.allFlashcards.filter(f=>f.sourceId===s.id).length} flashcard</div>
-          <div class="meta" style="font-size:11px;margin-top:2px">${s.desc}</div>
-        </div>
-      `).join('')}</div>
+  c.innerHTML=`<div class="stats">
+      <div class="stat"><div class="num">${DB.sources.length}</div><div class="label">File Sumber</div></div>
+      <div class="stat"><div class="num">${DB.sources.reduce((a,s)=>a+s.concepts.length,0)}</div><div class="label">Konsep</div></div>
+      <div class="stat"><div class="num gold">${DB.allQuestions.length}</div><div class="label">Soal</div></div>
+      <div class="stat"><div class="num accent">${DB.allFlashcards.length}</div><div class="label">Flashcard</div></div>
     </div>
-
-    <div class="right-panel">
-      <!-- Widget 1: Kemajuan Belajar -->
-      <div class="widget-card">
-        <div class="widget-header">
-          <span>📊 Kemajuan Belajar</span>
-          <span class="w-badge">${doneConcepts}/${totalConcepts} Konsep</span>
-        </div>
-        <div class="progress-box">
-          <div class="progress-ring">
-            <svg viewBox="0 0 60 60">
-              <circle class="bg-circle" cx="30" cy="30" r="27"></circle>
-              <circle class="val-circle" cx="30" cy="30" r="27" stroke-dasharray="169.6" stroke-dashoffset="${offset}"></circle>
-            </svg>
-            <div class="val-text">${pct}%</div>
-          </div>
-          <div>
-            <div style="font-size:13.5px;font-weight:700;color:var(--ink)">${pct}% Selesai</div>
-            <div style="font-size:11.5px;color:var(--ink-3);margin-top:2px">Selesaikan seluruh konsep untuk persiapan ujian CBT.</div>
-          </div>
-        </div>
+    <div class="section-title" role="heading">File Sumber</div>
+    <div class="topics">${DB.sources.map(s=>`
+      <div class="topic source-card" data-source="${s.id}" tabindex="0" role="button">
+        <div class="icon">${s.icon}</div>
+        <h3>${s.name}</h3>
+        <div class="meta">${s.concepts.length} konsep · ${countQ(s.id)} soal · ${DB.allFlashcards.filter(f=>f.sourceId===s.id).length} flashcard</div>
+        <div class="meta" style="font-size:11px;margin-top:2px">${s.desc}</div>
       </div>
-
-      <!-- Widget 2: Continue Studying -->
-      ${lastC ? `<div class="widget-card">
-        <div class="widget-header"><span>📖 Lanjutkan Belajar</span></div>
-        <div style="font-size:13px;font-weight:600;color:var(--primary)">${lastC.name}</div>
-        <div style="font-size:11.5px;color:var(--ink-3);margin-top:2px;line-height:1.4">${lastC.definition.substring(0, 80)}...</div>
-        <button class="btn btn-sm btn-primary" style="width:100%;margin-top:12px" data-buka="${lastC.id}" data-source="${lastC.sourceId}">Buka Materi →</button>
-      </div>` : ''}
-
-      <!-- Widget 3: Quick Launch Actions -->
-      <div class="widget-card">
-        <div class="widget-header"><span>⚡ Akses Cepat</span></div>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          ${S.missed.length ? `<button class="btn btn-accent" style="justify-content:flex-start" data-start="quiz-missed">🔴 Ulangi Soal Salah (${S.missed.length})</button>` : ''}
-          <button class="btn btn-primary" style="justify-content:flex-start" data-start="quiz,10">⚡ Quiz Cepat (10 Soal)</button>
-          <button class="btn" style="justify-content:flex-start" data-nav="tryout">📝 Try Out CBT (30 Min)</button>
-          <button class="btn" style="justify-content:flex-start" data-start="fc,all">🃏 Flashcard Kedokteran</button>
-        </div>
-      </div>
-
-      <!-- Widget 4: Soal Disimpan Summary -->
-      ${bms.length ? `<div class="widget-card">
-        <div class="widget-header"><span>🔖 Soal Disimpan</span><span class="w-badge">${bms.length} Soal</span></div>
-        <div style="font-size:12px;color:var(--ink-3);margin-bottom:10px">Ada ${bms.length} soal yang kamu tandai untuk diulas kembali.</div>
-        <button class="btn btn-sm" style="width:100%" data-nav="bookmark">Lihat Soal Disimpan →</button>
-      </div>` : ''}
-    </div>
-  </div>`;
+    `).join('')}</div>
+    <div class="section-title" style="margin-top:16px">Akses Cepat</div>
+    <div class="btn-group">
+      <button class="btn btn-primary" data-start="quiz,10">⚡ Quiz Cepat</button>
+      <button class="btn" data-start="fc,all">🃏 Semua Flashcard</button>
+      <button class="btn btn-accent" data-nav="tryout">📝 Try Out CBT</button>
+    </div>`;
 }
 
 // ── MATERI ──
@@ -405,28 +248,23 @@ function sourceDetail(c,srcId){
   if(!src){c.innerHTML='<div class="card">File tidak ditemukan.</div>';return}
   const fcCount=DB.allFlashcards.filter(f=>f.sourceId===srcId).length;
   c.innerHTML=`<div class="concept">
-    <h2>${src.icon} ${src.name}</h2>
-    <div class="def">${src.desc}</div>
-    <div style="margin-top:16px;display:flex;gap:8px">
-      <button class="btn btn-primary" data-start="quiz,10">⚡ Quiz ${src.short}</button>
-      <button class="btn" data-start="fc,${srcId}">🃏 Flashcard (${fcCount})</button>
+      <h2>${src.icon} ${src.name}</h2>
+      <div class="def">${src.desc}</div>
+      <div class="meta" style="font-size:13px;margin-top:8px">${src.concepts.length} konsep · ${countQ(srcId)} soal · ${fcCount} flashcard</div>
     </div>
-    <div class="section-title" style="margin-top:24px">Konsep Dalam File Ini</div>
-    <div class="topics">${src.concepts.map(con=>`
-      <div class="topic" data-buka="${con.id}" data-source="${srcId}" tabindex="0" role="button">
-        <h3>${con.name} ${learned(con.id)?'✓':''}</h3>
-        <div class="meta">${(con.questions||[]).flat().length} soal · ${(con.flashcards||[]).length} flashcard</div>
-        <div class="meta" style="font-size:11px;margin-top:2px">${con.definition}</div>
-      </div>
-    `).join('')}</div>
-  </div>`;
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:14px">
+      ${src.concepts.map(c=>`
+        <div class="topic source-card" data-source="${srcId}" data-concept="${c.id}" tabindex="0">
+          <h3 style="font-size:14px">${c.name}</h3>
+          <div class="meta">${(c.questions||[]).flat().length} soal</div>
+        </div>
+      `).join('')}
+    </div>`;
 }
 
 function detail(c,conceptId){
   const con=findConcept(conceptId);
   if(!con){c.innerHTML='<div class="card">Konsep tidak ditemukan.</div>';return}
-  S.lastConcept = conceptId;
-  localStorage.setItem('bs_lastc', conceptId);
   mark(conceptId);
   const qs=DB.allQuestions.filter(q=>q.conceptId===conceptId);
   const fcs=DB.allFlashcards.filter(f=>f.conceptId===conceptId);
@@ -447,19 +285,12 @@ function detail(c,conceptId){
 
 function qCard(q,showAns){
   const sq = showAns ? {opts:q.opts, answerIdx:q.answerIdx} : shuffleOpts(q);
-  const bmClass = isBookmarked(q.text) ? ' bookmarked' : '';
-  return `<div class="q-card">
-    <div style="display:flex;align-items:flex-start;gap:8px">
-      <div class="q-text" style="flex:1">${q.text}</div>
-      <button class="bm-btn${bmClass}" data-bm="${encodeURIComponent(q.text)}" title="Simpan Soal">🔖</button>
-    </div>
+  return `<div class="q-card"><div class="q-text">${q.text}</div>
     <div class="q-opts">${sq.opts.map((o,i)=>`<div class="q-opt${showAns?(i===sq.answerIdx?' correct':' locked'):''}" data-i="${i}" data-ans="${sq.answerIdx}" tabindex="0" role="button">${ltr(i)} ${o}</div>`).join('')}</div>
     <div class="q-tags">${(q.tags||[]).map(t=>`<span class="q-tag">#${t}</span>`).join('')}</div>
-    <div class="q-explanation${showAns ? '' : ' hidden'}" style="margin-top:10px;padding:10px;border-radius:var(--radius-sm);font-size:12.5px;background:var(--green-light);color:var(--green)">
-      <strong>✓ ${ltr(sq.answerIdx)}. ${sq.opts[sq.answerIdx]}</strong>
-      ${q.explanation?`<div style="margin-top:4px;padding-top:4px;border-top:1px solid rgba(0,0,0,0.08);font-weight:400;color:var(--ink-2)"><strong>Pembahasan:</strong> ${q.explanation}</div>`:''}
-      <div style="font-size:12px;color:var(--ink-3);margin-top:6px">📍 ${q.sourceName} › ${q.conceptName}</div>
-    </div></div>`;
+    ${showAns?`<div style="margin-top:8px;padding:8px 10px;border-radius:var(--radius-sm);font-size:12.5px;background:var(--green-light);color:var(--green)"><strong>✓ ${ltr(sq.answerIdx)}. ${sq.opts[sq.answerIdx]}</strong>
+      ${q.explanation?`<div style="margin-top:4px;padding-top:4px;border-top:1px solid rgba(0,0,0,0.08);font-weight:400;color:var(--ink-2)">${q.explanation}</div>`:''}</div>
+      <div style="font-size:12px;color:var(--ink-3);margin-top:6px">📍 ${q.sourceName} › ${q.conceptName}</div>`:''}</div>`;
 }
 
 function fcMini(f){
@@ -488,84 +319,6 @@ function soal(c){
     `).join('')}`;
 }
 
-// ── BOOKMARK ──
-function bookmark(c){
-  const bms = DB.allQuestions.filter(q => isBookmarked(q.text));
-  if(!bms.length) {
-    c.innerHTML = `<div style="text-align:center;padding:48px 20px;color:var(--ink-3)">
-      <div style="font-size:48px;margin-bottom:12px">🔖</div>
-      <div style="font-size:16px;font-weight:600;color:var(--ink)">Belum Ada Soal Disimpan</div>
-      <div style="font-size:13px;margin-top:4px">Klik ikon 🔖 pada soal mana saja untuk menyimpannya di sini.</div>
-    </div>`;
-    return;
-  }
-  c.innerHTML = `<div class="section-title">📌 Soal Disimpan <span class="count">(${bms.length} soal)</span></div>
-    ${bms.map(q => qCard(q, false)).join('')}`;
-}
-
-// ── ANALISIS PERFORMA ──
-function analisis(c){
-  const topics = ['Anatomi', 'Fisiologi', 'Embriologi', 'Mikrobiologi', 'Histologi', 'Biomekanika'];
-  let totalAnswered = 0;
-  let totalCorrect = 0;
-
-  topics.forEach(t => {
-    const st = S.subjectStats[t] || { total: 0, correct: 0 };
-    totalAnswered += st.total;
-    totalCorrect += st.correct;
-  });
-
-  const overallPct = totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0;
-
-  c.innerHTML = `<div class="analytics-card" style="margin-bottom:20px">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
-      <div>
-        <div style="font-size:18px;font-weight:700;color:var(--ink)">📈 Analisis Performa & Akurasi</div>
-        <div style="font-size:12.5px;color:var(--ink-3);margin-top:2px">Berdasarkan ${totalAnswered} soal yang telah dikerjakan di Quiz & Tryout</div>
-      </div>
-      <div style="text-align:right">
-        <div style="font-size:28px;font-weight:800;color:var(--primary);font-family:var(--mono)">${overallPct}%</div>
-        <div style="font-size:11px;color:var(--ink-3)">Rata-Rata Akurasi</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="section-title">Akurasi Per Cabang Ilmu Kedokteran</div>
-  <div class="analytics-grid">${topics.map(t => {
-    const st = S.subjectStats[t] || { total: 0, correct: 0 };
-    const pct = st.total > 0 ? Math.round((st.correct / st.total) * 100) : 0;
-    let badgeClass = 'badge-review', barClass = 'bg-review', labelText = 'Belum Cukup Data';
-    if(st.total >= 3) {
-      if(pct >= 80) { badgeClass = 'badge-mastered'; barClass = 'bg-mastered'; labelText = 'Menguasai'; }
-      else if(pct >= 60) { badgeClass = 'badge-review'; barClass = 'bg-review'; labelText = 'Cukup Baik'; }
-      else { badgeClass = 'badge-weak'; barClass = 'bg-weak'; labelText = 'Perlu Pendalaman'; }
-    }
-    return `<div class="analytics-card">
-      <div class="subject-info">
-        <span>${t}</span>
-        <span class="${badgeClass}">${labelText} (${pct}%)</span>
-      </div>
-      <div class="subject-bar-wrap">
-        <div class="subject-bar-fill ${barClass}" style="width:${pct}%"></div>
-      </div>
-      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ink-3);margin-top:8px">
-        <span>${st.correct} benar dari ${st.total} dijawab</span>
-        <button class="btn btn-sm" data-start="quiz-topic,${t}" style="font-size:11px;padding:2px 8px">Latih ${t} →</button>
-      </div>
-    </div>`;
-  }).join('')}</div>
-
-  ${S.missed.length ? `<div class="card" style="margin-top:24px;padding:18px;border-color:rgba(201,79,50,0.3);background:var(--red-light)">
-    <div style="display:flex;align-items:center;justify-content:space-between">
-      <div>
-        <div style="font-size:15px;font-weight:700;color:var(--red)">🔴 Soal Perlu Diulang (${S.missed.length} Soal)</div>
-        <div style="font-size:12.5px;color:var(--ink-2);margin-top:2px">Kamu memiliki ${S.missed.length} soal yang pernah dijawab salah. Latih kembali untuk mempertajam pemahaman!</div>
-      </div>
-      <button class="btn btn-accent" data-start="quiz-missed">Ulangi Soal Salah →</button>
-    </div>
-  </div>` : ''}`;
-}
-
 // ── KUIS ──
 function kuis(c){
   if(S.quiz.done){
@@ -574,22 +327,7 @@ function kuis(c){
     return;
   }
   if(!S.quiz.active){
-    const topics = ['Anatomi', 'Fisiologi', 'Embriologi', 'Mikrobiologi', 'Histologi', 'Biomekanika'];
-    c.innerHTML=`<div style="text-align:center;padding:40px 0">
-      <div style="font-size:48px;margin-bottom:12px">⚡</div>
-      <div style="font-size:18px;font-weight:600;margin-bottom:6px">Quiz Cepat & Kategori</div>
-      <div style="color:var(--ink-3);margin-bottom:20px">Latih pemahaman medis secara acak atau per topik</div>
-      ${S.missed.length ? `<div style="margin-bottom:20px"><button class="btn btn-accent" data-start="quiz-missed">🔴 Ulangi Soal Salah (${S.missed.length} Soal)</button></div>` : ''}
-      <div class="btn-group" style="justify-content:center;margin-bottom:24px">
-        <button class="btn btn-primary" data-start="quiz,10">⚡ 10 Soal Acak</button>
-        <button class="btn" data-start="quiz,20">⚡ 20 Soal Acak</button>
-        <button class="btn" data-start="quiz,0">Semua (${DB.allQuestions.length})</button>
-      </div>
-      <div class="section-title">Pilih Berdasarkan Topik Kedokteran</div>
-      <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:600px;margin:0 auto">
-        ${topics.map(t => `<button class="btn" data-start="quiz-topic,${t}">📖 ${t}</button>`).join('')}
-      </div>
-    </div>`;
+    c.innerHTML=`<div style="text-align:center;padding:40px 0"><div style="font-size:48px;margin-bottom:12px">⚡</div><div style="font-size:18px;font-weight:600;margin-bottom:6px">Quiz Cepat</div><div style="color:var(--ink-3);margin-bottom:20px">Soal acak dari semua file</div><div class="btn-group" style="justify-content:center"><button class="btn btn-primary" data-start="quiz,10">10 soal</button><button class="btn" data-start="quiz,20">20 soal</button><button class="btn" data-start="quiz,0">Semua (${DB.allQuestions.length})</button></div></div>`;
     return;
   }
   const qs=S.quiz.questions;const idx=S.quiz.idx;
@@ -607,56 +345,13 @@ function kuis(c){
 }
 function nextQuiz(){S.quiz.idx++;if(S.quiz.idx>=S.quiz.questions.length){S.quiz.done=true}render()}
 function startQuiz(c=10){S.qShuffle={};let pool=shf([...DB.allQuestions]);if(c>0) pool=pool.slice(0,Math.min(c,pool.length));S.quiz={active:true,done:false,questions:pool,idx:0,score:0,answers:new Array(pool.length).fill(undefined)};nav('kuis')}
-function startMissedQuiz(){
-  if(!S.missed.length) return;
-  S.qShuffle={};
-  const pool = shf(DB.allQuestions.filter(q => S.missed.includes(q.text)));
-  S.quiz={active:true,done:false,questions:pool,idx:0,score:0,answers:new Array(pool.length).fill(undefined)};
-  nav('kuis');
-}
-function startTopicQuiz(topic){
-  S.qShuffle={};
-  const pool = shf(DB.allQuestions.filter(q => getQuestionTopic(q) === topic));
-  S.quiz={active:true,done:false,questions:pool,idx:0,score:0,answers:new Array(pool.length).fill(undefined)};
-  nav('kuis');
-}
 
 // ── TRYOUT ──
 let timerRef=null;
 function tryout(c){
   if(S.tryout.done){
     const to=S.tryout;
-    let sc=0;
-    to.questions.forEach((q,i)=>{
-      const userAns=to.answers[i];
-      const sq=shuffleOpts(q);
-      const isCorr = (userAns===sq.answerIdx);
-      if(isCorr) sc++;
-      recordAnswerStat(q, isCorr);
-    });
-    to.score=sc;
-    c.innerHTML=`<div class="qc">
-      <div class="score">${to.score}/${to.questions.length}</div>
-      <div class="label">Try Out CBT Selesai!</div>
-      <div class="sub">Waktu Sisa: ${fmt(to.timeLeft||0)}</div>
-      <div class="btn-group" style="justify-content:center;margin-top:20px">
-        <button class="btn btn-primary" data-start="tryout,all">Ulangi Try Out</button>
-      </div>
-    </div>
-    <div class="section-title" style="margin-top:24px">Pembahasan & Kunci Jawaban</div>
-    ${to.questions.map((q,idx)=>{
-      const userAns=to.answers[idx];
-      const sq=shuffleOpts(q);
-      const isCorrect=userAns===sq.answerIdx;
-      return `<div class="q-card" style="margin-bottom:12px">
-        <div class="q-text"><strong>${idx+1}.</strong> ${q.text}</div>
-        <div class="q-opts">${sq.opts.map((o,i)=>`<div class="q-opt locked ${i===sq.answerIdx?'correct':i===userAns?'wrong':''}">${ltr(i)} ${o}</div>`).join('')}</div>
-        <div style="margin-top:8px;padding:8px 10px;border-radius:var(--radius-sm);font-size:12.5px;${isCorrect?'background:var(--green-light);color:var(--green)':'background:var(--red-light);color:var(--red)'}">
-          <strong>${isCorrect?'✓ Benar':'✕ Jawaban Anda: '+(userAns!==undefined?ltr(userAns):'Kosong')+' (Kunci: '+ltr(sq.answerIdx)+')'}</strong>
-          ${q.explanation?`<div style="margin-top:4px;padding-top:4px;border-top:1px solid rgba(0,0,0,0.08);font-weight:400;color:var(--ink-2)">${q.explanation}</div>`:''}
-        </div>
-      </div>`;
-    }).join('')}`;
+    c.innerHTML=`<div class="qc"><div class="score">${to.score}/${to.questions.length}</div><div class="label">Try Out Selesai!</div><div class="sub">Waktu: ${fmt(to.timeLimit||0)}</div><div class="btn-group" style="justify-content:center;margin-top:20px"><button class="btn btn-primary" data-start="tryout,all">Ulangi</button></div></div>`;
     return;
   }
   if(!S.tryout.active){
@@ -665,19 +360,14 @@ function tryout(c){
   }
   const to=S.tryout;const qs=to.questions;const idx=to.idx;
   if(idx>=qs.length||to.timeLeft<=0){to.done=true;tryout(c);return}
-  const q=qs[idx];const ans=to.answers[idx];
+  const q=qs[idx];const ans=to.answers[idx];const locked=ans!==undefined;
   const sq=shuffleOpts(q);
-  c.innerHTML=`<div class="quiz-bar"><span class="qb-stat">Soal <strong>${idx+1}</strong>/${qs.length}</span><div class="quiz-progress"><div class="qp-fill" style="width:${(idx+1)/qs.length*100}%"></div></div><span class="timer" id="timerDisplay">⏱️ ${fmt(to.timeLeft)}</span></div>
+  c.innerHTML=`<div class="quiz-bar"><span class="qb-stat"><strong>${idx+1}</strong>/${qs.length}</span><div class="quiz-progress"><div class="qp-fill" style="width:${(idx+1)/qs.length*100}%"></div></div><span class="timer" id="timerDisplay">${fmt(to.timeLeft)}</span></div>
     <div class="q-card" data-mode="tryout"><div class="q-text">${q.text}</div>
-    <div class="q-opts">${sq.opts.map((o,i)=>`<div class="q-opt${ans===i?' selected':''}" data-i="${i}" data-ans="${sq.answerIdx}" tabindex="0">${ltr(i)} ${o}</div>`).join('')}</div></div>
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-      <span style="font-size:12px;color:var(--ink-3)">📍 ${q.sourceName}</span>
-      <div style="display:flex;gap:8px">
-        <button class="btn btn-sm" data-next="tryout">${idx+1>=qs.length?'Selesai':'Lanjut →'}</button>
-        <button class="btn btn-primary btn-sm" data-finish="tryout">Submit Try Out</button>
-      </div>
-    </div>
-    <div class="qnav" style="margin-top:16px">${qs.map((_,i)=>`<button data-goto="${i}" class="${to.answers[i]!==undefined?'done':''}${i===idx?' cur':''}" tabindex="0">${i+1}</button>`).join('')}</div>`;
+    <div class="q-opts">${sq.opts.map((o,i)=>`<div class="q-opt${locked?(i===sq.answerIdx?' correct':i===ans?' wrong':' locked'):''}" data-i="${i}" data-ans="${sq.answerIdx}" tabindex="0">${ltr(i)} ${o}</div>`).join('')}</div></div>
+    ${locked?`<div style="padding:10px;margin-top:8px;border-radius:var(--radius-sm);font-size:13px;${ans===sq.answerIdx?'background:var(--green-light);color:var(--green)':'background:var(--red-light);color:var(--red)'}"><strong>${ans===sq.answerIdx?'✓ Benar':'✕ Jawaban: '+ltr(sq.answerIdx)}</strong>${q.explanation?`<div style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(0,0,0,0.1);font-weight:400;font-size:12px;color:var(--ink-2)">${q.explanation}</div>`:''}</div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px"><span style="font-size:12px;color:var(--ink-3);margin-right:auto">📍 ${q.sourceName} › ${q.conceptName}</span><button class="btn btn-sm" data-buka="${q.conceptId}" data-source="${q.sourceId}">📖 Buka Materi</button><button class="btn btn-primary btn-sm" data-next="tryout">${idx+1>=qs.length?'Selesai':'→'}</button></div>`:''}
+    <div class="qnav">${qs.map((_,i)=>`<button data-goto="${i}" class="${to.answers[i]!==undefined?'done':''}${i===idx?' cur':''}" tabindex="0">${i+1}</button>`).join('')}</div>`;
 }
 function nextTryout(){S.tryout.idx++;if(S.tryout.idx>=S.tryout.questions.length){S.tryout.done=true}render()}
 function goTryout(i){S.tryout.idx=i;render()}
@@ -692,78 +382,32 @@ function startTryout(t='all'){
   },1000);nav('tryout');
 }
 
-// ── FLASHCARD (SPACED REPETITION ANKI) ──
-function rateAnkiCard(rating){
-  const cards = S.flashcard.cards;
-  const idx = S.flashcard.idx;
-  if(!cards || idx >= cards.length) return;
-  const card = cards[idx];
-  const key = card.front;
-  
-  if(!S.ankiCards[key]) S.ankiCards[key] = { level: 0, reviews: 0 };
-  const entry = S.ankiCards[key];
-  entry.reviews++;
-  
-  if(rating === 'hard') {
-    entry.level = 0;
-    // Push card to repeat later in current deck
-    cards.push(card);
-  } else if(rating === 'medium') {
-    entry.level = 1;
-  } else if(rating === 'easy') {
-    entry.level = 2;
-  }
-  
-  localStorage.setItem('bs_anki', JSON.stringify(S.ankiCards));
-  nextFc();
-}
-
+// ── FLASHCARD ──
 function flashcard(c){
   if(S.flashcard.active&&!S.flashcard.cards.length)S.flashcard.active=false;
   if(!S.flashcard.active){
-    c.innerHTML=`<div style="text-align:center;padding:40px 0"><div style="font-size:48px;margin-bottom:12px">🃏</div><div style="font-size:18px;font-weight:600;margin-bottom:20px">${DB.allFlashcards.length} Flashcard Kedokteran (Spaced Repetition)</div><div class="btn-group" style="justify-content:center"><button class="btn btn-primary" data-start="fc,all">Semua (${DB.allFlashcards.length})</button>${DB.sources.map(s=>`<button class="btn" data-start="fc,${s.id}">${s.icon} ${s.short||s.name}</button>`).join('')}</div></div>`;
+    c.innerHTML=`<div style="text-align:center;padding:40px 0"><div style="font-size:48px;margin-bottom:12px">🃏</div><div style="font-size:18px;font-weight:600;margin-bottom:20px">${DB.allFlashcards.length} Flashcard</div><div class="btn-group" style="justify-content:center"><button class="btn btn-primary" data-start="fc,all">Semua (${DB.allFlashcards.length})</button>${DB.sources.map(s=>`<button class="btn" data-start="fc,${s.id}">${s.icon} ${s.short||s.name}</button>`).join('')}</div></div>`;
     return;
   }
   const cards=S.flashcard.cards;const idx=S.flashcard.idx;
   if(!cards.length||idx>=cards.length){S.flashcard.active=false;flashcard(c);return}
   const card=cards[idx];
-  const entry = S.ankiCards[card.front] || { level: 0, reviews: 0 };
-  const levelLabel = entry.level === 2 ? '🟢 Mudah' : entry.level === 1 ? '🟡 Sedang' : '🔴 Belum Dihafal';
-
   c.innerHTML=`<div style="text-align:center;max-width:580px;margin:0 auto">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-      <span style="font-size:12px;color:var(--ink-3);font-family:var(--mono)">${idx+1}/${cards.length}</span>
-      <span class="badge-review" style="font-size:11px">${levelLabel}</span>
-    </div>
+    <div style="font-size:12px;color:var(--ink-3);margin-bottom:10px;font-family:var(--mono)">${idx+1}/${cards.length}</div>
     <div class="fc-card" tabindex="0">
       <div class="fc-front">${card.front}</div>
       <div class="fc-back">${card.back}</div>
       <div class="fc-meta">${card.sourceName} · ${card.conceptName}</div>
-      <div class="fc-hint">👆 Klik untuk membalik jawaban</div>
+      <div class="fc-hint">👆 Klik untuk balik</div>
     </div>
-    <div class="anki-btn-group">
-      <button class="btn-anki anki-hard" data-anki="hard"><span>🔴 Sulit</span><span class="anki-sub">Ulang Nanti</span></button>
-      <button class="btn-anki anki-medium" data-anki="medium"><span>🟡 Sedang</span><span class="anki-sub">Cukup Paham</span></button>
-      <button class="btn-anki anki-easy" data-anki="easy"><span>🟢 Mudah</span><span class="anki-sub">Sangat Paham</span></button>
+    <div class="btn-group" style="justify-content:center;margin-top:14px">
+      <button class="btn btn-sm" data-fc="prev">←</button>
+      <button class="btn btn-primary btn-sm" data-fc="next">→</button>
     </div>
-    <div style="display:flex;justify-content:space-between;margin-top:14px">
-      <button class="btn btn-sm" data-fc="prev">← Sebelumnya</button>
-      <button class="btn btn-sm" data-start="fc,${S.flashcard.sourceId||'all'}">🔄 Reset Deck</button>
-      <button class="btn btn-sm" data-fc="next">Lanjut →</button>
-    </div>
+    <button class="btn btn-sm" style="margin-top:8px" data-start="fc,${S.flashcard.sourceId||'all'}">🔄 Acak Ulang</button>
   </div>`;
 }
-function startFlashcards(t='all'){
-  let cards=t==='all'?[...DB.allFlashcards]:DB.allFlashcards.filter(f=>f.sourceId===t);
-  // Sort cards: prioritize unmastered / hard cards
-  cards.sort((a, b) => {
-    const lvlA = (S.ankiCards[a.front] || {level: 0}).level;
-    const lvlB = (S.ankiCards[b.front] || {level: 0}).level;
-    return lvlA - lvlB;
-  });
-  S.flashcard={active:true,cards:cards,idx:0,sourceId:t};
-  nav('flashcard');
-}
+function startFlashcards(t='all'){let cards=t==='all'?[...DB.allFlashcards]:DB.allFlashcards.filter(f=>f.sourceId===t);S.flashcard={active:true,cards:shf(cards),idx:0,sourceId:t};nav('flashcard')}
 function nextFc(){S.flashcard.idx++;render()}
 function prevFc(){if(S.flashcard.idx>0)S.flashcard.idx--;render()}
 
